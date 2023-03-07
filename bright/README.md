@@ -5,9 +5,11 @@ Util to change monitor brightness.
 ## Build and install
 
 ```sh
-cd bright/
-cargo build --release
-install --mode=755 target/release/brightcli /usr/local/bin/
+cargo install brightcli
+
+# Whithout the following commands, brightcli will be read-only:
+sudo chown root ~/.cargo/bin/brightcli
+sudo chmod u+s  ~/.cargo/bin/brightcli
 ```
 
 ## Use
