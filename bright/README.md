@@ -14,6 +14,6 @@ sudo chmod u+s  ~/.cargo/bin/brightcli
 
 ## Use
 
-- `brightcli`: return current brightness
-- `brightcli +`: increment brightness and return the new value
-- `brightcli -`: decrement brightness and return the new value
+- `brightcli`: returns current brightness
+- `brightcli +`: increments brightness and returns its new value
+- `brightcli -`: decrements brightness and returns its new value

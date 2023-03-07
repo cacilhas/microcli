@@ -10,4 +10,6 @@ cargo install gitbranch
 
 ## Use
 
-- `gitbranch <directory>`
+```sh
+gitbranch <directory>
+```
