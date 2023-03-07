@@ -1,5 +1,6 @@
 [golang]: https://golang.org/
 [lazydocker]: https://github.com/jesseduffield/lazydocker
+[Rust]: https://www.rust-lang.org/
 [Sakura]: https://www.linuxlinks.com/sakura/
 
 # Docker monitor
@@ -39,3 +40,7 @@ Run `~/.local/share/dockermon/dockermon`. To use another manager, for instance
 Remove `~/.local/share/dockermon` directory.
 
 If you have installed into the system, remove `$PREFIX/dockermon` directory.
+
+## TODO
+
+- Rewrite it using [Rust][].
