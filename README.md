@@ -65,5 +65,5 @@ Calculate stacking and unstacking values.
 
 ## Copyright
 
-- ©2021 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.info).
+- ©2021-2023 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.info).
 - [BSD-3 Clause License](COPYING).
