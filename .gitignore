@@ -1,4 +1,5 @@
 *~
+*.bak
 *.c
 *.h
 *.o
@@ -8,7 +9,10 @@
 .DS_Store
 .idea
 .vscode
+core
+dockermon
 stcalc
 target
 tmp
+vendor
 !.gitignore
