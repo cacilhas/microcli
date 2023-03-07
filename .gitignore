@@ -10,8 +10,8 @@
 .idea
 .vscode
 core
-dockermon
-stcalc
+dockermon/dockermon
+stcalc/stcalc
 target
 tmp
 vendor
