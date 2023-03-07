@@ -9,7 +9,7 @@ Bunch of random [CLI][] tools.
 - [`bright`](bright/README.md)
 - [`gitbranch`](gitbranch/README.md)
 - [`i3quitdialog`](i3quitdialog/README.md)
-- [`lidmonitor`](lidmonitor/README.md)
+- [`lidwatch`](lidwatch/README.md)
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)
 
