@@ -2,7 +2,7 @@
 name        = "brightcli"
 version     = "0.1.0"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
-license     = "3-Clause BSD License"
+license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://github.com/cacilhas/microcli/tree/master/bright"
 repository  = "https://github.com/cacilhas/microcli/tree/master/bright"
