@@ -2,6 +2,14 @@
 
 Calculate stacking and unstacking values.
 
+## Build
+
+```sh
+cd stcalc/
+make
+make install
+```
+
 ## Commands
 
 - Float number

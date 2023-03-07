@@ -2,6 +2,14 @@
 
 Util to watch LID switching.
 
+## Build and install
+
+```sh
+cd lidwatch/
+cargo build --release
+install --mode=755 target/release/lidwatch /usr/local/bin/
+```
+
 ## Use
 
 ```sh
