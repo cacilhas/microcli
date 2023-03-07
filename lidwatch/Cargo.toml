@@ -1,7 +1,15 @@
 [package]
-name = "lidwatch"
-version = "0.1.0"
-edition = "2021"
+name        = "lidwatch"
+version     = "0.1.0"
+authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
+license     = "BSD-3-Clause"
+readme      = "README.md"
+homepage    = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
+repository  = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
+keywords    = ["cli", "monitor", "linux", "lid"]
+category    = "command-line-utilities"
+description = "Util to watch LID switching."
+edition     = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
