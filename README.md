@@ -1,8 +1,9 @@
+[CLI]: https://en.wikipedia.org/wiki/Command-line_interface
 [i3wm]: https://i3wm.org/
 
 # MicroCLI
 
-Bunch of random CLI tools.
+Bunch of random [CLI][] tools.
 
 -----
 
