@@ -13,5 +13,5 @@ install --mode=755 target/release/lidwatch /usr/local/bin/
 ## Use
 
 ```sh
-lidwatch /dev/input/<lid event> <command to be executed on LID closed>
+lidwatch /dev/input/<lid event> <command to be executed when LID is closed>
 ```
