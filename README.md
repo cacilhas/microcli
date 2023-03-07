@@ -67,6 +67,6 @@ Calculate stacking and unstacking values.
 
 ©2021-2023 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.info).
 
-All code in this repository are licensed under the
+All codes in this repository are licensed under the
 [BSD-3 Clause License](COPYING), except those directories containing  their own
 `COPYING` file.
