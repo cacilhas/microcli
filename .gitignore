@@ -1,0 +1,14 @@
+*~
+*.c
+*.h
+*.o
+*.swo
+*.swp
+.*
+.DS_Store
+.idea
+.vscode
+stcalc
+target
+tmp
+!.gitignore
