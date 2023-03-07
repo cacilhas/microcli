@@ -1,13 +1,13 @@
 [package]
 name        = "i3quitdialog"
-version     = "0.1.0"
+version     = "0.1.1"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://github.com/cacilhas/microcli/tree/master/i3quitdialog"
 repository  = "https://github.com/cacilhas/microcli/tree/master/i3quitdialog"
 keywords    = ["cli", "i3wm", "linux"]
-category    = "command-line-utilities"
+category    = "gui"
 description = "A simple quit dialog for i3wm."
 edition     = "2021"
 
