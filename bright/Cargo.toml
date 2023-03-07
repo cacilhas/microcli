@@ -1,5 +1,5 @@
 [package]
-name        = "bright"
+name        = "brightcli"
 version     = "0.1.0"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "3-Clause BSD License"

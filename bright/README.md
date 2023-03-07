@@ -1,4 +1,4 @@
-# `bright`
+# `brightcli`
 
 Util to change monitor brightness.
 
@@ -7,11 +7,11 @@ Util to change monitor brightness.
 ```sh
 cd bright/
 cargo build --release
-install --mode=755 target/release/bright /usr/local/bin/
+install --mode=755 target/release/brightcli /usr/local/bin/
 ```
 
 ## Use
 
-- `bright`: return current brightness
-- `bright +`: increment brightness and return the new value
-- `bright -`: decrement brightness and return the new value
+- `brightcli`: return current brightness
+- `brightcli +`: increment brightness and return the new value
+- `brightcli -`: decrement brightness and return the new value

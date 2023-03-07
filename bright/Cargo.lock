@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "bright"
+name = "brightcli"
 version = "0.1.0"
