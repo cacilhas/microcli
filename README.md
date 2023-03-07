@@ -37,7 +37,7 @@ A simple quit dialog for [i3wm][].
 
 ## `lidmonitor`
 
-Util to monitor LID switching.
+Util to watch LID switching.
 
 ### Use
 
