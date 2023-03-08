@@ -14,7 +14,7 @@ following line to the configuration file:
 use bundler.nu
 ```
 
-### Installing on ArchLinux
+### Installing on `pacman`-based distros (ArchLinux and derivatives)
 
 Using Bash:
 
@@ -28,7 +28,11 @@ Using Nushell:
 http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu out> ~/.config/nushell/scripts/bundler.nu
 ```
 
-### Installing on Debian GNU/Linux
+### Installing on Apt-based distros (Debian GNU/Linux and derivatives)
+
+TODO
+
+### Installing on RPM-based distros (Fedora Core, CentOS, and equivalents)
 
 TODO
 
