@@ -57,7 +57,7 @@ export def query [query?: string] {
 }
 
 export def cleanup [] {
-  sudo pacman -Qtdq | pacman -Rns -
+  pacman -Qtdq | sudo pacman -Rns - err> /dev/null
   sudo paccache -ruk0 out> /dev/null err> /dev/null
   sudo pacman -Sc
 }
