@@ -27,7 +27,7 @@ export def file [file: string] {
   }
   let name = (ls $real | get 0.name)
 
-  if ($name | str starts-with /Applications) {
+  if ($name | str starts-with /Applications/) {
     return ($name | path split | get 2)
   }
 
