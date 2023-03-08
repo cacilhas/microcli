@@ -63,6 +63,8 @@ http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/a
 
 ### Installing on Apt-based distros (Debian GNU/Linux, Ubuntu, and derivatives)
 
+**Not fully tested.**
+
 Using Bash:
 
 ```sh
@@ -79,9 +81,25 @@ http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/d
 
 ### Installing on RPM-based distros (Fedora Core, CentOS, and equivalents)
 
-TODO
+**Not tested.**
+
+Using Bash:
+
+```sh
+bundler_file=$XDG_CONFIG_HOME/nushell/scripts/bundler.nu
+curl -o $bundler_file  https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/centos.nu
+```
+
+Using Nushell:
+
+```nu
+let bundler_file = ([$env.XDG_CONFIG_HOME nushell scripts bundler.nu] | path join)
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/centos.nu | save $bundler_file
+```
 
 ### Installing on macOS
+
+**Not fully tested.**
 
 Using Bash:
 

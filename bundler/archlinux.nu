@@ -52,7 +52,7 @@ export def query [query?: string] {
   if $query == null {
     pacman -Slq | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    pacman -Slq | ^ag $query | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    pacman -Slq | grep $query | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 

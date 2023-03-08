@@ -1,9 +1,9 @@
 def preview [] {
-  "brew info '{}'"
+  "yum list installed | grep '{}'"
 }
 
 def preview_or_install [] {
-  $"\((preview) || brew install '{}'; (preview) | (pager)\)"
+  $"\(yum list installed | grep -q '{}' || sudo yum install -y '{}'; (preview) | (pager)\)"
 }
 
 def pager [] {
@@ -20,36 +20,24 @@ def pager [] {
   'more'
 }
 
-export def file [file: string] {
-  let real = (^which $file)
-  if $real == null {
-    return
+export def update [...args: string] {
+  if ($args | is-empty) {
+    sudo yum update
+  } else {
+    bundler install $args
   }
-  let name = (ls $real | get 0.name)
-
-  if ($name | str starts-with /Applications/) {
-    return ($name | path split | get 2)
-  }
-
-  if ($name | str contains /homebrew/Cellar/) {
-    let pack = ($name | str replace '^.*homebrew/Cellar/' '')
-    let pack = ($pack | path.split)
-    return $'($pack | get 0)@($pack | get 1)'
-  }
-
-  'core'
 }
 
 export def list [pack?: string] {
   if $pack == null {
-    brew list | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    yum list installed | tail +5 | each {str trim 'ii '} | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    brew list | grep $pack | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    yum list installed | grep $pack | tail +5 | each {str trim 'ii '} | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 
-export def query [query: string = '*'] {
-  brew search $"'($query)'" | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+export def query [query: string = '.*'] {
+  yum search $query | ^sort -f | split row ' - ' | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
 }
 
 export def help [] {
@@ -69,10 +57,10 @@ export def help [] {
   ] | str join "\n"
 }
 
-export alias cleanup = brew cleanup
-export alias install = brew install
-export alias remove  = brew uninstall
-export alias update  = (brew update; brew upgrade)
+export alias cleanup = sudo yum clean packages
+export alias file    = yum whatprovides
+export alias install = sudo yum install
+export alias remove  = sudo yam erase
 
 export alias f = bundler file
 export alias i = bundler install
