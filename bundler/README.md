@@ -117,7 +117,21 @@ http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/m
 
 ### Installing on Windows
 
-TODO
+**Not tested. Note: not sure about `bundler.nu` path.**
+
+Using PowerShell:
+
+```powershell
+$BundlerFile = "$HOME/.nushell/scripts/bundler.nu"
+Invoke-WebRequest -Uri https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/windows.nu -OutFile $BundlerFile
+```
+
+Using Nushell:
+
+```nu
+let bundler_file = ([$nu.home-path .nushell scripts bundler.nu] | path join)
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/windows.nu | save $bundler_file
+```
 
 -----
 
