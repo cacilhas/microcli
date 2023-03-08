@@ -7,7 +7,7 @@ A software package bundler for [Nushell][].
 
 ## Installation
 
-**After** the following procedures, run []`config nu`][config nu] and add the
+**After** the following procedures, run [`config nu`][config nu] and add the
 following line to the configuration file:
 
 ```nu
