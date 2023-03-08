@@ -122,7 +122,7 @@ http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/m
 Using PowerShell:
 
 ```powershell
-$BundlerFile = "$HOME/.nushell/scripts/bundler.nu"
+$BundlerFile = "$HOME\.nushell\scripts\bundler.nu"
 Invoke-WebRequest -Uri https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/windows.nu -OutFile $BundlerFile
 ```
 
