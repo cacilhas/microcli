@@ -49,7 +49,7 @@ export def list [pack?: string] {
 }
 
 export def query [query: string = '*'] {
-  brew search $query | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+  brew search $"'($query)'" | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
 }
 
 export def help [] {
