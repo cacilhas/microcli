@@ -68,7 +68,7 @@ TODO
 Using Bash:
 
 ```sh
-bundler_file='~/Library/Application Support/nushell/scripts/bundler.nu'
+bundler_file="$HOME/Library/Application Support/nushell/scripts/bundler.nu"
 curl -o $bundler_file https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu
 ```
 
