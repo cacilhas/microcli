@@ -24,7 +24,7 @@ export def update [...args: string] {
   if ($args | is-empty) {
     sudo apt-get update; sudo apt-get upgrade
   } else {
-    bundler install $args
+    sudo apt-get upgrade $args
   }
 }
 
