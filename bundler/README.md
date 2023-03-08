@@ -66,13 +66,13 @@ TODO
 Using Bash:
 
 ```sh
-curl -o ~/.config/nushell/scripts/bundler.nu https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu
+curl -o '~/Library/Application Support/nushell/scripts/bundler.nu' https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu
 ```
 
 Using Nushell:
 
 ```nu
-http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu out> ~/.config/nushell/scripts/bundler.nu
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu out> '~/Library/Application Support/nushell/scripts/bundler.nu'
 ```
 
 ## Use
