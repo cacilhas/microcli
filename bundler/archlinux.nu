@@ -3,7 +3,7 @@ def preview [] {
 }
 
 def preview_or_install [] {
-  $"\(pacman -Q '{}' || sudo pacman install; (preview) | (pager)\)"
+  $"\(pacman -Q '{}' || sudo pacman install '{}'; (preview) | (pager)\)"
 }
 
 def pager [] {
