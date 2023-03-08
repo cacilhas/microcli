@@ -45,7 +45,7 @@ following line to the configuration file:
 use bundler.nu
 ```
 
-### Installing on `pacman`-based distros (ArchLinux and derivatives)
+### Installing on Pacman-based distros (ArchLinux and derivatives)
 
 Using Bash:
 
