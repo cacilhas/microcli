@@ -55,9 +55,21 @@ let bundler_file = ([$env.XDG_CONFIG_HOME nushell scripts bundler.nu] | path joi
 http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu | save $bundler_file
 ```
 
-### Installing on Apt-based distros (Debian GNU/Linux and derivatives)
+### Installing on Apt-based distros (Debian GNU/Linux, Ubuntu, and derivatives)
 
-TODO
+Using Bash:
+
+```sh
+bundler_file=$XDG_CONFIG_HOME/nushell/scripts/bundler.nu
+curl -o $bundler_file  https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/debian.nu
+```
+
+Using Nushell:
+
+```nu
+let bundler_file = ([$env.XDG_CONFIG_HOME nushell scripts bundler.nu] | path join)
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/debian.nu | save $bundler_file
+```
 
 ### Installing on RPM-based distros (Fedora Core, CentOS, and equivalents)
 
