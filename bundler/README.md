@@ -44,13 +44,15 @@ use bundler.nu
 Using Bash:
 
 ```sh
-curl -o ~/.config/nushell/scripts/bundler.nu https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu
+bundler_file=$XDG_CONFIG_HOME/nushell/scripts/bundler.nu
+curl -o $bundler_file  https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu
 ```
 
 Using Nushell:
 
 ```nu
-http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu out> ~/.config/nushell/scripts/bundler.nu
+let bundler_file = ([$env.XDG_CONFIG_HOME nushell scripts bundler.nu] | path join)
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/archlinux.nu | save $bundler_file
 ```
 
 ### Installing on Apt-based distros (Debian GNU/Linux and derivatives)
@@ -66,13 +68,15 @@ TODO
 Using Bash:
 
 ```sh
-curl -o '~/Library/Application Support/nushell/scripts/bundler.nu' https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu
+bundler_file='~/Library/Application Support/nushell/scripts/bundler.nu'
+curl -o $bundler_file https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu
 ```
 
 Using Nushell:
 
 ```nu
-http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu out> '~/Library/Application Support/nushell/scripts/bundler.nu'
+let bundler_file = ([$nu.home-path Library 'Application Support' nushell scripts bundler.nu] | path join)
+http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu | save $bundler_file
 ```
 
 ## Use
