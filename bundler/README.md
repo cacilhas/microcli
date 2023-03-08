@@ -8,12 +8,15 @@
 [lv]: https://manpages.debian.org/testing/lv/pager.1.en.html
 [Nushell]: https://www.nushell.sh/
 [Pacman]: https://wiki.archlinux.org/title/Pacman
+[Scoop]: https://scoop.sh/
 [sudo]: https://www.sudo.ws/
 [Yum]: https://www.redhat.com/sysadmin/how-manage-packages
 
 # Bundler
 
 A software package bundler for [Nushell][].
+
+-----
 
 ## Requirements
 
@@ -29,6 +32,9 @@ A software package bundler for [Nushell][].
   - [Apt][] and [`dpkg`][dpkg]
   - [Yum][]
   - [Homebrew][]
+  - [Scoop][]
+
+-----
 
 ## Installation
 
@@ -90,6 +96,12 @@ Using Nushell:
 let bundler_file = ([$nu.home-path Library 'Application Support' nushell scripts bundler.nu] | path join)
 http get -r https://raw.githubusercontent.com/cacilhas/microcli/master/bundler/macos.nu | save $bundler_file
 ```
+
+### Installing on Windows
+
+TODO
+
+-----
 
 ## Use
 
