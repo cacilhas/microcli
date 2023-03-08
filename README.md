@@ -7,7 +7,7 @@ Bunch of random [CLI][] tools.
 ## Tools
 
 - [Bundler](bundler/README.md)
-- [`bright`](bright/README.md)
+- [BrightCLI](bright/README.md)
 - [`gitbranch`](gitbranch/README.md)
 - [`i3quitdialog`](i3quitdialog/README.md)
 - [`lidwatch`](lidwatch/README.md)

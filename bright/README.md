@@ -1,4 +1,4 @@
-# `brightcli`
+# BrightCLI
 
 Util to change monitor brightness.
 
