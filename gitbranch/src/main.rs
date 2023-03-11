@@ -15,11 +15,15 @@ fn main() {
 
 fn print_branch(p: &Path) {
     match Repository::open(p) {
-        Ok(repo) => {
-            let head = repo.head().expect("error getting repo head");
-            let branch = head.shorthand().unwrap();
-            print!("{}", branch);
-        },
+        Ok(repo) =>
+            match repo.head() {
+                Ok(head) =>
+                    match head.shorthand() {
+                        Some(branch) => println!("{}", branch),
+                        None               => println!("no branch found"),
+                    },
+                Err(_) => println!("no head"),
+            },
         Err(_) => {
             match p.parent() {
                 Some(parent) => print_branch(&parent),
