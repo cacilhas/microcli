@@ -30,14 +30,14 @@ export def update [...args: string] {
 
 export def list [pack?: string] {
   if $pack == null {
-    yum list installed | tail +5 | each {str trim 'ii '} | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    yum list installed | tail +5 | each {str trim 'ii '} | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    yum list installed | grep $pack | tail +5 | each {str trim 'ii '} | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    yum list installed | grep $pack | tail +5 | each {str trim 'ii '} | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 
 export def query [query: string = '.*'] {
-  yum search $query | ^sort -f | split row ' - ' | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+  yum search $query | sort -i | each { $in | split row ' - ' | get 0 } | str join "\nww" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
 }
 
 export def help [] {

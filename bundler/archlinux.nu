@@ -42,17 +42,17 @@ export def update [...args: string] {
 
 export def list [pack?: string] {
   if $pack == null {
-    pacman -Qq | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    pacman -Qq | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    pacman -Qq $pack | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    pacman -Qq $pack | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 
 export def query [query?: string] {
   if $query == null {
-    pacman -Slq | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    pacman -Slq | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    pacman -Slq | grep $query | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    pacman -Slq | ^ag $query | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 

@@ -42,14 +42,14 @@ export def file [file: string] {
 
 export def list [pack?: string] {
   if $pack == null {
-    brew list | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    brew list | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   } else {
-    brew list | grep $pack | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+    brew list | grep $pack | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
   }
 }
 
 export def query [query: string = '*'] {
-  brew search $"'($query)'" | ^sort -f | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
+  brew search $"'($query)'" | sort -i | str join "\n" | fzf --preview (preview) --layout=reverse --bind $'enter:execute(preview_or_install)'
 }
 
 export def help [] {
