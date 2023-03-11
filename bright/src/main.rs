@@ -9,6 +9,8 @@ enum Operation {
 
 use Operation::*;
 
+
+#[cfg(target_os = "linux")]
 fn main() {
     let args: Vec<String> = env::args().collect();
     let param = match args.len() {

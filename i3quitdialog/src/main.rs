@@ -2,6 +2,13 @@ use fltk::{prelude::*, enums::*, *, app::screen_size};
 use i3_ipc::{Connect, I3};
 
 
+#[cfg(any(
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "linux",
+    target_os = "netbsd",
+    target_os = "openbsd",
+))]
 fn main() {
     let (width, height) = screen_size();
     let winx = ((width as i32)-300) / 2;

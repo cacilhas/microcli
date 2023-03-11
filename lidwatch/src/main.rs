@@ -2,6 +2,15 @@ use std::env;
 use std::process::Command;
 use evdev::{Device, InputEventKind, SwitchType};
 
+
+#[cfg(any(
+    target_os = "dragonfly",
+    target_os = "freebsd",
+    target_os = "linux",
+    target_os = "macos",
+    target_os = "netbsd",
+    target_os = "openbsd",
+))]
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
