@@ -1,6 +1,6 @@
 [package]
 name        = "gitbranch"
-version     = "0.1.1"
+version     = "0.1.2"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -12,6 +12,12 @@ description = "It simply shows current branch name - or nothing if it isn’t a 
 edition     = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[profile.release]
+opt-level = "s"
+debug = false
+rpath = false
+strip = true
 
 [dependencies]
 git2 = "0.16.1"
