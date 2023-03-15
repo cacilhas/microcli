@@ -34,7 +34,7 @@ export def install [...args: string] {
 
 export def update [...args: string] {
   if ($args | is-empty) {
-    sudo pacman -Syu; sudo pacman - Fy
+    sudo pacman -Syu; sudo pacman -Fy
   } else {
     bundler install $args
   }
