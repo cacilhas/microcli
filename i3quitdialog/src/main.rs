@@ -41,14 +41,14 @@ fn main() {
         "Exit",
     );
     exit.set_color(Color::DarkYellow);
-    exit.set_label_color(Color::Yellow);
+    exit.set_label_color(Color::White);
     let mut halt = button::Button::new(
         0, 0,
         btsize, 0,
         "Halt",
     );
     halt.set_color(Color::DarkRed);
-    halt.set_label_color(Color::Red);
+    halt.set_label_color(Color::Yellow);
     let mut reboot = button::Button::new(
         0, 0,
         btsize, 0,
@@ -62,7 +62,7 @@ fn main() {
         "Cancel",
     );
     cancel.set_color(Color::DarkGreen);
-    cancel.set_label_color(Color::Green);
+    cancel.set_label_color(Color::Cyan);
     hpack.end();
     hpack.set_type(group::PackType::Horizontal);
     win.end();
