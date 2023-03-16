@@ -10,30 +10,27 @@ use i3_ipc::{Connect, I3};
     target_os = "openbsd",
 ))]
 fn main() {
+    let winsize = (340, 75);
     let (width, height) = screen_size();
-    let winx = ((width as i32)-300) / 2;
-    let winy = ((height as i32)-300) / 2;
+    let winx = ((width as i32)-winsize.0) / 2;
+    let winy = ((height as i32)-winsize.1) / 2;
 
     let app = app::App::default();
     let mut win = window::Window::new(
         winx, winy,
-        340, 1,
+        winsize.0, winsize.1,
         "i3 Quit Dialog",
     );
-    win.set_color(Color::DarkCyan);
-    let mut vpack = group::Pack::new(
-        0, 0,
-        win.width(), win.height(),
-        "",
-    );
+    win.set_color(Color::Dark3);
     let mut title = frame::Frame::new(
         0, 0,
         win.width(), 30,
         "Do you really want to exit i3?",
     );
+    title.set_label_color(Color::White);
     title.set_label_size(24);
     let mut hpack = group::Pack::new(
-        0, 0,
+        0, title.height(),
         win.width(), 30,
         "",
     );
@@ -43,30 +40,34 @@ fn main() {
         btsize, 0,
         "Exit",
     );
-    exit.set_color(Color::Yellow);
+    exit.set_color(Color::DarkYellow);
+    exit.set_label_color(Color::White);
     let mut halt = button::Button::new(
         0, 0,
         btsize, 0,
         "Halt",
     );
-    halt.set_color(Color::Red);
+    halt.set_color(Color::DarkRed);
+    halt.set_label_color(Color::Yellow);
     let mut reboot = button::Button::new(
         0, 0,
         btsize, 0,
         "Reboot",
     );
     reboot.set_color(Color::DarkMagenta);
+    reboot.set_label_color(Color::Magenta);
     let mut cancel = button::Button::new(
         0, 0,
         btsize, 0,
         "Cancel",
     );
-    cancel.set_color(Color::Green);
+    cancel.set_color(Color::DarkGreen);
+    cancel.set_label_color(Color::Cyan);
     hpack.end();
     hpack.set_type(group::PackType::Horizontal);
-    vpack.end();
-    vpack.set_type(group::PackType::Vertical);
     win.end();
+    let height = title.height() + hpack.height();
+    win.set_size(winsize.0, height);
     win.show();
 
     halt.set_callback(move |_| {
