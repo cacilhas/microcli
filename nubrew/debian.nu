@@ -41,31 +41,32 @@ export def query [query: string = '.*'] {
 }
 
 export def help [] {
-  let bundler = ([(ansi cyan_bold) bundler (ansi reset)] | str join)
+  let brew = ([(ansi cyan_bold) brew (ansi reset)] | str join)
   let r = (ansi reset)
   let c = (ansi yellow)
   let p = (ansi magenta)
   [
-    $'($bundler) ($c)install($r)|($c)i($r) ($p)<packages>($r)'
-    $'($bundler) ($c)update($r)|($c)u($r) [($p)<packages>($r)]'
-    $'($bundler) ($c)file($r)|($c)f($r) ($p)<file>($r)'
-    $'($bundler) ($c)list($r)|($c)l($r) [($p)<filter>($r)]'
-    $'($bundler) ($c)query($r)|($c)q($r) [($p)<filter>($r)]'
-    $'($bundler) ($c)remove($r)|($c)x($r) ($p)<packages>($r)'
-    $'($bundler) ($c)cleanup($r)'
-    $'($bundler) ($c)help($r)|($c)?($r)'
+    $'($brew) ($c)install($r)|($c)i($r) ($p)<packages>($r)'
+    $'($brew) ($c)update($r)|($c)u($r) [($p)<packages>($r)]'
+    $'($brew) ($c)file($r)|($c)f($r) ($p)<file>($r)'
+    $'($brew) ($c)list($r)|($c)l($r) [($p)<filter>($r)]'
+    $'($brew) ($c)query($r)|($c)q($r) [($p)<filter>($r)]'
+    $'($brew) ($c)uninstall($r)|($c)x($r) ($p)<packages>($r)'
+    $'($brew) ($c)cleanup($r)'
+    $'($brew) ($c)help($r)|($c)?($r)'
   ] | str join "\n"
 }
 
-export alias cleanup = sudo apt-get clean
-export alias file    = dpkg -S
-export alias install = sudo apt-get install
-export alias remove  = sudo apt-get purge
+export alias cleanup   = sudo apt-get clean
+export alias file      = dpkg -S
+export alias install   = sudo apt-get install
+export alias uninstall = sudo apt-get purge
+export alias remove    = brew uninstall
 
-export alias f = bundler file
-export alias i = bundler install
-export alias l = bundler list
-export alias q = bundler query
-export alias u = bundler update
-export alias x = bundler remove
-export alias ? = bundler help
+export alias f = brew file
+export alias i = brew install
+export alias l = brew list
+export alias q = brew query
+export alias u = brew update
+export alias x = brew uninstall
+export alias ? = brew help
