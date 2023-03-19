@@ -21,5 +21,5 @@ Bunch of random [CLI][] tools.
 ©2021-2023 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.info).
 
 All codes in this repository are licensed under the
-[BSD-3 Clause License](COPYING), except those directories containing  their own
+[BSD-3 Clause License](COPYING), except those directories containing their own
 `COPYING` file.
