@@ -1,7 +1,7 @@
 [package]
 name        = "brightcli"
-version     = "0.1.2"
-authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
+version     = "0.1.3"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://github.com/cacilhas/microcli/tree/master/bright"
