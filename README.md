@@ -3,6 +3,7 @@
 [gitbranch]: https://crates.io/crates/gitbranch
 [i3quitdialog]: https://crates.io/crates/i3quitdialog
 [lidwatch]: https://crates.io/crates/lidwatch
+[Upt]: https://crates.io/crates/upt
 
 # MicroCLI
 
@@ -14,7 +15,7 @@ Bunch of random unrelated [CLI][] tools.
 - [`gitbranch`][gitbranch]
 - [`i3quitdialog`][i3quitdialog]
 - [`lidwatch`][lidwatch]
-- [Nubrew](nubrew/README.md)
+- [Nubrew](nubrew/README.md) (suggestion: use [Upt][] instead)
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)
 
