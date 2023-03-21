@@ -14,7 +14,7 @@ Bunch of random unrelated [CLI][] tools.
 - [`gitbranch`][gitbranch]
 - [`i3quitdialog`][i3quitdialog]
 - [`lidwatch`][lidwatch]
-- [Nubew](nubrew/README.md)
+- [Nubrew](nubrew/README.md)
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)
 
