@@ -22,3 +22,4 @@ strip = true
 [dependencies]
 fltk = "^1.3"
 i3_ipc = "^0.16"
+users = "^0.11"
