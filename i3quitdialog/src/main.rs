@@ -8,7 +8,14 @@ use fltk::{
     prelude::*,
     window::Window,
 };
-use i3_ipc::{Connect, I3};
+use i3_ipc::{
+    Connect,
+    I3
+};
+use users::{
+    UsersCache,
+    Users,
+};
 
 
 #[cfg(any(
@@ -46,8 +53,10 @@ fn main() {
 
     let btsize = win.width() / 4;
     create_exit_button(btsize).unwrap();
-    create_halt_button(btsize).unwrap();
-    create_reboot_button(btsize).unwrap();
+    if is_power_user() {
+        create_halt_button(btsize).unwrap();
+        create_reboot_button(btsize).unwrap();
+    }
     create_cancel_button(btsize, Box::new(move |_| app.quit())).unwrap();
 
     hpack.end();
@@ -119,4 +128,26 @@ fn create_cancel_button(btsize: i32, cb: Box<dyn FnMut(&mut Button)>) -> Result<
     cancel.set_label_color(Color::Cyan);
     cancel.set_callback(cb);
     Ok(cancel)
+}
+
+
+fn is_power_user() -> bool {
+    let cache = UsersCache::new();
+    let uid = cache.get_current_uid();
+    let user = match cache.get_user_by_uid(uid) {
+        Some(user) => user,
+        None => return false,
+    };
+
+    match user.groups() {
+        Some(groups) => {
+            for group in groups.iter() {
+                if group.name() == "power" {
+                    return true;
+                }
+            }
+            false
+        },
+        None => false,
+    }
 }

@@ -13,7 +13,7 @@ cargo install i3quitdialog
 
 ## Settings
 
-The `exit` button works out of the box. In order to allow the user to halt and
+The `exit` button works out of the box. In order to allow users to halt and
 reboot the system, add them to the `power` group.
 
 You can just call it:
