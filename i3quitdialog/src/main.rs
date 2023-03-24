@@ -1,4 +1,4 @@
-use std::error;
+use std::io;
 use fltk::{
     app::{App, screen_size},
     button::Button,
@@ -10,7 +10,7 @@ use fltk::{
 };
 use i3_ipc::{
     Connect,
-    I3
+    I3,
 };
 use users::{
     UsersCache,
@@ -57,7 +57,7 @@ fn main() {
         create_halt_button(btsize).unwrap();
         create_reboot_button(btsize).unwrap();
     }
-    create_cancel_button(btsize, Box::new(move |_| app.quit())).unwrap();
+    create_cancel_button(btsize, move |_| app.quit()).unwrap();
 
     hpack.end();
     hpack.set_type(group::PackType::Horizontal);
@@ -70,7 +70,7 @@ fn main() {
 }
 
 
-fn create_exit_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+fn create_exit_button(btsize: i32) -> io::Result<Button> {
     let mut exit = Button::new(
         0, 0,
         btsize, 0,
@@ -86,7 +86,7 @@ fn create_exit_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 }
 
 
-fn create_halt_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+fn create_halt_button(btsize: i32) -> io::Result<Button> {
     let mut halt = Button::new(
         0, 0,
         btsize, 0,
@@ -102,7 +102,7 @@ fn create_halt_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 }
 
 
-fn create_reboot_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+fn create_reboot_button(btsize: i32) -> io::Result<Button> {
     let mut reboot = Button::new(
         0, 0,
         btsize, 0,
@@ -118,7 +118,7 @@ fn create_reboot_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 }
 
 
-fn create_cancel_button(btsize: i32, cb: Box<dyn FnMut(&mut Button)>) -> Result<Button, Box<dyn error::Error>> {
+fn create_cancel_button<C: FnMut(&mut Button) + 'static>(btsize: i32, cb: C) -> io::Result<Button> {
     let mut cancel = Button::new(
         0, 0,
         btsize, 0,
