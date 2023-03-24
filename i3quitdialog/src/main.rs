@@ -45,27 +45,40 @@ fn main() {
     );
     title.set_label_color(Color::White);
     title.set_label_size(24);
-    let mut hpack = group::Pack::new(
-        0, title.height(),
+    let btsize = win.width() / 2;
+    let mut y = title.height();
+
+    if is_power_user() {
+        let mut hpack1 = group::Pack::new(
+            0, y,
+            win.width(), 30,
+            "",
+        );
+        create_halt_button(btsize).unwrap();
+        create_reboot_button(btsize).unwrap();
+        hpack1.end();
+        hpack1.set_type(group::PackType::Horizontal);
+        y += hpack1.height();
+    }
+
+    let mut hpack2 = group::Pack::new(
+        0, y,
         win.width(), 30,
         "",
     );
 
-    let btsize = win.width() / 4;
-    create_exit_button(btsize).unwrap();
-    if is_power_user() {
-        create_halt_button(btsize).unwrap();
-        create_reboot_button(btsize).unwrap();
-    }
+    let mut exit = create_exit_button(btsize).unwrap();
     create_cancel_button(btsize, move |_| app.quit()).unwrap();
 
-    hpack.end();
-    hpack.set_type(group::PackType::Horizontal);
+    hpack2.end();
+    hpack2.set_type(group::PackType::Horizontal);
+
     win.end();
-    let height = title.height() + hpack.height();
+    let height = y + hpack2.height();
     win.set_size(winsize.0, height);
     win.show();
 
+    exit.take_focus().unwrap();
     app.run().unwrap();
 }
 
