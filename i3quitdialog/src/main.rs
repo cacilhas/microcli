@@ -72,11 +72,11 @@ fn main() {
 
     halt.set_callback(move |_| {
         let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id sudo halt -p").unwrap();
+        i3.run_command("exec --no-startup-id halt -p").unwrap();
     });
     reboot.set_callback(move |_| {
         let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id sudo reboot").unwrap();
+        i3.run_command("exec --no-startup-id reboot").unwrap();
     });
     exit.set_callback(move |_| {
         let mut i3 = I3::connect().unwrap();
