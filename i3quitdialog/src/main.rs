@@ -1,4 +1,11 @@
-use fltk::{prelude::*, enums::*, *, app::screen_size};
+use std::error;
+use fltk::{
+    button::Button,
+    prelude::*,
+    enums::*,
+    *,
+    app::screen_size,
+};
 use i3_ipc::{Connect, I3};
 
 
@@ -34,35 +41,13 @@ fn main() {
         win.width(), 30,
         "",
     );
+
     let btsize = win.width() / 4;
-    let mut exit = button::Button::new(
-        0, 0,
-        btsize, 0,
-        "Exit",
-    );
-    exit.set_color(Color::DarkYellow);
-    exit.set_label_color(Color::White);
-    let mut halt = button::Button::new(
-        0, 0,
-        btsize, 0,
-        "Halt",
-    );
-    halt.set_color(Color::DarkRed);
-    halt.set_label_color(Color::Yellow);
-    let mut reboot = button::Button::new(
-        0, 0,
-        btsize, 0,
-        "Reboot",
-    );
-    reboot.set_color(Color::DarkMagenta);
-    reboot.set_label_color(Color::Magenta);
-    let mut cancel = button::Button::new(
-        0, 0,
-        btsize, 0,
-        "Cancel",
-    );
-    cancel.set_color(Color::DarkGreen);
-    cancel.set_label_color(Color::Cyan);
+    create_exit_button(btsize).unwrap();
+    create_halt_button(btsize).unwrap();
+    create_reboot_button(btsize).unwrap();
+    create_cancel_button(btsize, Box::new(move |_| app.quit())).unwrap();
+
     hpack.end();
     hpack.set_type(group::PackType::Horizontal);
     win.end();
@@ -70,19 +55,66 @@ fn main() {
     win.set_size(winsize.0, height);
     win.show();
 
-    halt.set_callback(move |_| {
-        let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id halt -p").unwrap();
-    });
-    reboot.set_callback(move |_| {
-        let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id reboot").unwrap();
-    });
+    app.run().unwrap();
+}
+
+
+fn create_exit_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+    let mut exit = button::Button::new(
+        0, 0,
+        btsize, 0,
+        "Exit",
+    );
+    exit.set_color(Color::DarkYellow);
+    exit.set_label_color(Color::White);
     exit.set_callback(move |_| {
         let mut i3 = I3::connect().unwrap();
         i3.run_command("exit").unwrap();
     });
-    cancel.set_callback(move |_| app.quit());
+    Ok(exit)
+}
 
-    app.run().unwrap();
+
+fn create_halt_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+    let mut halt = button::Button::new(
+        0, 0,
+        btsize, 0,
+        "Halt",
+    );
+    halt.set_color(Color::DarkRed);
+    halt.set_label_color(Color::Yellow);
+    halt.set_callback(move |_| {
+        let mut i3 = I3::connect().unwrap();
+        i3.run_command("exec --no-startup-id halt -p").unwrap();
+    });
+    Ok(halt)
+}
+
+
+fn create_reboot_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
+    let mut reboot = button::Button::new(
+        0, 0,
+        btsize, 0,
+        "Reboot",
+    );
+    reboot.set_color(Color::DarkMagenta);
+    reboot.set_label_color(Color::Magenta);
+    reboot.set_callback(move |_| {
+        let mut i3 = I3::connect().unwrap();
+        i3.run_command("exec --no-startup-id reboot").unwrap();
+    });
+    Ok(reboot)
+}
+
+
+fn create_cancel_button(btsize: i32, cb: Box<dyn FnMut(&mut Button)>) -> Result<Button, Box<dyn error::Error>> {
+    let mut cancel = button::Button::new(
+        0, 0,
+        btsize, 0,
+        "Cancel",
+    );
+    cancel.set_color(Color::DarkGreen);
+    cancel.set_label_color(Color::Cyan);
+    cancel.set_callback(cb);
+    Ok(cancel)
 }
