@@ -1,10 +1,12 @@
 use std::error;
 use fltk::{
+    app::{App, screen_size},
     button::Button,
-    prelude::*,
+    group,
     enums::*,
-    *,
-    app::screen_size,
+    frame::Frame,
+    prelude::*,
+    window::Window,
 };
 use i3_ipc::{Connect, I3};
 
@@ -22,14 +24,14 @@ fn main() {
     let winx = ((width as i32)-winsize.0) / 2;
     let winy = ((height as i32)-winsize.1) / 2;
 
-    let app = app::App::default();
-    let mut win = window::Window::new(
+    let app = App::default();
+    let mut win = Window::new(
         winx, winy,
         winsize.0, winsize.1,
         "i3 Quit Dialog",
     );
     win.set_color(Color::Dark3);
-    let mut title = frame::Frame::new(
+    let mut title = Frame::new(
         0, 0,
         win.width(), 30,
         "Do you really want to exit i3?",
@@ -60,7 +62,7 @@ fn main() {
 
 
 fn create_exit_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
-    let mut exit = button::Button::new(
+    let mut exit = Button::new(
         0, 0,
         btsize, 0,
         "Exit",
@@ -76,7 +78,7 @@ fn create_exit_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 
 
 fn create_halt_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
-    let mut halt = button::Button::new(
+    let mut halt = Button::new(
         0, 0,
         btsize, 0,
         "Halt",
@@ -92,7 +94,7 @@ fn create_halt_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 
 
 fn create_reboot_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
-    let mut reboot = button::Button::new(
+    let mut reboot = Button::new(
         0, 0,
         btsize, 0,
         "Reboot",
@@ -108,7 +110,7 @@ fn create_reboot_button(btsize: i32) -> Result<Button, Box<dyn error::Error>> {
 
 
 fn create_cancel_button(btsize: i32, cb: Box<dyn FnMut(&mut Button)>) -> Result<Button, Box<dyn error::Error>> {
-    let mut cancel = button::Button::new(
+    let mut cancel = Button::new(
         0, 0,
         btsize, 0,
         "Cancel",
