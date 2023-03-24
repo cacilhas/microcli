@@ -27,7 +27,7 @@ using `i3-msg`:
 
 ```ini
 [Logoff]
-command=i3-msg -q -- exec i3quitdialog
+command=i3-msg -q -- exec --no-startup-id i3quitdialog
 color=#ff0000
 full_text=⏻
 text=⏻
