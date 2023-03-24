@@ -140,14 +140,7 @@ fn is_power_user() -> bool {
     };
 
     match user.groups() {
-        Some(groups) => {
-            for group in groups.iter() {
-                if group.name() == "power" {
-                    return true;
-                }
-            }
-            false
-        },
+        Some(groups) => groups.iter().any(|group| group.name() == "power"),
         None => false,
     }
 }
