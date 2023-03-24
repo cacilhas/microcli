@@ -1,3 +1,4 @@
+[blocklet]: https://vivien.github.io/i3blocks/#_i3blocks_properties
 [i3wm]: https://i3wm.org/
 
 # `i3quitdialog`
@@ -13,7 +14,7 @@ cargo install i3quitdialog
 ## Settings
 
 The `exit` button works out of the box. In order to allow the user to halt and
-reboot the system, add the user to the `power` group.
+reboot the system, add them to the `power` group.
 
 You can just call it:
 
@@ -21,8 +22,8 @@ You can just call it:
 i3quitdialog
 ```
 
-However, if you are settings a blocklet to launch `i3quitdialog`, prefer using
-`i3-msg`:
+However, if you are setting a [blocklet][] to launch `i3quitdialog`, prefer
+using `i3-msg`:
 
 ```ini
 [Logoff]
@@ -31,5 +32,5 @@ color=#ff0000
 full_text=⏻
 text=⏻
 interval=0
-#signal=10  # to capture `pkill -SIGRTMIN+10 i3blocks`
+#signal=10  # uncomment this line to capture `pkill -SIGRTMIN+10 i3blocks`
 ```
