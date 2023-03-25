@@ -303,7 +303,7 @@ fn contrast(color: &Color) -> Color {
 
 fn is_bright(color: &Color) -> bool {
     let (r, g, b) = color.to_rgb();
-    (r as u16)+(g as u16)+(b as u16) >= 384_u16
+    r|g|b >= 128_u8
 }
 
 
