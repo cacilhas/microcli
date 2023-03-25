@@ -37,14 +37,14 @@ interval=0
 
 ### `.XResources` support
 
-I3 Quit Dialog supports the following keys from `xrdb`:
+I3 Quit Dialog supports the following keys from `xrdb` (case sensitive):
 
-- `I3QuitDialog.foreground`: window colour
-- `I3QuitDialog.background`: window background colour
-- `I3QuitDialog.exitColor`: exit button colour
-- `I3QuitDialog.cancelColor`: cancel button colour
-- `I3QuitDialog.haltColor`: halt button colour
-- `I3QuitDialog.rebootColor`: halt button colour
+- `i3quitdialog.Title.foreground`: window colour
+- `i3quitdialog.Title.background`: window background colour
+- `i3quitdialog.ExitButton.color`: exit button colour
+- `i3quitdialog.CancelButton.color`: cancel button colour
+- `i3quitdialog.HaltButton.color`: halt button colour
+- `i3quitdialog.RebootButton.color`: halt button colour
 
 Acceptable values:
 
