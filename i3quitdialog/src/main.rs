@@ -177,23 +177,26 @@ fn get_resources() -> Resources {
         reboot_bg_color: Color::DarkMagenta,
     };
 
-    match get_color_parameter("foreground") {
+    legacy_resources(&mut resources);
+    set_resources(&mut resources);
+
+    resources
+}
+
+fn set_resources(resources: &mut Resources) {
+    let app_name = "i3quitdialog";
+
+    match get_color_parameter(&app_name, "Title.foreground") {
         Some(color) => resources.foreground = color,
-        None => match get_color_parameter("Foreground") {
-            Some(color) => resources.foreground = color,
-            None => (),
-        },
+        None => (),
     }
 
-    match get_color_parameter("background") {
+    match get_color_parameter(&app_name, "Title.background") {
         Some(color) => resources.background = color,
-        None => match get_color_parameter("Background") {
-            Some(color) => resources.background = color,
-            None => (),
-        },
+        None => (),
     }
 
-    match get_color_parameter("exitColor") {
+    match get_color_parameter(&app_name, "ExitButton.color") {
         Some(color) => {
             resources.exit_bg_color = color;
             resources.exit_fg_color = contrast(&color);
@@ -201,7 +204,7 @@ fn get_resources() -> Resources {
         None => (),
     }
 
-    match get_color_parameter("cancelColor") {
+    match get_color_parameter(&app_name, "CancelButton.color") {
         Some(color) => {
             resources.cancel_bg_color = color;
             resources.cancel_fg_color = contrast(&color);
@@ -209,7 +212,7 @@ fn get_resources() -> Resources {
         None => (),
     }
 
-    match get_color_parameter("haltColor") {
+    match get_color_parameter(&app_name, "HaltButton.color") {
         Some(color) => {
             resources.halt_bg_color = color;
             resources.halt_fg_color = contrast(&color);
@@ -217,22 +220,72 @@ fn get_resources() -> Resources {
         None => (),
     }
 
-    match get_color_parameter("rebootColor") {
+    match get_color_parameter(&app_name, "RebootButton.color") {
         Some(color) => {
             resources.reboot_bg_color = color;
             resources.reboot_fg_color = contrast(&color);
         },
         None => (),
     }
+}
 
-    resources
+fn legacy_resources(resources: &mut Resources) {
+    let app_name = "I3QuitDialog";
+
+    match get_color_parameter(&app_name, "foreground") {
+        Some(color) => resources.foreground = color,
+        None => match get_color_parameter(&app_name, "Foreground") {
+            Some(color) => resources.foreground = color,
+            None => (),
+        },
+    }
+
+    match get_color_parameter(&app_name, "background") {
+        Some(color) => resources.background = color,
+        None => match get_color_parameter(&app_name, "Background") {
+            Some(color) => resources.background = color,
+            None => (),
+        },
+    }
+
+    match get_color_parameter(&app_name, "exitColor") {
+        Some(color) => {
+            resources.exit_bg_color = color;
+            resources.exit_fg_color = contrast(&color);
+        },
+        None => (),
+    }
+
+    match get_color_parameter(&app_name, "cancelColor") {
+        Some(color) => {
+            resources.cancel_bg_color = color;
+            resources.cancel_fg_color = contrast(&color);
+        },
+        None => (),
+    }
+
+    match get_color_parameter(&app_name, "haltColor") {
+        Some(color) => {
+            resources.halt_bg_color = color;
+            resources.halt_fg_color = contrast(&color);
+        },
+        None => (),
+    }
+
+    match get_color_parameter(&app_name, "rebootColor") {
+        Some(color) => {
+            resources.reboot_bg_color = color;
+            resources.reboot_fg_color = contrast(&color);
+        },
+        None => (),
+    }
 }
 
 
-fn get_color_parameter(parameter: &str) -> Option<Color> {
+fn get_color_parameter(app_name: &str, parameter: &str) -> Option<Color> {
     let output = process::Command::new("xrdb")
         .arg( "-get")
-        .arg(format!("I3QuitDialog.{}", parameter))
+        .arg(format!("{}.{}", app_name, parameter))
         .output();
     let output = match output {
         Ok(output) => output,
@@ -253,8 +306,6 @@ fn get_color_parameter(parameter: &str) -> Option<Color> {
             Err(_) => return None,
         }
     }
-
-    println!("{}: {}", parameter, res);
 
     match res.to_lowercase().as_str() {
         "dark3" => Some(Color::Dark3),
@@ -303,7 +354,7 @@ fn contrast(color: &Color) -> Color {
 
 fn is_bright(color: &Color) -> bool {
     let (r, g, b) = color.to_rgb();
-    r|g|b >= 128_u8
+    vec![r, g, b].iter().fold(0_u8, |acc, &v| acc.max(v)) >= 0xa0
 }
 
 
