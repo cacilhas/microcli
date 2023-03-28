@@ -91,7 +91,7 @@ fn create_exit_button(resources: &Resources, btsize: i32) -> io::Result<Button> 
     let mut exit = Button::new(
         0, 0,
         btsize, 0,
-        "Exit",
+        "↩ Exit",
     );
     exit.set_color(resources.exit_bg_color);
     exit.set_label_color(resources.exit_fg_color);
@@ -107,7 +107,7 @@ fn create_halt_button(resources: &Resources, btsize: i32) -> io::Result<Button> 
     let mut halt = Button::new(
         0, 0,
         btsize, 0,
-        "Halt",
+        "⏻ Halt",
     );
     halt.set_color(resources.halt_bg_color);
     halt.set_label_color(resources.halt_fg_color);
@@ -123,7 +123,7 @@ fn create_reboot_button(resources: &Resources, btsize: i32) -> io::Result<Button
     let mut reboot = Button::new(
         0, 0,
         btsize, 0,
-        "Reboot",
+        "⏼ Reboot",
     );
     reboot.set_color(resources.reboot_bg_color);
     reboot.set_label_color(resources.reboot_fg_color);
@@ -139,7 +139,7 @@ fn create_cancel_button<C: FnMut(&mut Button) + 'static>(resources: &Resources, 
     let mut cancel = Button::new(
         0, 0,
         btsize, 0,
-        "Cancel",
+        "⎋ Cancel",
     );
     cancel.set_color(resources.cancel_bg_color);
     cancel.set_label_color(resources.cancel_fg_color);
