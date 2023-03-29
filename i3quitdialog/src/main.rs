@@ -1,18 +1,18 @@
 mod resources;
 mod users;
 
-use std::io;
+// Buttons
+mod cancelbt;
+mod exitbt;
+mod haltbt;
+mod rebootbt;
+
 use fltk::{
     app::{App, screen_size},
-    button::Button,
     group,
     frame::Frame,
     prelude::*,
     window::Window,
-};
-use i3_ipc::{
-    Connect,
-    I3,
 };
 
 use crate::resources::Resources;
@@ -57,8 +57,8 @@ fn main() {
             win.width(), 30,
             "",
         );
-        create_halt_button(&resources, btsize).unwrap();
-        create_reboot_button(&resources, btsize).unwrap();
+        haltbt::create(&resources, btsize).unwrap();
+        rebootbt::create(&resources, btsize).unwrap();
         hpack1.end();
         hpack1.set_type(group::PackType::Horizontal);
         y += hpack1.height();
@@ -70,8 +70,8 @@ fn main() {
         "",
     );
 
-    let mut exit = create_exit_button(&resources, btsize).unwrap();
-    create_cancel_button(&resources, btsize, move |_| app.quit()).unwrap();
+    let mut exit = exitbt::create(&resources, btsize).unwrap();
+    cancelbt::create(&resources, btsize, move |_| app.quit()).unwrap();
 
     hpack2.end();
     hpack2.set_type(group::PackType::Horizontal);
@@ -83,65 +83,4 @@ fn main() {
 
     exit.take_focus().unwrap();
     app.run().unwrap();
-}
-
-
-fn create_exit_button(resources: &Resources, btsize: i32) -> io::Result<Button> {
-    let mut exit = Button::new(
-        0, 0,
-        btsize, 0,
-        "↩ Exit",
-    );
-    exit.set_color(resources.exit_bg_color);
-    exit.set_label_color(resources.exit_fg_color);
-    exit.set_callback(move |_| {
-        let mut i3 = I3::connect().unwrap();
-        i3.run_command("exit").unwrap();
-    });
-    Ok(exit)
-}
-
-
-fn create_halt_button(resources: &Resources, btsize: i32) -> io::Result<Button> {
-    let mut halt = Button::new(
-        0, 0,
-        btsize, 0,
-        "⏻ Halt",
-    );
-    halt.set_color(resources.halt_bg_color);
-    halt.set_label_color(resources.halt_fg_color);
-    halt.set_callback(move |_| {
-        let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id halt -p").unwrap();
-    });
-    Ok(halt)
-}
-
-
-fn create_reboot_button(resources: &Resources, btsize: i32) -> io::Result<Button> {
-    let mut reboot = Button::new(
-        0, 0,
-        btsize, 0,
-        "⏼ Reboot",
-    );
-    reboot.set_color(resources.reboot_bg_color);
-    reboot.set_label_color(resources.reboot_fg_color);
-    reboot.set_callback(move |_| {
-        let mut i3 = I3::connect().unwrap();
-        i3.run_command("exec --no-startup-id reboot").unwrap();
-    });
-    Ok(reboot)
-}
-
-
-fn create_cancel_button<C: FnMut(&mut Button) + 'static>(resources: &Resources, btsize: i32, cb: C) -> io::Result<Button> {
-    let mut cancel = Button::new(
-        0, 0,
-        btsize, 0,
-        "⎋ Cancel",
-    );
-    cancel.set_color(resources.cancel_bg_color);
-    cancel.set_label_color(resources.cancel_fg_color);
-    cancel.set_callback(cb);
-    Ok(cancel)
 }
