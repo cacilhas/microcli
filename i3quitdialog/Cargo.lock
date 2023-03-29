@@ -94,7 +94,7 @@ dependencies = [
 
 [[package]]
 name = "i3quitdialog"
-version = "0.1.10"
+version = "0.1.11"
 dependencies = [
  "fltk",
  "i3_ipc",
