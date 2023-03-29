@@ -11,5 +11,7 @@ cargo install gitbranch
 ## Use
 
 ```sh
-gitbranch <directory>
+gitbranch [<directory>]
 ```
+
+Directory defaults to current working directory.
