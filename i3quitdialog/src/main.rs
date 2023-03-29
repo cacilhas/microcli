@@ -1,4 +1,5 @@
 mod resources;
+mod users;
 
 use std::io;
 use fltk::{
@@ -13,12 +14,9 @@ use i3_ipc::{
     Connect,
     I3,
 };
-use users::{
-    UsersCache,
-    Users,
-};
 
 use crate::resources::Resources;
+use crate::users::User;
 
 
 #[cfg(any(
@@ -51,8 +49,9 @@ fn main() {
     title.set_label_size(24);
     let btsize = win.width() / 2;
     let mut y = title.height();
+    let user = User::default();
 
-    if is_power_user() {
+    if user.is_power_user() {
         let mut hpack1 = group::Pack::new(
             0, y,
             win.width(), 30,
@@ -145,19 +144,4 @@ fn create_cancel_button<C: FnMut(&mut Button) + 'static>(resources: &Resources, 
     cancel.set_label_color(resources.cancel_fg_color);
     cancel.set_callback(cb);
     Ok(cancel)
-}
-
-
-fn is_power_user() -> bool {
-    let cache = UsersCache::new();
-    let uid = cache.get_current_uid();
-    let user = match cache.get_user_by_uid(uid) {
-        Some(user) => user,
-        None => return false,
-    };
-
-    match user.groups() {
-        Some(groups) => groups.iter().any(|group| group.name() == "power"),
-        None => false,
-    }
 }
