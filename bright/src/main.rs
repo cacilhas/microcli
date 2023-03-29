@@ -1,7 +1,7 @@
 mod operation;
+mod paramerror;
 
 use std::{
-    error,
     env,
     fs,
 };
@@ -10,17 +10,25 @@ use operation::Operation;
 
 
 #[cfg(target_os = "linux")]
-fn main() -> Result<(), Box<dyn error::Error>> {
+fn main() {
     let args: Vec<String> = env::args().collect();
-    let operation = Operation::from_args(&args)?;
-    let paths = fs::read_dir("/sys/class/backlight")?;
+    let operation = match Operation::from_args(&args) {
+        Ok(operation) => operation,
+        Err(err) => panic!("{err}"),
+    };
+    let paths = match fs::read_dir("/sys/class/backlight") {
+        Ok(path) => path,
+        Err(err) => panic!("{err}"),
+    };
 
     for path in paths {
         match path {
-            Ok(entry) => operation.apply(&entry.path().display())?,
+            Ok(entry) =>
+                match operation.apply(&entry.path().display()) {
+                    Ok(value) => println!("{value}"),
+                    Err(err) => eprintln!("{err}"),
+                },
             Err(_) => {},
         };
     };
-
-    Ok(())
 }

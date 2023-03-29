@@ -1,9 +1,10 @@
 use std::{
     error,
-    fmt,
     fs,
     path::{Display, Path},
 };
+
+use crate::paramerror::ParamError;
 
 
 #[derive(Debug, Default, PartialEq)]
@@ -27,7 +28,7 @@ impl Operation {
         }
     }
 
-    pub fn apply(&self, backlight: &Display) -> Result<(), Box<dyn error::Error>> {
+    pub fn apply(&self, backlight: &Display) -> Result<i16, Box<dyn error::Error>> {
         let dir = backlight.to_string();
 
         let file = Path::new(&dir).join("brightness");
@@ -39,33 +40,31 @@ impl Operation {
 
         let step = max / 10;
 
-        match self {
-            Operation::SHOW => println!("{current}"),
+        let res = match self {
+            Operation::SHOW => current,
 
             Operation::INC => {
                 let desired = *vec![current + step, max]
                     .iter()
                     .min()
-                    .unwrap()
-                    as u8;
+                    .unwrap();
                 let raw = format!("{desired}\n");
                 fs::write(&file, raw)?;
-                println!("{desired}");
+                desired
             },
 
             Operation::DEC => {
                 let desired = *vec![current - step, 0_i16]
                     .iter()
                     .max()
-                    .unwrap()
-                    as u8;
+                    .unwrap();
                 let raw = format!("{desired}\n");
                 fs::write(&file, raw)?;
-                println!("{desired}");
+                desired
             },
         };
 
-        Ok(())
+        Ok(res)
     }
 }
 
@@ -77,21 +76,3 @@ fn file_to_int(file: &Path) -> FileToIntResult {
     let res = content.trim().parse::<u16>()?; // avoid negative numbers
     Ok(res as i16)
 }
-
-
-#[derive(Debug, PartialEq)]
-pub enum ParamError {
-    InvalidParameter(String),
-    TooManyArgs,
-}
-
-impl fmt::Display for ParamError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            ParamError::InvalidParameter(name) => write!(f, "invalid parameter {}", name),
-            ParamError::TooManyArgs => write!(f, "too many parameters"),
-        }
-    }
-}
-
-impl error::Error for ParamError {}
