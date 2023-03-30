@@ -15,7 +15,7 @@ pub struct User(Arc<users::User>);
 
 impl User {
     pub fn is_power_user(&self) -> bool {
-        match self.0.groups() {
+        match self.groups() {
             Some(groups) =>
                 groups
                     .iter()
