@@ -28,7 +28,7 @@ fn main() {
                     Ok(value) => println!("{value}"),
                     Err(err) => eprintln!("{err}"),
                 },
-            Err(_) => {},
+            Err(_) => continue,
         };
     };
 }
