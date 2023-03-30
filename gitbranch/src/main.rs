@@ -25,10 +25,10 @@ fn print_branch(p: &Path) {
             match repo.head() {
                 Ok(head) =>
                     match head.shorthand() {
-                        Some(branch) => println!("{}", branch),
-                        None               => println!("no branch found"),
+                        Some(branch) => println!("{branch}"),
+                        None               => eprintln!("no branch found"),
                     },
-                Err(_) => println!("no head"),
+                Err(_) => eprintln!("no head"),
             },
         Err(_) => {
             match p.parent() {
