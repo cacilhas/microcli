@@ -20,7 +20,7 @@ use ParamError::*;
 fn main() -> Result<(), Box<dyn error::Error>> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        ParamError::throw(WrongBlock)?;
+        WrongBlock.throw()?;
     }
     let file: &String = &args[1];
     let command: &String = &args[2];
@@ -68,7 +68,7 @@ impl error::Error for ParamError {
 }
 
 impl ParamError {
-    fn throw(err: ParamError) -> Result<(), ParamError> {
-        Err(err)
+    fn throw(self) -> Result<(), ParamError> {
+        Err(self)
     }
 }
