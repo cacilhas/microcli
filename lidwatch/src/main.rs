@@ -29,7 +29,9 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     let mut state = 0_i32;
 
     loop {
-        let events = _device.fetch_events()?.filter(|event| event.kind() == InputEventKind::Switch(SwitchType::SW_LID));
+        let events = _device
+            .fetch_events()?
+            .filter(|event| event.kind() == InputEventKind::Switch(SwitchType::SW_LID));
         for event in events {
             let value = event.value();
             if value == 1 && state == 0 {
@@ -38,7 +40,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                     cmd.arg(param);
                 }
                 match cmd.spawn() {
-                    Ok(_)  => (),
+                    Ok(_)  => continue,
                     Err(err) => eprintln!("{:#?}", err),
                 }
             } else {
