@@ -26,7 +26,7 @@ fn print_branch(p: &Path) {
                 Ok(head) =>
                     match head.shorthand() {
                         Some(branch) => println!("{branch}"),
-                        None               => eprintln!("no branch found"),
+                        None => eprintln!("no branch found"),
                     },
                 Err(_) => eprintln!("no head"),
             },

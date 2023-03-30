@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                 }
                 match cmd.spawn() {
                     Ok(_)  => continue,
-                    Err(err) => eprintln!("{:#?}", err),
+                    Err(err) => eprintln!("{err:#?}"),
                 }
             } else {
                 state = value;

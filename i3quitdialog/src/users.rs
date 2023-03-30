@@ -30,10 +30,7 @@ impl Default for User {
     fn default() -> Self {
         let cache = users::UsersCache::new();
         let uid = cache.get_current_uid();
-        let user = match cache.get_user_by_uid(uid) {
-            Some(user) => user,
-            None => panic!("current user not found"),
-        };
+        let user = cache.get_user_by_uid(uid).unwrap();
         User { 0: user }
     }
 }
