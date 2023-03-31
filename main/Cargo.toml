@@ -1,0 +1,16 @@
+[package]
+name        = "microcli"
+version     = "0.1.4"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
+license     = "BSD-3-Clause"
+readme      = "../README.md"
+homepage    = "https://github.com/cacilhas/microcli"
+repository  = "https://github.com/cacilhas/microcli"
+keywords    = ["cli", "linux"]
+category    = "command-line-utilities"
+description = "Bunch of random unrelated CLI tools."
+edition     = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

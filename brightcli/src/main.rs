@@ -12,14 +12,8 @@ use operation::Operation;
 #[cfg(target_os = "linux")]
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let operation = match Operation::from_args(&args) {
-        Ok(operation) => operation,
-        Err(err) => panic!("{err}"),
-    };
-    let paths = match fs::read_dir("/sys/class/backlight") {
-        Ok(path) => path,
-        Err(err) => panic!("{err}"),
-    };
+    let operation = Operation::from_args(&args).unwrap();
+    let paths = fs::read_dir("/sys/class/backlight").unwrap();
 
     for path in paths {
         match path {
@@ -28,7 +22,7 @@ fn main() {
                     Ok(value) => println!("{value}"),
                     Err(err) => eprintln!("{err}"),
                 },
-            Err(_) => {},
+            Err(_) => continue,
         };
     };
 }

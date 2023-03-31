@@ -20,7 +20,7 @@ use ParamError::*;
 fn main() -> Result<(), Box<dyn error::Error>> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
-        ParamError::throw(WrongBlock)?;
+        WrongBlock.throw()?;
     }
     let file: &String = &args[1];
     let command: &String = &args[2];
@@ -29,7 +29,9 @@ fn main() -> Result<(), Box<dyn error::Error>> {
     let mut state = 0_i32;
 
     loop {
-        let events = _device.fetch_events()?.filter(|event| event.kind() == InputEventKind::Switch(SwitchType::SW_LID));
+        let events = _device
+            .fetch_events()?
+            .filter(|event| event.kind() == InputEventKind::Switch(SwitchType::SW_LID));
         for event in events {
             let value = event.value();
             if value == 1 && state == 0 {
@@ -38,8 +40,8 @@ fn main() -> Result<(), Box<dyn error::Error>> {
                     cmd.arg(param);
                 }
                 match cmd.spawn() {
-                    Ok(_)  => (),
-                    Err(err) => eprintln!("{:#?}", err),
+                    Ok(_)  => continue,
+                    Err(err) => eprintln!("{err:#?}"),
                 }
             } else {
                 state = value;
@@ -66,7 +68,7 @@ impl error::Error for ParamError {
 }
 
 impl ParamError {
-    fn throw(err: ParamError) -> Result<(), ParamError> {
-        Err(err)
+    fn throw(self) -> Result<(), ParamError> {
+        Err(self)
     }
 }
