@@ -1,0 +1,8 @@
+[workspace]
+
+members = [
+    "brightcli",
+    "gitbranch",
+    "i3quitdialog",
+    "lidwatch",
+]

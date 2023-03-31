@@ -1,8 +1,8 @@
 [BrightCLI]: https://crates.io/crates/brightcli
 [CLI]: https://en.wikipedia.org/wiki/Command-line_interface
-[gitbranch]: https://crates.io/crates/gitbranch
-[i3quitdialog]: https://crates.io/crates/i3quitdialog
-[lidwatch]: https://crates.io/crates/lidwatch
+[GitBranch]: https://crates.io/crates/gitbranch
+[I3QuitDialog]: https://crates.io/crates/i3quitdialog
+[LidWatch]: https://crates.io/crates/lidwatch
 [Upt]: https://crates.io/crates/upt
 
 # MicroCLI
@@ -12,9 +12,9 @@ Bunch of random unrelated [CLI][] tools.
 ## Tools
 
 - [BrightCLI][]
-- [`gitbranch`][gitbranch]
-- [`i3quitdialog`][i3quitdialog]
-- [`lidwatch`][lidwatch]
+- [GitBranch][]
+- [I3QuitDialog][]
+- [LidWatch][lidwatch]
 - [Nubrew](nubrew/README.md) (suggestion: use [Upt][] instead)
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)
