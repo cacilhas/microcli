@@ -1,6 +1,7 @@
 *~
 *.bak
 *.c
+*.code-workspace
 *.h
 *.o
 *.swo
