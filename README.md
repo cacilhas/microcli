@@ -15,9 +15,10 @@ Bunch of random unrelated [CLI][] tools.
 - [GitBranch][]
 - [I3QuitDialog][]
 - [LidWatch][lidwatch]
-- [Nubrew](nubrew/README.md) (suggestion: use [Upt][] instead)
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)
+
+Note: I gave Nubrew up in favour of [Upt][].
 
 -----
 
