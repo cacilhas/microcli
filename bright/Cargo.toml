@@ -14,8 +14,10 @@ edition     = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [profile.release]
-opt-level = "s"
+opt-level     = "s"
+codegen-units = 1
 debug = false
+lto   = true
 rpath = false
 strip = true
 
