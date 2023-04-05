@@ -1,6 +1,6 @@
 [package]
 name        = "brightcli"
-version     = "0.1.5"
+version     = "0.1.6"
 authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -10,15 +10,5 @@ keywords    = ["cli", "brightness", "linux"]
 category    = "command-line-utilities"
 description = "Util to change monitor brightness."
 edition     = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[profile.release]
-opt-level     = "s"
-codegen-units = 1
-debug = false
-lto   = true
-rpath = false
-strip = true
 
 [dependencies]

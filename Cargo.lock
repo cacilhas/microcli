@@ -28,7 +28,7 @@ dependencies = [
 
 [[package]]
 name = "brightcli"
-version = "0.1.5"
+version = "0.1.6"
 
 [[package]]
 name = "cc"
@@ -140,7 +140,7 @@ dependencies = [
 
 [[package]]
 name = "gitbranch"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "git2",
 ]
@@ -169,7 +169,7 @@ dependencies = [
 
 [[package]]
 name = "i3quitdialog"
-version = "0.1.12"
+version = "0.1.13"
 dependencies = [
  "fltk",
  "i3_ipc",
@@ -249,7 +249,7 @@ dependencies = [
 
 [[package]]
 name = "lidwatch"
-version = "0.1.4"
+version = "0.1.5"
 dependencies = [
  "evdev",
 ]
@@ -274,7 +274,7 @@ dependencies = [
 
 [[package]]
 name = "microcli"
-version = "0.1.4"
+version = "0.1.6"
 
 [[package]]
 name = "nix"

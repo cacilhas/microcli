@@ -1,6 +1,6 @@
 [package]
 name        = "i3quitdialog"
-version     = "0.1.12"
+version     = "0.1.13"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -10,16 +10,6 @@ keywords    = ["gui", "i3wm", "linux"]
 category    = "gui"
 description = "A simple quit dialog for i3wm."
 edition     = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[profile.release]
-opt-level     = "s"
-codegen-units = 1
-debug = false
-lto   = true
-rpath = false
-strip = true
 
 [dependencies]
 fltk = "^1.3"

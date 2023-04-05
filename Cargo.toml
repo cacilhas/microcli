@@ -7,3 +7,11 @@ members = [
     "i3quitdialog",
     "lidwatch",
 ]
+
+[profile.release]
+opt-level     = "s"
+codegen-units = 1
+debug = false
+lto   = true
+rpath = false
+strip = true
