@@ -22,7 +22,7 @@ use eframe::egui;
 ))]
 fn main() {
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(340.0, 75.0)),
+        initial_window_size: Some(egui::vec2(248.0, 84.0)),
         resizable: false,
         run_and_return: false,
         ..Default::default()
@@ -59,6 +59,8 @@ impl App {
 impl eframe::App for App {
 
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        frame.set_centered();
+        frame.set_always_on_top(true);
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Do you really want to exit i3?");
 

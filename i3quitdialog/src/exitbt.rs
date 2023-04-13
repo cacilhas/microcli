@@ -14,6 +14,7 @@ use crate::resources::Resources;
 pub fn create(resources: &Resources, ui: &mut egui::Ui) {
     let exit = Button::new("↩ Exit")
         .fill(resources.exit_bg_color)
+        .min_size(eframe::epaint::Vec2 { x: 112.0, y: 24.0 })
         .stroke(Stroke::new(0.0, resources.exit_fg_color));
 
     if ui.add(exit).clicked() {

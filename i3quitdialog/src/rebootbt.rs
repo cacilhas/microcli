@@ -14,6 +14,7 @@ use crate::resources::Resources;
 pub fn create(resources: &Resources, ui: &mut egui::Ui) {
     let reboot = Button::new("⏼ Reboot")
         .fill(resources.reboot_bg_color)
+        .min_size(eframe::epaint::Vec2 { x: 112.0, y: 24.0 })
         .stroke(Stroke::new(0.0, resources.reboot_fg_color));
 
     if ui.add(reboot).clicked() {
