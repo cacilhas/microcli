@@ -77,18 +77,23 @@ impl App {
         cc.egui_ctx.set_fonts(fonts);
     }
 
-    fn escape_pressed(ctx: &egui::Context) -> bool {
+    fn pressed_keys(ctx: &egui::Context) -> PressedKeys {
+        let mut escape = false;
+        let mut enter = false;
         let events = ctx.input(|input| input.events.to_owned());
         for event in events.iter() {
             match event {
                 #[allow(unused_variables)]
                 egui::Event::Key { key, pressed, repeat, modifiers }
-                    if *key == egui::Key::Escape => return *pressed,
+                    if *key == egui::Key::Escape => escape = *pressed,
+                #[allow(unused_variables)]
+                egui::Event::Key { key, pressed, repeat, modifiers }
+                    if *key == egui::Key::Enter => enter = *pressed,
                 _ => ()
             };
         }
 
-        false
+        PressedKeys { enter, escape }
     }
 }
 
@@ -97,13 +102,15 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         frame.set_centered();
         frame.set_always_on_top(true);
+        let keys = App::pressed_keys(ctx);
+        if keys.escape {
+            return frame.close();
+        }
+
 
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Do you really want to exit i3?");
 
-            if App::escape_pressed(ctx) {
-                return frame.close();
-            }
 
             if self.user.is_power_user() {
                 ui.horizontal(|ui| {
@@ -113,11 +120,17 @@ impl eframe::App for App {
             }
 
             ui.horizontal(|ui| {
-                exitbt::create(&self.resources, ui);
+                exitbt::create(&self.resources, ui, keys.enter);
                 cancelbt::create(&self.resources, ui, frame);
             });
         });
     }
+}
+
+
+struct PressedKeys {
+    enter: bool,
+    escape: bool,
 }
 
 
