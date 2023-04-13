@@ -1,3 +1,7 @@
+#![allow(non_camel_case_types)]
+
+#[macro_use] extern crate static_init;
+
 mod resources;
 mod users;
 
@@ -49,38 +53,64 @@ struct App {
     user: User,
 }
 
-
 impl App {
 
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let app = Self::default();
-        let mut visuals = egui::Visuals::default();
-        visuals.override_text_color = Some(app.resources.foreground);
-        visuals.window_fill = app.resources.background;
+        app.init(cc);
+        app
+    }
+
+    fn init(&self, cc: &eframe::CreationContext<'_>) {
+        let visuals = egui::Visuals {
+            override_text_color: Some(self.resources.foreground),
+            panel_fill: self.resources.background,
+            ..Default::default()
+        };
         cc.egui_ctx.set_visuals(visuals);
 
-        let font = include_bytes!("assets/bellota.ttf");
-        let font = FontData::from_static(font);
         let mut fonts = FontDefinitions::default();
-
-        fonts.font_data.insert("bellota".to_owned(), font);
+        fonts.font_data.insert("bellota".to_owned(), BELLOTA.to_owned());
         fonts.families
             .get_mut(&FontFamily::Proportional).unwrap()
             .insert(0, "bellota".to_owned());
         cc.egui_ctx.set_fonts(fonts);
+    }
 
-        app
+    fn pressed_keys(ctx: &egui::Context) -> PressedKeys {
+        let mut escape = false;
+        let mut enter = false;
+        let events = ctx.input(|input| input.events.to_owned());
+        for event in events.iter() {
+            match event {
+                #[allow(unused_variables)]
+                egui::Event::Key { key, pressed, repeat, modifiers }
+                    if *key == egui::Key::Escape => escape = *pressed,
+                #[allow(unused_variables)]
+                egui::Event::Key { key, pressed, repeat, modifiers }
+                    if *key == egui::Key::Enter => enter = *pressed,
+                _ => ()
+            };
+        }
+
+        PressedKeys { enter, escape }
     }
 }
-
 
 impl eframe::App for App {
 
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         frame.set_centered();
         frame.set_always_on_top(true);
+        let keys = App::pressed_keys(ctx);
+        if keys.escape {
+            return frame.close();
+        }
+
+
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Do you really want to exit i3?");
+
 
             if self.user.is_power_user() {
                 ui.horizontal(|ui| {
@@ -90,9 +120,22 @@ impl eframe::App for App {
             }
 
             ui.horizontal(|ui| {
-                exitbt::create(&self.resources, ui);
+                exitbt::create(&self.resources, ui, frame, keys.enter);
                 cancelbt::create(&self.resources, ui, frame);
             });
         });
     }
 }
+
+
+struct PressedKeys {
+    enter: bool,
+    escape: bool,
+}
+
+
+#[dynamic]
+static BELLOTA: FontData = {
+    let font = include_bytes!("assets/bellota.ttf");
+    FontData::from_static(font)
+};
