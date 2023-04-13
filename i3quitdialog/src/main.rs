@@ -54,9 +54,16 @@ impl App {
 
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
         let app = Self::default();
-        let mut visuals = egui::Visuals::default();
-        visuals.override_text_color = Some(app.resources.foreground);
-        visuals.window_fill = app.resources.background;
+        app.init(cc);
+        app
+    }
+
+    fn init(&self, cc: &eframe::CreationContext<'_>) {
+        let visuals = egui::Visuals {
+            override_text_color: Some(self.resources.foreground),
+            window_fill: self.resources.background,
+            ..Default::default()
+        };
         cc.egui_ctx.set_visuals(visuals);
 
         let font = include_bytes!("assets/bellota.ttf");
@@ -68,8 +75,6 @@ impl App {
             .get_mut(&FontFamily::Proportional).unwrap()
             .insert(0, "bellota".to_owned());
         cc.egui_ctx.set_fonts(fonts);
-
-        app
     }
 }
 
