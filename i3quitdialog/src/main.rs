@@ -76,6 +76,20 @@ impl App {
             .insert(0, "bellota".to_owned());
         cc.egui_ctx.set_fonts(fonts);
     }
+
+    fn escape_pressed(ctx: &egui::Context) -> bool {
+        let events = ctx.input(|input| input.events.to_owned());
+        for event in events.iter() {
+            match event {
+                #[allow(unused_variables)]
+                egui::Event::Key { key, pressed, repeat, modifiers }
+                    if *key == egui::Key::Escape => return *pressed,
+                _ => ()
+            };
+        }
+
+        false
+    }
 }
 
 impl eframe::App for App {
@@ -83,8 +97,13 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         frame.set_centered();
         frame.set_always_on_top(true);
+
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Do you really want to exit i3?");
+
+            if App::escape_pressed(ctx) {
+                return frame.close();
+            }
 
             if self.user.is_power_user() {
                 ui.horizontal(|ui| {
