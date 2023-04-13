@@ -53,7 +53,6 @@ struct App {
     user: User,
 }
 
-
 impl App {
 
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
@@ -65,7 +64,7 @@ impl App {
     fn init(&self, cc: &eframe::CreationContext<'_>) {
         let visuals = egui::Visuals {
             override_text_color: Some(self.resources.foreground),
-            window_fill: self.resources.background,
+            panel_fill: self.resources.background,
             ..Default::default()
         };
         cc.egui_ctx.set_visuals(visuals);
@@ -78,7 +77,6 @@ impl App {
         cc.egui_ctx.set_fonts(fonts);
     }
 }
-
 
 impl eframe::App for App {
 
