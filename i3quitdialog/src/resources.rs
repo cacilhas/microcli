@@ -1,5 +1,5 @@
 use std::process;
-use fltk::enums::Color;
+use eframe::egui::Color32 as Color;
 
 
 const APP_NAME: &'static str = "i3quitdialog";
@@ -23,16 +23,16 @@ pub struct Resources {
 impl Default for Resources {
     fn default() -> Self {
         let mut res = Self {
-            background: Color::Dark3,
-            foreground: Color::White,
-            exit_fg_color: Color::White,
-            exit_bg_color: Color::DarkYellow,
-            cancel_fg_color: Color::Cyan,
-            cancel_bg_color: Color::DarkGreen,
-            halt_fg_color: Color::Yellow,
-            halt_bg_color: Color::DarkRed,
-            reboot_fg_color: Color::Magenta,
-            reboot_bg_color: Color::DarkMagenta,
+            background: Color::DARK_GRAY,
+            foreground: Color::WHITE,
+            exit_fg_color: Color::WHITE,
+            exit_bg_color: Color::GOLD,
+            cancel_fg_color: Color::from_rgb(0, 0xff, 0xff), // Cyan
+            cancel_bg_color: Color::DARK_GREEN,
+            halt_fg_color: Color::YELLOW,
+            halt_bg_color: Color::DARK_RED,
+            reboot_fg_color: Color::from_rgb(0xff, 0, 0xff), // Magenta
+            reboot_bg_color: Color::from_rgb(0x60, 0, 0x60), // DarkMagenta
         };
         set_resources(&mut res);
         res
@@ -104,44 +104,59 @@ fn get_color_parameter(parameter: &str) -> Option<Color> {
     let res = res.trim();
 
     if res.starts_with("#") {
-        match Color::from_hex_str(res) {
-            Ok(color) => return Some(color),
-            Err(_) => return None,
+        let res = &res[1..];
+        return match res.len() {
+            3 => {
+                let r = format!("{}{}", &res[0..1], &res[0..1]);
+                let g = format!("{}{}", &res[1..2], &res[1..2]);
+                let b = format!("{}{}", &res[2..3], &res[2..3]);
+                let r = match hex::decode(r) {
+                    Ok(r) => r[0],
+                    Err(_) => return None,
+                };
+                let g = match hex::decode(g) {
+                    Ok(g) => g[0],
+                    Err(_) => return None,
+                };
+                let b = match hex::decode(b) {
+                    Ok(b) => b[0],
+                    Err(_) => return None,
+                };
+                Some(Color::from_rgb(r, g, b))
+            },
+
+            6 => match hex::decode(res) {
+                    Ok(res) => Some(Color::from_rgb(res[0], res[1], res[2])),
+                    Err(_) => None,
+                },
+
+            _ => None,
         }
     }
 
     match res.to_lowercase().as_str() {
-        "dark3" => Some(Color::Dark3),
-        "dark2" => Some(Color::Dark2),
-        "dark1" => Some(Color::Dark1),
-        "light1" => Some(Color::Light1),
-        "light2" => Some(Color::Light2),
-        "light3" => Some(Color::Light3),
-        "black" => Some(Color::Black),
-        "red" => Some(Color::Red),
-        "green" => Some(Color::Green),
-        "yellow" => Some(Color::Yellow),
-        "blue" => Some(Color::Blue),
-        "magenta" => Some(Color::Magenta),
-        "cyan" => Some(Color::Cyan),
-        "darkred" => Some(Color::DarkRed),
-        "darkgreen" => Some(Color::DarkGreen),
-        "darkyellow" => Some(Color::DarkYellow),
-        "darkblue" => Some(Color::DarkBlue),
-        "darkmagenta" => Some(Color::DarkMagenta),
-        "darkcyan" => Some(Color::DarkCyan),
-        "white" => Some(Color::White),
+        "black"       => Some(Color::BLACK),
+        "red"         => Some(Color::RED),
+        "green"       => Some(Color::GREEN),
+        "yellow"      => Some(Color::YELLOW),
+        "blue"        => Some(Color::BLUE),
+        "magenta"     => Some(Color::from_rgb(0xff, 0, 0xff)),
+        "cyan"        => Some(Color::from_rgb(0, 0xff, 0xff)),
+        "darkred"     => Some(Color::DARK_RED),
+        "darkgreen"   => Some(Color::DARK_GREEN),
+        "darkyellow"  => Some(Color::GOLD),
+        "darkblue"    => Some(Color::DARK_BLUE),
+        "darkmagenta" => Some(Color::from_rgb(0x60, 0, 0x60)),
+        "darkcyan"    => Some(Color::from_rgb(0, 0x60, 0x60)),
+        "white"       => Some(Color::WHITE),
 
-        color => match color.parse::<u8>() {
-            Ok(color) => Some(Color::by_index(color)),
-            Err(_) => None,
-        },
+        _ => None,
     }
 }
 
 
 fn contrast(color: &Color) -> Color {
-    let (mut r, mut  g, mut b) = color.to_rgb();
+    let (mut r, mut g, mut b, _) = color.to_tuple();
     if is_bright(color) {
         r /= 2;
         g /= 2;
@@ -156,6 +171,5 @@ fn contrast(color: &Color) -> Color {
 
 
 fn is_bright(color: &Color) -> bool {
-    let (r, g, b) = color.to_rgb();
-    vec![r, g, b].iter().fold(0_u8, |acc, &v| acc.max(v)) >= 0xa0
+    color.to_array().iter().take(3).fold(0_u8, |acc, &v| acc.max(v)) >= 0xa0
 }

@@ -1,24 +1,19 @@
-use std::io;
-
-use fltk::{
-    button::Button,
-    prelude::*,
+use eframe::{
+    egui,
+    egui::widgets::Button,
+    epaint::Stroke,
 };
 
 use crate::resources::Resources;
 
 
-pub fn create<C>(resources: &Resources, btsize: i32, cb: C) -> io::Result<Button>
-where
-    C: FnMut(&mut Button) + 'static,
-{
-    let mut cancel = Button::new(
-        0, 0,
-        btsize, 0,
-        "⎋ Cancel",
-    );
-    cancel.set_color(resources.cancel_bg_color);
-    cancel.set_label_color(resources.cancel_fg_color);
-    cancel.set_callback(cb);
-    Ok(cancel)
+pub fn create(resources: &Resources, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
+    let cancel = Button::new("⎋ Cancel")
+        .fill(resources.cancel_bg_color)
+        .stroke(Stroke::new(0.0, resources.cancel_fg_color));
+
+    if ui.add(cancel).clicked() {
+        frame.close();
+    }
 }
+
