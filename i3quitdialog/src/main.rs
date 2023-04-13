@@ -7,16 +7,17 @@ mod exitbt;
 mod haltbt;
 mod rebootbt;
 
-use fltk::{
-    app::{App, screen_size},
-    group,
-    frame::Frame,
-    prelude::*,
-    window::Window,
-};
-
 use crate::resources::Resources;
 use crate::users::User;
+
+use eframe::{
+    egui,
+    egui::{
+        FontData,
+        FontDefinitions,
+    },
+    epaint::FontFamily,
+};
 
 
 #[cfg(any(
@@ -27,60 +28,71 @@ use crate::users::User;
     target_os = "openbsd",
 ))]
 fn main() {
-    let winsize = (340, 75);
-    let (width, height) = screen_size();
-    let winx = ((width as i32)-winsize.0) / 2;
-    let winy = ((height as i32)-winsize.1) / 2;
-    let resources = Resources::default();
+    let options = eframe::NativeOptions {
+        initial_window_size: Some(egui::vec2(268.0, 96.0)),
+        resizable: false,
+        run_and_return: false,
+        ..Default::default()
+    };
 
-    let app = App::default();
-    let mut win = Window::new(
-        winx, winy,
-        winsize.0, winsize.1,
-        "i3 Quit Dialog",
-    );
-    win.set_color(resources.background);
-    let mut title = Frame::new(
-        0, 0,
-        win.width(), 30,
-        "Do you really want to exit i3?",
-    );
-    title.set_label_color(resources.foreground);
-    title.set_label_size(24);
-    let btsize = win.width() / 2;
-    let mut y = title.height();
-    let user = User::default();
+    eframe::run_native(
+        "i3 Dialog Quit",
+        options,
+        Box::new(|cc| Box::new(App::new(cc))),
+    ).unwrap();
+}
 
-    if user.is_power_user() {
-        let mut hpack1 = group::Pack::new(
-            0, y,
-            win.width(), 30,
-            "",
-        );
-        haltbt::create(&resources, btsize).unwrap();
-        rebootbt::create(&resources, btsize).unwrap();
-        hpack1.end();
-        hpack1.set_type(group::PackType::Horizontal);
-        y += hpack1.height();
+
+#[derive(Default)]
+struct App {
+    resources: Resources,
+    user: User,
+}
+
+
+impl App {
+
+    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        let app = Self::default();
+        let mut visuals = egui::Visuals::default();
+        visuals.override_text_color = Some(app.resources.foreground);
+        visuals.window_fill = app.resources.background;
+        cc.egui_ctx.set_visuals(visuals);
+
+        let font = include_bytes!("assets/bellota.ttf");
+        let font = FontData::from_static(font);
+        let mut fonts = FontDefinitions::default();
+
+        fonts.font_data.insert("bellota".to_owned(), font);
+        fonts.families
+            .get_mut(&FontFamily::Proportional).unwrap()
+            .insert(0, "bellota".to_owned());
+        cc.egui_ctx.set_fonts(fonts);
+
+        app
     }
+}
 
-    let mut hpack2 = group::Pack::new(
-        0, y,
-        win.width(), 30,
-        "",
-    );
 
-    let mut exit = exitbt::create(&resources, btsize).unwrap();
-    cancelbt::create(&resources, btsize, move |_| app.quit()).unwrap();
+impl eframe::App for App {
 
-    hpack2.end();
-    hpack2.set_type(group::PackType::Horizontal);
+    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        frame.set_centered();
+        frame.set_always_on_top(true);
+        egui::CentralPanel::default().show(ctx, |ui| {
+            ui.heading("Do you really want to exit i3?");
 
-    win.end();
-    let height = y + hpack2.height();
-    win.set_size(winsize.0, height);
-    win.show();
+            if self.user.is_power_user() {
+                ui.horizontal(|ui| {
+                    haltbt::create(&self.resources, ui);
+                    rebootbt::create(&self.resources, ui);
+                });
+            }
 
-    exit.take_focus().unwrap();
-    app.run().unwrap();
+            ui.horizontal(|ui| {
+                exitbt::create(&self.resources, ui);
+                cancelbt::create(&self.resources, ui, frame);
+            });
+        });
+    }
 }
