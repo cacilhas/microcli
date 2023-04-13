@@ -10,7 +10,14 @@ mod rebootbt;
 use crate::resources::Resources;
 use crate::users::User;
 
-use eframe::egui;
+use eframe::{
+    egui,
+    egui::{
+        FontData,
+        FontDefinitions,
+    },
+    epaint::FontFamily,
+};
 
 
 #[cfg(any(
@@ -22,7 +29,7 @@ use eframe::egui;
 ))]
 fn main() {
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(248.0, 84.0)),
+        initial_window_size: Some(egui::vec2(268.0, 96.0)),
         resizable: false,
         run_and_return: false,
         ..Default::default()
@@ -51,6 +58,17 @@ impl App {
         visuals.override_text_color = Some(app.resources.foreground);
         visuals.window_fill = app.resources.background;
         cc.egui_ctx.set_visuals(visuals);
+
+        let font = include_bytes!("assets/bellota.ttf");
+        let font = FontData::from_static(font);
+        let mut fonts = FontDefinitions::default();
+
+        fonts.font_data.insert("bellota".to_owned(), font);
+        fonts.families
+            .get_mut(&FontFamily::Proportional).unwrap()
+            .insert(0, "bellota".to_owned());
+        cc.egui_ctx.set_fonts(fonts);
+
         app
     }
 }
