@@ -13,7 +13,7 @@ cargo install i3quitdialog
 
 ## Settings
 
-The “`↩ Exit`” button works out of the box. In order to allow users to halt and
+The “`Exit`” button works out of the box. In order to allow users to halt and
 reboot the system, add them to the `power` group.
 
 You can just call it:
@@ -49,25 +49,18 @@ I3 Quit Dialog supports the following keys from `xrdb` (case sensitive):
 Acceptable values:
 
 - Hexadecimal RGB (`#0000ff`)
-- Hexadecimal RGBA (`#0000ffff`)
 - One of the following strings:
     - `Black`
     - `Blue`
-    - `Cyan`
-    - `Dark1`
-    - `Dark2`
-    - `Dark3`
     - `DarkBlue`
+    - `Cyan`
     - `DarkCyan`
-    - `DarkGreen`
-    - `DarkMagenta`
-    - `DarkRed`
-    - `DarkYellow`
     - `Green`
-    - `Light1`
-    - `Light2`
-    - `Light3`
+    - `DarkGreen`
     - `Magenta`
+    - `DarkMagenta`
     - `Red`
+    - `DarkRed`
     - `White`
     - `Yellow`
+    - `DarkYellow`

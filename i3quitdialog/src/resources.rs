@@ -136,19 +136,19 @@ fn get_color_parameter(parameter: &str) -> Option<Color> {
 
     match res.to_lowercase().as_str() {
         "black"       => Some(Color::BLACK),
-        "red"         => Some(Color::RED),
-        "green"       => Some(Color::GREEN),
-        "yellow"      => Some(Color::YELLOW),
         "blue"        => Some(Color::BLUE),
-        "magenta"     => Some(Color::from_rgb(0xff, 0, 0xff)),
-        "cyan"        => Some(Color::from_rgb(0, 0xff, 0xff)),
-        "darkred"     => Some(Color::DARK_RED),
-        "darkgreen"   => Some(Color::DARK_GREEN),
-        "darkyellow"  => Some(Color::GOLD),
         "darkblue"    => Some(Color::DARK_BLUE),
-        "darkmagenta" => Some(Color::from_rgb(0x60, 0, 0x60)),
+        "cyan"        => Some(Color::from_rgb(0, 0xff, 0xff)),
         "darkcyan"    => Some(Color::from_rgb(0, 0x60, 0x60)),
+        "green"       => Some(Color::GREEN),
+        "darkgreen"   => Some(Color::DARK_GREEN),
+        "magenta"     => Some(Color::from_rgb(0xff, 0, 0xff)),
+        "darkmagenta" => Some(Color::from_rgb(0x60, 0, 0x60)),
+        "red"         => Some(Color::RED),
+        "darkred"     => Some(Color::DARK_RED),
         "white"       => Some(Color::WHITE),
+        "yellow"      => Some(Color::YELLOW),
+        "darkyellow"  => Some(Color::GOLD),
 
         _ => None,
     }
