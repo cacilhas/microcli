@@ -10,7 +10,7 @@ use eframe::{
 use crate::resources::Resources;
 
 
-pub fn create(resources: &Resources, ui: &mut egui::Ui, force: bool) {
+pub fn create(resources: &Resources, ui: &mut egui::Ui, frame: &mut eframe::Frame, force: bool) {
     let text: egui::RichText = "Exit".into();
     let exit = Button::new(
         text
@@ -25,6 +25,7 @@ pub fn create(resources: &Resources, ui: &mut egui::Ui, force: bool) {
     if force || ui.add(exit).clicked() {
         let mut i3 = I3::connect().unwrap();
         i3.run_command("exit").unwrap();
+        frame.close();
     }
 }
 

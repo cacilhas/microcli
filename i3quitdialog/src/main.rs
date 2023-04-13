@@ -120,7 +120,7 @@ impl eframe::App for App {
             }
 
             ui.horizontal(|ui| {
-                exitbt::create(&self.resources, ui, keys.enter);
+                exitbt::create(&self.resources, ui, frame, keys.enter);
                 cancelbt::create(&self.resources, ui, frame);
             });
         });
