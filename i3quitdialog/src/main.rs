@@ -1,3 +1,7 @@
+#![allow(non_camel_case_types)]
+
+#[macro_use] extern crate static_init;
+
 mod resources;
 mod users;
 
@@ -66,11 +70,8 @@ impl App {
         };
         cc.egui_ctx.set_visuals(visuals);
 
-        let font = include_bytes!("assets/bellota.ttf");
-        let font = FontData::from_static(font);
         let mut fonts = FontDefinitions::default();
-
-        fonts.font_data.insert("bellota".to_owned(), font);
+        fonts.font_data.insert("bellota".to_owned(), BELLOTA.to_owned());
         fonts.families
             .get_mut(&FontFamily::Proportional).unwrap()
             .insert(0, "bellota".to_owned());
@@ -101,3 +102,10 @@ impl eframe::App for App {
         });
     }
 }
+
+
+#[dynamic]
+static BELLOTA: FontData = {
+    let font = include_bytes!("assets/bellota.ttf");
+    FontData::from_static(font)
+};
