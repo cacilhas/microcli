@@ -70,10 +70,10 @@ impl App {
         cc.egui_ctx.set_visuals(visuals);
 
         let mut fonts = FontDefinitions::default();
-        fonts.font_data.insert("bellota".to_owned(), BELLOTA.to_owned());
+        fonts.font_data.insert("bellota".into(), BELLOTA.to_owned());
         fonts.families
             .get_mut(&FontFamily::Proportional).unwrap()
-            .insert(0, "bellota".to_owned());
+            .insert(0, "bellota".into());
         cc.egui_ctx.set_fonts(fonts);
     }
 
