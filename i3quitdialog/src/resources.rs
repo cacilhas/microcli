@@ -2,7 +2,7 @@ use std::process;
 use eframe::egui::Color32 as Color;
 
 
-const APP_NAME: &'static str = "i3quitdialog";
+const APP_NAME: &str = "i3quitdialog";
 
 
 #[derive(Debug)]
@@ -103,7 +103,7 @@ fn get_color_parameter(parameter: &str) -> Option<Color> {
     };
     let res = res.trim();
 
-    if res.starts_with("#") {
+    if res.starts_with('#') {
         let res = &res[1..];
         return match res.len() {
             3 => {

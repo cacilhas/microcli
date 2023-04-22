@@ -31,7 +31,7 @@ impl Default for User {
         let cache = users::UsersCache::new();
         let uid = cache.get_current_uid();
         let user = cache.get_user_by_uid(uid).unwrap();
-        User { 0: user }
+        User(user)
     }
 }
 

@@ -32,7 +32,7 @@ fn print_branch(p: &Path) {
             },
         Err(_) => {
             match p.parent() {
-                Some(parent) => print_branch(&parent),
+                Some(parent) => print_branch(parent),
                 None => (),
             }
         },
