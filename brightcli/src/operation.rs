@@ -1,5 +1,4 @@
 use std::{
-    error,
     fs,
     path::{Display, Path},
 };
@@ -28,7 +27,7 @@ impl Operation {
         }
     }
 
-    pub fn apply(&self, backlight: &Display) -> Result<i16, Box<dyn error::Error>> {
+    pub fn apply(&self, backlight: &Display) -> anyhow::Result<i16> {
         let dir = backlight.to_string();
 
         let file = Path::new(&dir).join("brightness");
@@ -69,7 +68,7 @@ impl Operation {
 }
 
 
-type FileToIntResult = Result<i16, Box<dyn error::Error>>;
+type FileToIntResult = anyhow::Result<i16>;
 
 fn file_to_int(file: &Path) -> FileToIntResult {
     let content = fs::read_to_string(file)?;

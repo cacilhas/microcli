@@ -11,3 +11,4 @@ description = "Util to change monitor brightness."
 edition     = "2021"
 
 [dependencies]
+anyhow = "1.0"

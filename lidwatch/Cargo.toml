@@ -11,4 +11,5 @@ description = "Util to watch LID switching."
 edition     = "2021"
 
 [dependencies]
+anyhow = "1.0"
 evdev = "0.12.1"

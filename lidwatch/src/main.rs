@@ -17,7 +17,7 @@ use ParamError::*;
     target_os = "netbsd",
     target_os = "openbsd",
 ))]
-fn main() -> Result<(), Box<dyn error::Error>> {
+fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
         WrongBlock.throw()?;
