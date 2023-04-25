@@ -7,7 +7,6 @@ readme      = "README.md"
 homepage    = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
 repository  = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
 keywords    = ["cli", "monitor", "linux", "lid"]
-category    = "command-line-utilities"
 description = "Util to watch LID switching."
 edition     = "2021"
 

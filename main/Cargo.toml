@@ -7,7 +7,6 @@ readme      = "../README.md"
 homepage    = "https://github.com/cacilhas/microcli"
 repository  = "https://github.com/cacilhas/microcli"
 keywords    = ["cli", "linux"]
-category    = "command-line-utilities"
 description = "Bunch of random unrelated CLI tools."
 edition     = "2021"
 

@@ -7,7 +7,6 @@ readme      = "README.md"
 homepage    = "https://github.com/cacilhas/microcli/tree/master/i3quitdialog"
 repository  = "https://github.com/cacilhas/microcli/tree/master/i3quitdialog"
 keywords    = ["gui", "i3wm", "linux"]
-category    = "gui"
 description = "A simple quit dialog for i3wm."
 edition     = "2021"
 
