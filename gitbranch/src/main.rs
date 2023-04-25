@@ -10,7 +10,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
     let params = &args[1..];
     let param_string = if params.is_empty() {
-        env::var("PWD").unwrap()
+        env!["PWD"].to_owned()
     } else {
         params.join(" ")
     };
