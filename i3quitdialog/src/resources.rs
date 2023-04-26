@@ -1,9 +1,7 @@
-use std::process;
 use eframe::egui::Color32 as Color;
-
+use std::process;
 
 const APP_NAME: &str = "i3quitdialog";
-
 
 #[derive(Debug)]
 pub struct Resources {
@@ -18,7 +16,6 @@ pub struct Resources {
     pub reboot_fg_color: Color,
     pub reboot_bg_color: Color,
 }
-
 
 impl Default for Resources {
     fn default() -> Self {
@@ -39,7 +36,6 @@ impl Default for Resources {
     }
 }
 
-
 fn set_resources(resources: &mut Resources) {
     match get_color_parameter("Title.foreground") {
         Some(color) => resources.foreground = color,
@@ -55,7 +51,7 @@ fn set_resources(resources: &mut Resources) {
         Some(color) => {
             resources.exit_bg_color = color;
             resources.exit_fg_color = contrast(&color);
-        },
+        }
         None => (),
     }
 
@@ -63,7 +59,7 @@ fn set_resources(resources: &mut Resources) {
         Some(color) => {
             resources.cancel_bg_color = color;
             resources.cancel_fg_color = contrast(&color);
-        },
+        }
         None => (),
     }
 
@@ -71,7 +67,7 @@ fn set_resources(resources: &mut Resources) {
         Some(color) => {
             resources.halt_bg_color = color;
             resources.halt_fg_color = contrast(&color);
-        },
+        }
         None => (),
     }
 
@@ -79,15 +75,14 @@ fn set_resources(resources: &mut Resources) {
         Some(color) => {
             resources.reboot_bg_color = color;
             resources.reboot_fg_color = contrast(&color);
-        },
+        }
         None => (),
     }
 }
 
-
 fn get_color_parameter(parameter: &str) -> Option<Color> {
     let output = process::Command::new("xrdb")
-        .arg( "-get")
+        .arg("-get")
         .arg(format!("{}.{}", APP_NAME, parameter))
         .output();
     let output = match output {
@@ -123,37 +118,36 @@ fn get_color_parameter(parameter: &str) -> Option<Color> {
                     Err(_) => return None,
                 };
                 Some(Color::from_rgb(r, g, b))
-            },
+            }
 
             6 => match hex::decode(res) {
-                    Ok(res) => Some(Color::from_rgb(res[0], res[1], res[2])),
-                    Err(_) => None,
-                },
+                Ok(res) => Some(Color::from_rgb(res[0], res[1], res[2])),
+                Err(_) => None,
+            },
 
             _ => None,
-        }
+        };
     }
 
     match res.to_lowercase().as_str() {
-        "black"       => Some(Color::BLACK),
-        "blue"        => Some(Color::BLUE),
-        "darkblue"    => Some(Color::DARK_BLUE),
-        "cyan"        => Some(Color::from_rgb(0, 0xff, 0xff)),
-        "darkcyan"    => Some(Color::from_rgb(0, 0x60, 0x60)),
-        "green"       => Some(Color::GREEN),
-        "darkgreen"   => Some(Color::DARK_GREEN),
-        "magenta"     => Some(Color::from_rgb(0xff, 0, 0xff)),
+        "black" => Some(Color::BLACK),
+        "blue" => Some(Color::BLUE),
+        "darkblue" => Some(Color::DARK_BLUE),
+        "cyan" => Some(Color::from_rgb(0, 0xff, 0xff)),
+        "darkcyan" => Some(Color::from_rgb(0, 0x60, 0x60)),
+        "green" => Some(Color::GREEN),
+        "darkgreen" => Some(Color::DARK_GREEN),
+        "magenta" => Some(Color::from_rgb(0xff, 0, 0xff)),
         "darkmagenta" => Some(Color::from_rgb(0x60, 0, 0x60)),
-        "red"         => Some(Color::RED),
-        "darkred"     => Some(Color::DARK_RED),
-        "white"       => Some(Color::WHITE),
-        "yellow"      => Some(Color::YELLOW),
-        "darkyellow"  => Some(Color::GOLD),
+        "red" => Some(Color::RED),
+        "darkred" => Some(Color::DARK_RED),
+        "white" => Some(Color::WHITE),
+        "yellow" => Some(Color::YELLOW),
+        "darkyellow" => Some(Color::GOLD),
 
         _ => None,
     }
 }
-
 
 fn contrast(color: &Color) -> Color {
     let (mut r, mut g, mut b, _) = color.to_tuple();
@@ -169,7 +163,11 @@ fn contrast(color: &Color) -> Color {
     Color::from_rgb(r, g, b)
 }
 
-
 fn is_bright(color: &Color) -> bool {
-    color.to_array().iter().take(3).fold(0_u8, |acc, &v| acc.max(v)) >= 0xa0
+    color
+        .to_array()
+        .iter()
+        .take(3)
+        .fold(0_u8, |acc, &v| acc.max(v))
+        >= 0xa0
 }

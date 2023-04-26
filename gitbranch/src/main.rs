@@ -5,7 +5,6 @@ use std::{
 
 use git2::Repository;
 
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     let params = &args[1..];
@@ -21,20 +20,16 @@ fn main() {
 
 fn print_branch(p: &Path) {
     match Repository::open(p) {
-        Ok(repo) =>
-            match repo.head() {
-                Ok(head) =>
-                    match head.shorthand() {
-                        Some(branch) => println!("{branch}"),
-                        None => eprintln!("no branch found"),
-                    },
-                Err(_) => eprintln!("no head"),
+        Ok(repo) => match repo.head() {
+            Ok(head) => match head.shorthand() {
+                Some(branch) => println!("{branch}"),
+                None => eprintln!("no branch found"),
             },
-        Err(_) => {
-            match p.parent() {
-                Some(parent) => print_branch(parent),
-                None => (),
-            }
+            Err(_) => eprintln!("no head"),
+        },
+        Err(_) => match p.parent() {
+            Some(parent) => print_branch(parent),
+            None => (),
         },
     }
 }

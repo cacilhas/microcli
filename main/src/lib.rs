@@ -1,2 +1,1 @@
-mod microcli {
-}
+mod microcli {}

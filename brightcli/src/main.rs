@@ -3,13 +3,9 @@ extern crate anyhow;
 mod operation;
 mod paramerror;
 
-use std::{
-    env,
-    fs,
-};
+use std::{env, fs};
 
 use operation::Operation;
-
 
 #[cfg(target_os = "linux")]
 fn main() {
@@ -19,12 +15,11 @@ fn main() {
 
     for path in paths {
         match path {
-            Ok(entry) =>
-                match operation.apply(&entry.path().display()) {
-                    Ok(value) => println!("{value}"),
-                    Err(err) => eprintln!("{err}"),
-                },
+            Ok(entry) => match operation.apply(&entry.path().display()) {
+                Ok(value) => println!("{value}"),
+                Err(err) => eprintln!("{err}"),
+            },
             Err(_) => continue,
         };
-    };
+    }
 }

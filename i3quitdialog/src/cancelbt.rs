@@ -1,10 +1,6 @@
-use eframe::{
-    egui,
-    egui::widgets::Button,
-};
+use eframe::{egui, egui::widgets::Button};
 
 use crate::resources::Resources;
-
 
 pub fn create(resources: &Resources, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
     let text: egui::RichText = "Cancel".into();
@@ -16,4 +12,3 @@ pub fn create(resources: &Resources, ui: &mut egui::Ui, frame: &mut eframe::Fram
         frame.close();
     }
 }
-

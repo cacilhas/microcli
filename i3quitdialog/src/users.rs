@@ -1,30 +1,18 @@
-use std::{
-    ops::Deref,
-    sync::Arc,
-};
+use std::{ops::Deref, sync::Arc};
 
-use ::users::{
-    self,
-    Users,
-};
-
+use ::users::{self, Users};
 
 #[derive(Debug)]
 pub struct User(Arc<users::User>);
 
-
 impl User {
     pub fn is_power_user(&self) -> bool {
         match self.groups() {
-            Some(groups) =>
-                groups
-                    .iter()
-                    .any(|group| group.name() == "power"),
+            Some(groups) => groups.iter().any(|group| group.name() == "power"),
             None => false,
         }
     }
 }
-
 
 impl Default for User {
     fn default() -> Self {
@@ -34,7 +22,6 @@ impl Default for User {
         User(user)
     }
 }
-
 
 impl Deref for User {
     type Target = users::User;

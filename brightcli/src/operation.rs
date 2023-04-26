@@ -5,7 +5,6 @@ use std::{
 
 use crate::paramerror::ParamError;
 
-
 #[derive(Debug, Default, PartialEq)]
 pub enum Operation {
     INC,
@@ -21,7 +20,7 @@ impl Operation {
             2 => match &*args[1] {
                 "+" => Ok(Operation::INC),
                 "-" => Ok(Operation::DEC),
-                _   => Err(ParamError::InvalidParameter(args[1].clone())),
+                _ => Err(ParamError::InvalidParameter(args[1].clone())),
             },
             _ => Err(ParamError::TooManyArgs),
         }
@@ -34,8 +33,7 @@ impl Operation {
         let current = file_to_int(&file)?;
 
         let max_file = Path::new(&dir).join("max_brightness");
-        let max = file_to_int(&max_file)
-            .or_else(move |_| -> FileToIntResult { Ok(i16::MAX) })?;
+        let max = file_to_int(&max_file).or_else(move |_| -> FileToIntResult { Ok(i16::MAX) })?;
 
         let step = max / 10;
 
@@ -43,30 +41,23 @@ impl Operation {
             Operation::SHOW => current,
 
             Operation::INC => {
-                let desired = *vec![current + step, max]
-                    .iter()
-                    .min()
-                    .unwrap();
+                let desired = *vec![current + step, max].iter().min().unwrap();
                 let raw = format!("{desired}\n");
                 fs::write(&file, raw)?;
                 desired
-            },
+            }
 
             Operation::DEC => {
-                let desired = *vec![current - step, 0_i16]
-                    .iter()
-                    .max()
-                    .unwrap();
+                let desired = *vec![current - step, 0_i16].iter().max().unwrap();
                 let raw = format!("{desired}\n");
                 fs::write(&file, raw)?;
                 desired
-            },
+            }
         };
 
         Ok(res)
     }
 }
-
 
 type FileToIntResult = anyhow::Result<i16>;
 

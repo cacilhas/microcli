@@ -1,14 +1,7 @@
-use i3_ipc::{
-    Connect,
-    I3,
-};
-use eframe::{
-    egui,
-    egui::widgets::Button,
-};
+use eframe::{egui, egui::widgets::Button};
+use i3_ipc::{Connect, I3};
 
 use crate::resources::Resources;
-
 
 pub fn create(resources: &Resources, ui: &mut egui::Ui) {
     let text: egui::RichText = "Halt".into();

@@ -1,13 +1,7 @@
-use std::{
-    env,
-    error,
-    fmt,
-    process::Command,
-};
 use evdev::{Device, InputEventKind, SwitchType};
+use std::{env, error, fmt, process::Command};
 
 use ParamError::*;
-
 
 #[cfg(any(
     target_os = "dragonfly",
@@ -40,7 +34,7 @@ fn main() -> anyhow::Result<()> {
                     cmd.arg(param);
                 }
                 match cmd.spawn() {
-                    Ok(_)  => continue,
+                    Ok(_) => continue,
                     Err(err) => eprintln!("{err:#?}"),
                 }
             } else {
@@ -50,10 +44,9 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-
 #[derive(Debug)]
 enum ParamError {
-    WrongBlock
+    WrongBlock,
 }
 
 impl fmt::Display for ParamError {
@@ -64,8 +57,7 @@ impl fmt::Display for ParamError {
     }
 }
 
-impl error::Error for ParamError {
-}
+impl error::Error for ParamError {}
 
 impl ParamError {
     fn throw(self) -> Result<(), ParamError> {

@@ -1,7 +1,4 @@
-use std::{
-    error,
-    fmt,
-};
+use std::{error, fmt};
 
 #[derive(Debug, PartialEq)]
 pub enum ParamError {
@@ -12,10 +9,8 @@ pub enum ParamError {
 impl fmt::Display for ParamError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            ParamError::InvalidParameter(name) =>
-                write!(f, "invalid parameter {name}"),
-            ParamError::TooManyArgs =>
-                write!(f, "too many parameters"),
+            ParamError::InvalidParameter(name) => write!(f, "invalid parameter {name}"),
+            ParamError::TooManyArgs => write!(f, "too many parameters"),
         }
     }
 }
