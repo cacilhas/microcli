@@ -33,7 +33,7 @@ impl Operation {
         let current = file_to_int(&file)?;
 
         let max_file = Path::new(&dir).join("max_brightness");
-        let max = file_to_int(&max_file).or_else(move |_| -> FileToIntResult { Ok(i16::MAX) })?;
+        let max = file_to_int(&max_file).unwrap_or(i16::MAX);
 
         let step = max / 10;
 
