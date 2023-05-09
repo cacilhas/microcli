@@ -1,3 +1,4 @@
+extern crate clap;
 extern crate kodumaro_uuid_cli as uuid_cli;
 extern crate uuid;
 
@@ -24,27 +25,32 @@ enum Version {
     V1,
     #[command(about = "generate UUIDv3, name-based MD5 UUID")]
     V3 {
-        #[arg(name = "NAMESPACE")]
+        #[arg(name = "NAMESPACE", help = "any UUID, preferable v1, v4, or v7")]
         ns: Uuid,
+        #[arg(help = "arbitrary qualifier")]
         name: String,
     },
     #[command(about = "generate UUIDv4, random UUID")]
     V4,
     #[command(about = "generate UUIDv5, name-based SHA1 UUID")]
     V5 {
-        #[arg(name = "NAMESPACE")]
+        #[arg(name = "NAMESPACE", help = "any UUID, preferable v1, v4, or v7")]
         ns: Uuid,
+        #[arg(help = "arbitrary qualifier")]
         name: String,
     },
     #[command(about = "generate UUIDv6, field-compatible version of UUIDv1")]
     V6 {
-        #[arg(name = "NODE ID")]
+        #[arg(name = "NODE ID", help = "a 6-byte long node identifier")]
         node_id: String,
     },
     #[command(about = "generate UUIDv7, Unix Epoch timestamp-based UUID")]
     V7,
     #[command(about = "generate UUIDv8, vendor-specific UUID")]
-    V8 { metadata: String },
+    V8 {
+        #[arg(help = "vendor’s metadata to be encoded into the UUIDv8, up to 16 bytes")]
+        metadata: String,
+    },
 }
 
 fn main() -> anyhow::Result<()> {
