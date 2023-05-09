@@ -8,8 +8,7 @@ UUID generator ([RFC 4122]).
 ## Installation
 
 ```sh
-export RUSTFLAGS='--cfg uuid_unstable'
-cargo install kodumaro-uuid-cli
+RUSTFLAGS='--cfg uuid_unstable' cargo install kodumaro-uuid-cli
 ```
 
 ## Usage
