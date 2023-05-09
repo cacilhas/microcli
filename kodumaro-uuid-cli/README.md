@@ -86,7 +86,7 @@ urn:uuid:536f6d65-206c-8f6e-a720-646174612100
 $ uuid v8 --help
 generate UUIDv8, vendor-specific UUID
 
-Usage: uuid v8 <METADATA>
+Usage: uuid v8 <METADATA>  vendor’s metadata to be encoded into the UUIDv8, up to 16 bytes
 
 Arguments:
   <METADATA>
