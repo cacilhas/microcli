@@ -1,0 +1,27 @@
+[package]
+name        = "kodumaro-uuid-cli"
+version     = "1.0.1"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
+license     = "BSD-3-Clause"
+readme      = "README.md"
+homepage    = "https://github.com/cacilhas/microcli/tree/master/kodumaro-uuid-cli"
+repository  = "https://github.com/cacilhas/microcli/tree/master/kodumaro-uuid-cli"
+keywords    = ["cli", "uuid"]
+description = "Command line tool to generate UUID."
+edition     = "2021"
+
+[dependencies]
+anyhow = "1.0"
+mac_address = "1.1"
+thiserror = "1.0"
+
+[dependencies.clap]
+version = "4.2"
+features = ["color", "help", "std", "suggestions", "usage", "derive"]
+
+[dependencies.uuid]
+version = "1.3"
+features = ["std", "rng", "v1", "v3", "v4", "v5", "v6", "v7", "v8"]
+
+[[bin]]
+name = "uuid"

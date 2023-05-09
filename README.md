@@ -2,6 +2,7 @@
 [CLI]: https://en.wikipedia.org/wiki/Command-line_interface
 [GitBranch]: https://crates.io/crates/gitbranch
 [I3QuitDialog]: https://crates.io/crates/i3quitdialog
+[Kodumaro UUID CLI]: https://crates.io/crates/kodumaro-uuid-cli
 [LidWatch]: https://crates.io/crates/lidwatch
 [Upt]: https://crates.io/crates/upt
 
@@ -14,6 +15,7 @@ Bunch of random unrelated [CLI][] tools.
 - [BrightCLI][]
 - [GitBranch][]
 - [I3QuitDialog][]
+- [Kodumaro UUID CLI][]
 - [LidWatch][lidwatch]
 - [Stack-based Calculator](stcalc/README.md)
 - [Docker monitor](dockermon/README.md)

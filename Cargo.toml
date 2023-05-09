@@ -5,6 +5,7 @@ members = [
     "brightcli",
     "gitbranch",
     "i3quitdialog",
+    "kodumaro-uuid-cli",
     "lidwatch",
 ]
 
