@@ -5,11 +5,17 @@
 
 UUID generator ([RFC 4122]).
 
-## Installation
+This is a command line tool, **do not** install it using `cargo add`!!
+
+## Installation guide
+
+You need to enable `uuid_unstable` configuration flag:
 
 ```sh
 RUSTFLAGS='--cfg uuid_unstable' cargo install kodumaro-uuid-cli
 ```
+
+It’s gonna create a `~/.cargo/bin/uuid` executable.
 
 ## Usage
 
@@ -33,4 +39,4 @@ Options:
 
 ## License
 
-- [The 3-Clause BSD License][]
+- [The 3-Clause BSD License]

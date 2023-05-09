@@ -30,7 +30,7 @@ enum Version {
     },
     #[command(about = "generate UUIDv4, random UUID")]
     V4,
-    #[command(about = "generate UUIDv5, name based SHA1 UUID")]
+    #[command(about = "generate UUIDv5, name-based SHA1 UUID")]
     V5 {
         #[arg(name = "NAMESPACE")]
         ns: Uuid,
