@@ -84,7 +84,7 @@ $ uuid nil
 urn:uuid:00000000-0000-0000-0000-000000000000
 
 $ uuid v1
-urn:uuid:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+urn:uuid:xxxxxxxx-xxxx-1xxx-xxxx-xxxxxxxxxxxx
 
 $ uuid v3 $(uuid v7) test
 urn:uuid:5604097f-ffa0-3934-9635-cb03308240fe
@@ -93,7 +93,7 @@ $ uuid v5 $(uuid v7) test
 urn:uuid:d8beedbe-ca82-57ef-8dc1-ca501caeb151
 
 $ uuid v6 blabla
-urn:uuid:1edee6f2-13ee-6741-b1dd-626c61626c61
+urn:uuid:xxxxxxxx-xxxx-6xxx-xxxx-xxxxxxxxxxxx
 
 $ uuid v7
 urn:uuid:018800be-993e-7990-b64a-900ba7dd54e3
