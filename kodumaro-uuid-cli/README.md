@@ -23,14 +23,14 @@ It’s gonna create a `~/.cargo/bin/uuid` executable.
 Usage: uuid [COMMAND]
 
 Commands:
-  nil   generate nil UUID
-  v1    generate UUIDv1, time-based UUID
-  v3    generate UUIDv3, name-based MD5 UUID
-  v4    generate UUIDv4, random UUID
-  v5    generate UUIDv5, name-based SHA1 UUID
-  v6    generate UUIDv6, field-compatible version of UUIDv1
-  v7    generate UUIDv7, Unix Epoch timestamp-based UUID
-  v8    generate UUIDv8, vendor-specific UUID
+  nil   generates nil UUID
+  v1    generates UUIDv1, time-based UUID
+  v3    generates UUIDv3, name-based MD5 UUID
+  v4    generates UUIDv4, random UUID
+  v5    generates UUIDv5, name-based SHA1 UUID
+  v6    generates UUIDv6, field-compatible version of UUIDv1
+  v7    generates UUIDv7, Unix Epoch timestamp-based UUID
+  v8    generates UUIDv8, vendor-specific UUID
   help  Print this message or the help of the given subcommand(s)
 
 Options:
@@ -46,21 +46,39 @@ urn:uuid:4db78d44-e170-42a3-bf93-418b9baeae2b
 $ uuid help
 UUID generator (RFC 4122), see <https://www.rfc-editor.org/rfc/rfc4122>
 
+It generates UUID versions 1, 3, 4, 5, 6, 7 and 8, and nil UUID.
+
+It returns the URN; if you want to emulate the same behaviour as uuigen (plain
+UUID), set the env-var:
+
+export UUID_MODE=uuidgen
+
+
 Usage: uuid [COMMAND]
 
 Commands:
-  nil   generate nil UUID
-  v1    generate UUIDv1, time-based UUID
-  v3    generate UUIDv3, name-based MD5 UUID
-  v4    generate UUIDv4, random UUID
-  v5    generate UUIDv5, name based SHA1 UUID
-  v6    generate UUIDv6, field-compatible version of UUIDv1
-  v7    generate UUIDv7, Unix Epoch timestamp-based UUID
-  v8    generate UUIDv8, vendor-specific UUID
-  help  Print this message or the help of the given subcommand(s)
+  nil
+          generates nil UUID
+  v1
+          generates UUIDv1, time-based UUID
+  v3
+          generates UUIDv3, name-based MD5 UUID
+  v4
+          generates UUIDv4, random UUID
+  v5
+          generates UUIDv5, name-based SHA1 UUID
+  v6
+          generates UUIDv6, field-compatible version of UUIDv1
+  v7
+          generates UUIDv7, Unix Epoch timestamp-based UUID
+  v8
+          generates UUIDv8, vendor-specific UUID
+  help
+          Print this message or the help of the given subcommand(s)
 
 Options:
-  -h, --help  Print help
+  -h, --help
+          Print help (see a summary with '-h')
 
 $ uuid nil
 urn:uuid:00000000-0000-0000-0000-000000000000
@@ -83,8 +101,11 @@ urn:uuid:018800be-993e-7990-b64a-900ba7dd54e3
 $ uuid v8 'Some long data!'
 urn:uuid:536f6d65-206c-8f6e-a720-646174612100
 
+$ UUID_MODE=uuidgen uuid v7
+01880c8f-d233-7be3-b1f5-95ea2650457f
+
 $ uuid help v8
-generate UUIDv8, vendor-specific UUID
+generates UUIDv8, vendor-specific UUID
 
 Usage: uuid v8 <METADATA>
 
