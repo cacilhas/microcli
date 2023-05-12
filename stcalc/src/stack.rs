@@ -10,23 +10,24 @@ use IO::*;
 pub struct TapeStack(Vec<f32>);
 
 impl TapeStack {
-    pub fn parse(&mut self, reader: &mut BufReader<impl Read>) {
+    pub fn parse(&mut self, reader: &mut BufReader<impl Read>) -> Result<(), String> {
         let mut buffer = String::new();
         while let Ok(input) = reader.read_line(&mut buffer) {
             if input == 0 {
                 break;
             }
             for token in buffer.split_whitespace() {
-                match self.parse_token(token).unwrap() {
+                match self.parse_token(token)? {
                     Print(something) => print!("{}", something),
                     Nop => (),
                 }
             }
             buffer.clear();
         }
+        Ok(())
     }
 
-    fn parse_token(&mut self, token: &str) -> SRes<IO> {
+    fn parse_token(&mut self, token: &str) -> Result<IO, String> {
         match token {
             "+" => {
                 self.run_add()?;
@@ -52,16 +53,20 @@ impl TapeStack {
             "." => self.run_print_character(),
             _ => {
                 let float: Result<f32, ParseFloatError> = token.parse();
-                let float = float.unwrap();
-                self.0.push(float);
-                Ok(Nop)
+                match float {
+                    Ok(value) => {
+                        self.0.push(value);
+                        Ok(Nop)
+                    }
+                    Err(_) => Err(format!("error parsing token “{token}”")),
+                }
             }
         }
     }
 
-    fn run_add(&mut self) -> SRes<()> {
+    fn run_add(&mut self) -> Result<(), String> {
         if self.0.len() < 2 {
-            return Err("stack is empty");
+            return Err("stack is empty".to_owned());
         }
 
         let value = self.0.pop().ok_or("stack is empty")?;
@@ -70,9 +75,9 @@ impl TapeStack {
         Ok(())
     }
 
-    fn run_multiply(&mut self) -> SRes<()> {
+    fn run_multiply(&mut self) -> Result<(), String> {
         if self.0.len() < 2 {
-            return Err("stack is empty");
+            return Err("stack is empty".to_owned());
         }
 
         let value = self.0.pop().ok_or("stack is empty")?;
@@ -81,33 +86,35 @@ impl TapeStack {
         Ok(())
     }
 
-    fn run_pop(&mut self) -> SRes<()> {
+    fn run_pop(&mut self) -> Result<(), String> {
         self.0.pop().ok_or("stack is empty")?;
         Ok(())
     }
 
-    fn run_invert_signal(&mut self) -> SRes<()> {
+    fn run_invert_signal(&mut self) -> Result<(), String> {
         let len = self.0.len();
         let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = value * -1.0;
         Ok(())
     }
 
-    fn run_invert_number(&mut self) -> SRes<()> {
+    fn run_invert_number(&mut self) -> Result<(), String> {
         let len = self.0.len();
         let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = 1.0 / value;
         Ok(())
     }
 
-    fn run_print(&self) -> SRes<IO> {
-        let value = *self.0.last().ok_or("stack is empty")?;
-        Ok(Print(Box::new(value)))
+    fn run_print(&self) -> Result<IO, String> {
+        Ok(Print(Box::new(self.get_top()?)))
     }
 
-    fn run_print_character(&self) -> SRes<IO> {
-        let byte = *self.0.last().ok_or("stack is empty")? as u8 as char;
-        Ok(Print(Box::new(byte)))
+    fn run_print_character(&self) -> Result<IO, String> {
+        Ok(Print(Box::new(self.get_top()? as u8 as char)))
+    }
+
+    fn get_top(&self) -> Result<f32, String> {
+        Ok(*self.0.last().ok_or("stack is empty")?)
     }
 }
 
@@ -115,8 +122,6 @@ enum IO {
     Nop,
     Print(Box<dyn fmt::Display>),
 }
-
-type SRes<T> = Result<T, &'static str>;
 
 #[cfg(test)]
 mod tests {
