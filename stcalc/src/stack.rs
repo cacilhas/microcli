@@ -82,3 +82,63 @@ impl TapeStack {
         print!("{byte}");
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_should_create_an_empty_stack() {
+        let stack = TapeStack::default();
+        assert_eq!(stack.0.len(), 0);
+    }
+
+    #[test]
+    fn it_should_push_number_into_stack_top() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("123");
+        stack.parse_token("24.5");
+        stack.parse_token("-5.25");
+        assert_eq!(stack.0.len(), 3);
+        assert_eq!(stack.0[0], 123.0);
+        assert_eq!(stack.0[1], 24.5);
+        assert_eq!(stack.0[2], -5.25);
+    }
+
+    #[test]
+    fn it_should_unstack_adding() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("1");
+        stack.parse_token("2");
+        stack.parse_token("3");
+        stack.parse_token("+");
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 1.0);
+        assert_eq!(stack.0[1], 5.0);
+    }
+
+    #[test]
+    fn it_should_invert_signal() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("1");
+        stack.parse_token("2");
+        stack.parse_token("-");
+        stack.parse_token("3.5");
+        stack.parse_token("-");
+        assert_eq!(stack.0.len(), 3);
+        assert_eq!(stack.0[0], 1.0);
+        assert_eq!(stack.0[1], -2.0);
+        assert_eq!(stack.0[2], -3.5);
+    }
+
+    #[test]
+    fn it_should_invert_number() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("2");
+        stack.parse_token("4");
+        stack.parse_token("/");
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 2.0);
+        assert_eq!(stack.0[1], 0.25);
+    }
+}

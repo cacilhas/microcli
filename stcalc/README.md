@@ -10,7 +10,7 @@ cargo install stcalc
 
 ## Commands
 
-- Floating point number is stacked
+- Floating point numbers are pushed into the stack top
 - `+` unstack adding
 - `-` invert stack top signal
 - `*` unstack multiplying
