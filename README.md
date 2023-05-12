@@ -4,6 +4,7 @@
 [I3QuitDialog]: https://crates.io/crates/i3quitdialog
 [Kodumaro UUID CLI]: https://crates.io/crates/kodumaro-uuid-cli
 [LidWatch]: https://crates.io/crates/lidwatch
+[Stack-based Calculator]: https://crates.io/crates/stcalc
 [Upt]: https://crates.io/crates/upt
 
 # MicroCLI
@@ -17,7 +18,7 @@ Bunch of random unrelated [CLI][] tools.
 - [I3QuitDialog][]
 - [Kodumaro UUID CLI][]
 - [LidWatch][lidwatch]
-- [Stack-based Calculator](stcalc/README.md)
+- [Stack-based Calculator][]
 - [Docker monitor](dockermon/README.md)
 
 Note: I gave Nubrew up in favour of [Upt][].
