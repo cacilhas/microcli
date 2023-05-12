@@ -14,13 +14,13 @@ impl TapeStack {
                 break;
             }
             for token in buffer.split_whitespace() {
-                self.parse_token(token);
+                self.parse_token(token).unwrap();
             }
             buffer.clear();
         }
     }
 
-    fn parse_token(&mut self, token: &str) {
+    fn parse_token(&mut self, token: &str) -> SRes<()> {
         match token {
             "+" => self.run_add(),
             "-" => self.run_invert_signal(),
@@ -33,55 +33,65 @@ impl TapeStack {
                 let float: Result<f32, ParseFloatError> = token.parse();
                 let float = float.unwrap();
                 self.0.push(float);
+                Ok(())
             }
         }
     }
 
-    fn run_add(&mut self) {
+    fn run_add(&mut self) -> SRes<()> {
         if self.0.len() < 2 {
-            Err::<(), &str>("stack is empty").unwrap();
+            return Err("stack is empty");
         }
 
-        let value = self.0.pop().unwrap();
+        let value = self.0.pop().ok_or("stack is empty")?;
         let last = self.0.len() - 1;
         self.0[last] += value;
+        Ok(())
     }
 
-    fn run_multiply(&mut self) {
+    fn run_multiply(&mut self) -> SRes<()> {
         if self.0.len() < 2 {
-            Err::<(), &str>("stack is empty").unwrap();
+            return Err("stack is empty");
         }
 
-        let value = self.0.pop().unwrap();
+        let value = self.0.pop().ok_or("stack is empty")?;
         let last = self.0.len() - 1;
         self.0[last] *= value;
+        Ok(())
     }
 
-    fn run_print(&self) {
-        print!("{}", self.0.last().expect("stack is empty"));
+    fn run_print(&self) -> SRes<()> {
+        print!("{}", self.0.last().ok_or("stack is empty")?);
+        Ok(())
     }
 
-    fn run_pop(&mut self) {
-        let _ = self.0.pop();
+    fn run_pop(&mut self) -> SRes<()> {
+        self.0.pop().ok_or("stack is empty")?;
+        Ok(())
     }
 
-    fn run_invert_signal(&mut self) {
+    fn run_invert_signal(&mut self) -> SRes<()> {
         let len = self.0.len();
-        let value = self.0.last().expect("stack is empty");
+        let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = value * -1.0;
+        Ok(())
     }
 
-    fn run_invert_number(&mut self) {
+    fn run_invert_number(&mut self) -> SRes<()> {
         let len = self.0.len();
-        let value = self.0.last().expect("stack is empty");
+        let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = 1.0 / value;
+        Ok(())
     }
 
-    fn run_print_character(&self) {
-        let byte = *self.0.last().expect("stack is empty") as u8 as char;
+    fn run_print_character(&self) -> SRes<()> {
+        let byte = *self.0.last().ok_or("stack is empty")? as u8 as char;
         print!("{byte}");
+        Ok(())
     }
 }
+
+type SRes<T> = Result<T, &'static str>;
 
 #[cfg(test)]
 mod tests {
@@ -96,9 +106,9 @@ mod tests {
     #[test]
     fn it_should_push_number_into_stack_top() {
         let mut stack = TapeStack::default();
-        stack.parse_token("123");
-        stack.parse_token("24.5");
-        stack.parse_token("-5.25");
+        stack.parse_token("123").unwrap();
+        stack.parse_token("24.5").unwrap();
+        stack.parse_token("-5.25").unwrap();
         assert_eq!(stack.0.len(), 3);
         assert_eq!(stack.0[0], 123.0);
         assert_eq!(stack.0[1], 24.5);
@@ -108,10 +118,10 @@ mod tests {
     #[test]
     fn it_should_unstack_adding() {
         let mut stack = TapeStack::default();
-        stack.parse_token("1");
-        stack.parse_token("2");
-        stack.parse_token("3");
-        stack.parse_token("+");
+        stack.parse_token("1").unwrap();
+        stack.parse_token("2").unwrap();
+        stack.parse_token("3").unwrap();
+        stack.parse_token("+").unwrap();
         assert_eq!(stack.0.len(), 2);
         assert_eq!(stack.0[0], 1.0);
         assert_eq!(stack.0[1], 5.0);
@@ -120,11 +130,11 @@ mod tests {
     #[test]
     fn it_should_invert_signal() {
         let mut stack = TapeStack::default();
-        stack.parse_token("1");
-        stack.parse_token("2");
-        stack.parse_token("-");
-        stack.parse_token("3.5");
-        stack.parse_token("-");
+        stack.parse_token("1").unwrap();
+        stack.parse_token("2").unwrap();
+        stack.parse_token("-").unwrap();
+        stack.parse_token("3.5").unwrap();
+        stack.parse_token("-").unwrap();
         assert_eq!(stack.0.len(), 3);
         assert_eq!(stack.0[0], 1.0);
         assert_eq!(stack.0[1], -2.0);
@@ -134,9 +144,9 @@ mod tests {
     #[test]
     fn it_should_invert_number() {
         let mut stack = TapeStack::default();
-        stack.parse_token("2");
-        stack.parse_token("4");
-        stack.parse_token("/");
+        stack.parse_token("2").unwrap();
+        stack.parse_token("4").unwrap();
+        stack.parse_token("/").unwrap();
         assert_eq!(stack.0.len(), 2);
         assert_eq!(stack.0[0], 2.0);
         assert_eq!(stack.0[1], 0.25);
