@@ -176,4 +176,82 @@ mod tests {
         assert_eq!(stack.0[0], 2.0);
         assert_eq!(stack.0[1], 0.25);
     }
+
+    #[test]
+    fn it_should_pop_from_stack() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("2").unwrap();
+        stack.parse_token("4").unwrap();
+        stack.parse_token("5").unwrap();
+        stack.parse_token("!").unwrap();
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 2.0);
+        assert_eq!(stack.0[1], 4.0);
+    }
+
+    #[test]
+    fn it_should_return_last_number() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("2").unwrap();
+        stack.parse_token("4").unwrap();
+        match stack.parse_token("=").unwrap() {
+            Print(value) => {
+                let s = format!("{value}");
+                assert_eq!(s, "4");
+            }
+            Nop => Err("received Nop, expected Print(4.0)").unwrap(),
+        }
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 2.0);
+        assert_eq!(stack.0[1], 4.0);
+    }
+
+    #[test]
+    fn it_should_return_float() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("2.25").unwrap();
+        match stack.parse_token("=").unwrap() {
+            Print(value) => {
+                let s = format!("{value}");
+                assert_eq!(s, "2.25");
+            }
+            Nop => Err("received Nop, expected Print(2.25)").unwrap(),
+        }
+        assert_eq!(stack.0.len(), 1);
+        assert_eq!(stack.0[0], 2.25);
+    }
+
+    #[test]
+    fn it_should_return_last_value_as_character() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("0").unwrap();
+        stack.parse_token("65").unwrap();
+        match stack.parse_token(".").unwrap() {
+            Print(value) => {
+                let s = format!("{value}");
+                assert_eq!(s, "A");
+            }
+            Nop => Err("received Nop, expected Print('A')").unwrap(),
+        }
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 0.0);
+        assert_eq!(stack.0[1], 65.0);
+    }
+
+    #[test]
+    fn it_should_return_ignore_decimal() {
+        let mut stack = TapeStack::default();
+        stack.parse_token("0").unwrap();
+        stack.parse_token("66.75").unwrap();
+        match stack.parse_token(".").unwrap() {
+            Print(value) => {
+                let s = format!("{value}");
+                assert_eq!(s, "B");
+            }
+            Nop => Err("received Nop, expected Print('B')").unwrap(),
+        }
+        assert_eq!(stack.0.len(), 2);
+        assert_eq!(stack.0[0], 0.0);
+        assert_eq!(stack.0[1], 66.75);
+    }
 }
