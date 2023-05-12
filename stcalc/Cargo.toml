@@ -1,0 +1,14 @@
+[package]
+name        = "stcalc"
+version     = "0.1.0"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
+license     = "BSD-3-Clause"
+readme      = "README.md"
+homepage    = "https://github.com/cacilhas/microcli/tree/master/brightcli"
+repository  = "https://github.com/cacilhas/microcli/tree/master/brightcli"
+keywords    = ["cli", "calculator", "interpreter"]
+description = "Stack calculator."
+edition     = "2021"
+
+[dependencies]
+anyhow = "1.0"
