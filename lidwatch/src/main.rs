@@ -35,7 +35,10 @@ fn main() -> anyhow::Result<()> {
                 }
                 match cmd.spawn() {
                     Ok(_) => continue,
-                    Err(err) => eprintln!("{err:#?}"),
+                    Err(err) => {
+                        eprintln!("{err:#?}");
+                        notify(&format!("{err:?}"));
+                    }
                 }
             } else {
                 state = value;
@@ -60,5 +63,14 @@ impl fmt::Display for ParamError {
 impl ParamError {
     fn throw(self) -> Result<(), ParamError> {
         Err(self)
+    }
+}
+
+fn notify(msg: &str) {
+    let mut cmd = Command::new("notify-send");
+    cmd.args(["--app-name=lidwatch", "-t", "5000", &format!("'{msg}'")]);
+    match cmd.spawn() {
+        Ok(_) => (),
+        Err(err) => eprintln!("{err:#?}"),
     }
 }
