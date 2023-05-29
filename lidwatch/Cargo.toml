@@ -1,6 +1,6 @@
 [package]
 name        = "lidwatch"
-version     = "0.1.5"
+version     = "0.1.6"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -12,4 +12,5 @@ edition     = "2021"
 
 [dependencies]
 anyhow = "1.0"
-evdev = "0.12.1"
+evdev = "0.12"
+thiserror = "1.0"

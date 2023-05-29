@@ -1435,10 +1435,11 @@ dependencies = [
 
 [[package]]
 name = "lidwatch"
-version = "0.1.5"
+version = "0.1.6"
 dependencies = [
  "anyhow",
  "evdev",
+ "thiserror",
 ]
 
 [[package]]
@@ -2262,7 +2263,7 @@ dependencies = [
 
 [[package]]
 name = "stcalc"
-version = "0.1.0"
+version = "0.1.1"
 
 [[package]]
 name = "str-buf"
