@@ -1,10 +1,10 @@
 [package]
 name        = "stcalc"
-version     = "0.1.1"
+version     = "0.1.2"
 authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
-homepage    = "https://github.com/cacilhas/microcli/tree/master/stcalc"
+homepage    = "https://crates.io/crates/stcalc"
 repository  = "https://github.com/cacilhas/microcli/tree/master/stcalc"
 keywords    = ["cli", "calculator", "interpreter"]
 description = "Stack calculator."

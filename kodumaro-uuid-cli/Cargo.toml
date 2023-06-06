@@ -1,10 +1,10 @@
 [package]
 name        = "kodumaro-uuid-cli"
-version     = "1.0.4"
+version     = "1.0.5"
 authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
-homepage    = "https://github.com/cacilhas/microcli/tree/master/kodumaro-uuid-cli"
+homepage    = "https://crates.io/crates/kodumaro-uuid-cli"
 repository  = "https://github.com/cacilhas/microcli/tree/master/kodumaro-uuid-cli"
 keywords    = ["cli", "uuid"]
 description = "Command line tool to generate UUID."

@@ -1,14 +1,14 @@
 [package]
 name        = "gitbranch"
-version     = "0.1.6"
+version     = "0.1.7"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
-homepage    = "https://github.com/cacilhas/microcli/tree/master/gitbranch"
+homepage    = "https://crates.io/crates/gitbranch"
 repository  = "https://github.com/cacilhas/microcli/tree/master/gitbranch"
 keywords    = ["cli", "git"]
 description = "It simply shows current branch name - or nothing if it isn’t a git repo."
 edition     = "2021"
 
 [dependencies]
-git2 = "0.16.1"
+git2 = "0.17"

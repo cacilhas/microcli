@@ -1,10 +1,10 @@
 [package]
 name        = "lidwatch"
-version     = "0.1.6"
+version     = "0.1.7"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
-homepage    = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
+homepage    = "https://crates.io/crates/lidwatch"
 repository  = "https://github.com/cacilhas/microcli/tree/master/lidwatch"
 keywords    = ["cli", "monitor", "linux", "lid"]
 description = "Util to watch LID switching."

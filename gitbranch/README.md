@@ -1,4 +1,4 @@
-# `gitbranch`
+# gitbranch
 
 It simply shows current branch name - or nothing if it isn’t a git repo.
 
@@ -15,3 +15,5 @@ gitbranch [<directory>]
 ```
 
 Directory defaults to current working directory.
+
+License: BSD-3-Clause
