@@ -39,6 +39,7 @@ fn print_branch(p: &Path) {
     match Repository::open(p) {
         Ok(repo) => match repo.head() {
             Ok(head) => match head.shorthand() {
+                Some(branch) if branch.starts_with("fatal: not a git repository") => (),
                 Some(branch) => println!("{branch}"),
                 None => (),
             },
