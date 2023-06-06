@@ -1,6 +1,6 @@
 [package]
 name        = "i3quitdialog"
-version     = "0.1.14"
+version     = "0.1.15"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -11,7 +11,7 @@ description = "A simple quit dialog for i3wm."
 edition     = "2021"
 
 [dependencies]
-eframe = "0.21"
+eframe = "0.22"
 hex = "0.4"
 i3_ipc = "0.16"
 static_init = "1.0"
