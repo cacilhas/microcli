@@ -1,6 +1,6 @@
 [package]
 name        = "gitbranch"
-version     = "0.1.7"
+version     = "1.0.0"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
