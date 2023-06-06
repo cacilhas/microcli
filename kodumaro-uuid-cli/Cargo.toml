@@ -25,3 +25,4 @@ features = ["std", "rng", "v1", "v3", "v4", "v5", "v6", "v7", "v8"]
 
 [[bin]]
 name = "uuid"
+path = "src/bin/uuid.rs"
