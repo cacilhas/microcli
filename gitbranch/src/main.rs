@@ -15,13 +15,13 @@
 //! Directory defaults to current working directory.
 
 use std::{
-    env,
+    env, io,
     path::{Path, PathBuf},
 };
 
 use git2::Repository;
 
-fn main() {
+fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     let params = &args[1..];
     let param_string = if params.is_empty() {
@@ -30,8 +30,9 @@ fn main() {
         params.join(" ")
     };
     let origin = Path::new(&param_string);
-    let path = PathBuf::from(origin).canonicalize().unwrap();
+    let path = PathBuf::from(origin).canonicalize()?;
     print_branch(&path);
+    Ok(())
 }
 
 fn print_branch(p: &Path) {
@@ -39,9 +40,9 @@ fn print_branch(p: &Path) {
         Ok(repo) => match repo.head() {
             Ok(head) => match head.shorthand() {
                 Some(branch) => println!("{branch}"),
-                None => eprintln!("no branch found"),
+                None => (),
             },
-            Err(_) => eprintln!("no head"),
+            Err(_) => (),
         },
         Err(_) => match p.parent() {
             Some(parent) => print_branch(parent),
