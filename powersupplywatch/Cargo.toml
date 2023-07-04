@@ -6,7 +6,7 @@ license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://crates.io/crates/powersupplywatch"
 repository  = "https://github.com/cacilhas/microcli/tree/master/powersupplywatch"
-keywords    = ["cli", "monitor", "linux", "power supply"]
+keywords    = ["cli", "monitor", "linux", "powersupply"]
 description = "Util to watch power supply."
 edition     = "2021"
 
