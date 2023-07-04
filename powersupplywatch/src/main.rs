@@ -15,7 +15,7 @@
 //!   [--unplug=<power-unplug.oga>]
 //! ```
 
-use std::{fmt::Display, fs, path::Path, process::Command};
+use std::{fmt::Display, fs, path::Path, process::Command, thread::sleep, time::Duration};
 
 use inotify::{Inotify, WatchMask};
 use structopt::StructOpt;
@@ -39,6 +39,8 @@ fn main() -> anyhow::Result<()> {
                             0 => play(&params.unplug),
                             _ => play(&params.plugin),
                         }
+                    } else {
+                        sleep(Duration::from_millis(100));
                     }
                 }
                 Err(err) => eprintln!("error reading {}: {}", params.power_supply, err),
