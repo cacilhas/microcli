@@ -1,5 +1,7 @@
 [workspace]
 
+resolver = "1"
+
 members = [
     "main",
     "brightcli",
@@ -7,6 +9,7 @@ members = [
     "i3quitdialog",
     "kodumaro-uuid-cli",
     "lidwatch",
+    "powersupplywatch",
     "stcalc",
 ]
 
