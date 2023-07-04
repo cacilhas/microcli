@@ -9,10 +9,7 @@
 //! # Use
 //!
 //! ```sh
-//! powersupplywatch [--power-supply=</sys/class/power_supply/AC0>] \
-//!   [--sounds=</usr/share/sounds/freedesktop/stereo>] \
-//!   [--plugin=<power-plug.oga>] \
-//!   [--unplug=<power-unplug.oga>]
+//! powersupplywatch --help
 //! ```
 
 use std::{fmt::Display, fs, path::Path, process::Command, thread::sleep, time::Duration};
