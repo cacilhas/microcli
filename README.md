@@ -12,7 +12,6 @@ Bunch of random unrelated
 - [I3QuitDialog](https://crates.io/crates/i3quitdialog)
 - [Kodumaro UUID CLI](https://crates.io/crates/kodumaro-uuid-cli)
 - [LidWatch](https://crates.io/crates/lidwatch)
-- [PowerSupplyWatch](https://crates.io/crates/powersupplywatch)
 - [Stack-based Calculator](https://crates.io/crates/stcalc)
 - [Docker monitor](dockermon/README.md)
 
