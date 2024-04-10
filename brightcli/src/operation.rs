@@ -14,7 +14,7 @@ pub enum Operation {
 }
 
 impl Operation {
-    pub fn from_args(args: &Vec<String>) -> Result<Operation, ParamError> {
+    pub fn from_args(args: &[String]) -> Result<Operation, ParamError> {
         match args.len() {
             1 => Ok(Operation::default()),
             2 => match &*args[1] {
