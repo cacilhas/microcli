@@ -1,17 +1,15 @@
-extern crate anyhow;
-
+mod minmaxerror;
 mod operation;
 mod paramerror;
 
-use std::{env, fs};
+use std::{env, error::Error, fs};
 
 use operation::Operation;
 
 #[cfg(target_os = "linux")]
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    let operation = Operation::from_args(&args).unwrap();
-    let paths = fs::read_dir("/sys/class/backlight").unwrap();
+fn main() -> Result<(), Box<dyn Error>> {
+    let operation = Operation::from_args(&mut env::args())?;
+    let paths = fs::read_dir("/sys/class/backlight")?;
 
     for path in paths {
         match path {
@@ -22,4 +20,6 @@ fn main() {
             Err(_) => continue,
         };
     }
+
+    Ok(())
 }
