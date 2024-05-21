@@ -1,6 +1,6 @@
 [package]
 name        = "gitbranch"
-version     = "1.0.0"
+version     = "1.0.1"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -11,4 +11,4 @@ description = "It simply shows current branch name - or nothing if it isn’t a 
 edition     = "2021"
 
 [dependencies]
-git2 = "0.17"
+git2 = "0.18"
