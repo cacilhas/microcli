@@ -2,7 +2,7 @@ extern crate clap;
 extern crate kodumaro_uuid_cli as uuid_cli;
 extern crate uuid;
 
-use std::env;
+use std::{env, error::Error};
 
 use clap::{Parser, Subcommand};
 use uuid::Uuid;
@@ -55,7 +55,7 @@ enum Version {
     },
 }
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<(), Box<dyn Error>> {
     let prefix = match env::var("UUID_MODE") {
         Ok(mode) if mode == "uuidgen" => "",
         _ => "urn:uuid:",

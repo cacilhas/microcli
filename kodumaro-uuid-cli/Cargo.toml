@@ -1,6 +1,6 @@
 [package]
 name        = "kodumaro-uuid-cli"
-version     = "1.0.5"
+version     = "1.0.6"
 authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -11,9 +11,7 @@ description = "Command line tool to generate UUID."
 edition     = "2021"
 
 [dependencies]
-anyhow = "1.0"
 mac_address = "1.1"
-thiserror = "1.0"
 
 [dependencies.clap]
 version = "4.2"

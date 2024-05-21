@@ -118,32 +118,34 @@
 extern crate uuid;
 mod errors;
 
-pub use errors::Error;
+use std::error::Error;
+
+pub use errors::UUIDError;
 use mac_address::get_mac_address;
 use uuid::Uuid;
 
-pub fn get_v1() -> anyhow::Result<String> {
-    match get_mac_address()? {
-        Some(addr) => Ok(format!("{}", Uuid::now_v1(&addr.bytes()))),
-        None => Err(Error::Missing("mac address".to_owned()).into()),
-    }
+type Result<T> = std::result::Result<T, Box<dyn Error>>;
+
+pub fn get_v1() -> Result<String> {
+    let addr = get_mac_address()?.ok_or_else(|| UUIDError::Missing("mac address".to_owned()))?;
+    Ok(format!("{}", Uuid::now_v1(&addr.bytes())))
 }
 
-pub fn get_v3(namespace: Uuid, name: String) -> anyhow::Result<String> {
+pub fn get_v3(namespace: Uuid, name: String) -> Result<String> {
     Ok(format!("{}", Uuid::new_v3(&namespace, name.as_bytes())))
 }
 
-pub fn get_v4() -> anyhow::Result<String> {
+pub fn get_v4() -> Result<String> {
     Ok(format!("{}", Uuid::new_v4()))
 }
 
-pub fn get_v5(namespace: Uuid, name: String) -> anyhow::Result<String> {
+pub fn get_v5(namespace: Uuid, name: String) -> Result<String> {
     Ok(format!("{}", Uuid::new_v5(&namespace, name.as_bytes())))
 }
 
-pub fn get_v6(node_id: String) -> anyhow::Result<String> {
+pub fn get_v6(node_id: String) -> Result<String> {
     if node_id.len() < 6 {
-        return Err(Error::WrongLength {
+        return Err(UUIDError::WrongLength {
             expected: 6,
             got: node_id.len(),
         }
@@ -153,11 +155,11 @@ pub fn get_v6(node_id: String) -> anyhow::Result<String> {
     Ok(format!("{}", Uuid::now_v6(node_id)))
 }
 
-pub fn get_v7() -> anyhow::Result<String> {
+pub fn get_v7() -> Result<String> {
     Ok(format!("{}", Uuid::now_v7()))
 }
 
-pub fn get_v8(metadata: String) -> anyhow::Result<String> {
+pub fn get_v8(metadata: String) -> Result<String> {
     let metadata = metadata.as_bytes();
     let mut buf = [0_u8; 16];
     let length = metadata.len();
