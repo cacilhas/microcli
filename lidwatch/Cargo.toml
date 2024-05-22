@@ -1,6 +1,6 @@
 [package]
 name        = "lidwatch"
-version     = "1.0.0"
+version     = "1.0.1"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -11,6 +11,5 @@ description = "Util to watch LID switching."
 edition     = "2021"
 
 [dependencies]
-anyhow = "1.0"
 evdev = "0.12"
-thiserror = "1.0"
+notify-rust = "4.11"

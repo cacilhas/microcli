@@ -12,9 +12,13 @@
 //! lidwatch /dev/input/<lid event> <command to be executed when LID is closed>
 //! ```
 
-use evdev::{Device, InputEventKind, SwitchType};
-use std::{env, fmt, process::Command};
+mod notify;
+mod paramerror;
 
+use crate::notify::{notify, Icon};
+use crate::paramerror::ParamError;
+use evdev::{Device, InputEventKind, SwitchType};
+use std::{env, error::Error, process::Command};
 use ParamError::*;
 
 #[cfg(any(
@@ -25,16 +29,14 @@ use ParamError::*;
     target_os = "netbsd",
     target_os = "openbsd",
 ))]
-fn main() -> anyhow::Result<()> {
-    let args = env::args().collect::<Vec<String>>();
-    if args.len() < 3 {
-        WrongBlock.throw()?;
-    }
-    let file = &args[1];
-    let command = &args[2];
-    let params = &args[3..];
+fn main() -> Result<(), Box<dyn Error>> {
+    let mut args = env::args();
+    let _ = args.next();
+    let file = args.next().ok_or(WrongBlock)?;
+    let command = args.next().ok_or(WrongBlock)?;
+    let params: Vec<String> = args.collect();
     let mut device = Device::open(file)?;
-    let mut state: i32 = 0;
+    let mut state = 0;
 
     loop {
         let events = device
@@ -43,48 +45,20 @@ fn main() -> anyhow::Result<()> {
         for event in events {
             let value = event.value();
             if value == 1 && state == 0 {
-                let mut cmd = Command::new(command);
-                for param in params {
+                let mut cmd = Command::new(&command);
+                for param in &params {
                     cmd.arg(param);
                 }
                 match cmd.spawn() {
                     Ok(_) => continue,
                     Err(err) => {
-                        eprintln!("{err:#?}");
-                        notify(&format!("{err:?}"));
+                        eprintln!("{:#?}", err);
+                        notify(format!("{:?}", err), Icon::Info);
                     }
                 }
             } else {
                 state = value;
             }
         }
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-enum ParamError {
-    WrongBlock,
-}
-
-impl fmt::Display for ParamError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Self::WrongBlock => write!(f, "expected lid event block"),
-        }
-    }
-}
-
-impl ParamError {
-    fn throw(self) -> Result<(), ParamError> {
-        Err(self)
-    }
-}
-
-fn notify(msg: &str) {
-    let mut cmd = Command::new("notify-send");
-    cmd.args(["--app-name=lidwatch", "-t", "5000", &format!("'{msg}'")]);
-    match cmd.spawn() {
-        Ok(_) => (),
-        Err(err) => eprintln!("{err:#?}"),
     }
 }
