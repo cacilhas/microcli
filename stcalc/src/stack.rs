@@ -1,7 +1,6 @@
 use std::{
     fmt,
     io::{prelude::*, BufReader},
-    num::ParseFloatError,
 };
 
 use IO::*;
@@ -29,42 +28,24 @@ impl TapeStack {
 
     fn parse_token(&mut self, token: &str) -> Result<IO, String> {
         match token {
-            "+" => {
-                self.run_add()?;
-                Ok(Nop)
-            }
-            "-" => {
-                self.run_invert_signal()?;
-                Ok(Nop)
-            }
-            "*" => {
-                self.run_multiply()?;
-                Ok(Nop)
-            }
-            "/" => {
-                self.run_invert_number()?;
-                Ok(Nop)
-            }
-            "!" => {
-                self.run_pop()?;
-                Ok(Nop)
-            }
+            "+" => self.run_add(),
+            "-" => self.run_invert_signal(),
+            "*" => self.run_multiply(),
+            "/" => self.run_invert_number(),
+            "!" => self.run_pop(),
             "=" => self.run_print(),
             "." => self.run_print_character(),
-            _ => {
-                let float: Result<f32, ParseFloatError> = token.parse();
-                match float {
-                    Ok(value) => {
-                        self.0.push(value);
-                        Ok(Nop)
-                    }
-                    Err(_) => Err(format!("error parsing token “{token}”")),
+            _ => match token.parse() {
+                Ok(value) => {
+                    self.0.push(value);
+                    Ok(Nop)
                 }
-            }
+                Err(_) => Err(format!("error parsing token “{}”", token)),
+            },
         }
     }
 
-    fn run_add(&mut self) -> Result<(), String> {
+    fn run_add(&mut self) -> Result<IO, String> {
         if self.0.len() < 2 {
             return Err("stack is empty".to_owned());
         }
@@ -72,10 +53,10 @@ impl TapeStack {
         let value = self.0.pop().ok_or("stack is empty")?;
         let last = self.0.len() - 1;
         self.0[last] += value;
-        Ok(())
+        Ok(Nop)
     }
 
-    fn run_multiply(&mut self) -> Result<(), String> {
+    fn run_multiply(&mut self) -> Result<IO, String> {
         if self.0.len() < 2 {
             return Err("stack is empty".to_owned());
         }
@@ -83,26 +64,26 @@ impl TapeStack {
         let value = self.0.pop().ok_or("stack is empty")?;
         let last = self.0.len() - 1;
         self.0[last] *= value;
-        Ok(())
+        Ok(Nop)
     }
 
-    fn run_pop(&mut self) -> Result<(), String> {
+    fn run_pop(&mut self) -> Result<IO, String> {
         self.0.pop().ok_or("stack is empty")?;
-        Ok(())
+        Ok(Nop)
     }
 
-    fn run_invert_signal(&mut self) -> Result<(), String> {
+    fn run_invert_signal(&mut self) -> Result<IO, String> {
         let len = self.0.len();
         let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = value * -1.0;
-        Ok(())
+        Ok(Nop)
     }
 
-    fn run_invert_number(&mut self) -> Result<(), String> {
+    fn run_invert_number(&mut self) -> Result<IO, String> {
         let len = self.0.len();
         let value = self.0.last().ok_or("stack is empty")?;
         self.0[len - 1] = 1.0 / value;
-        Ok(())
+        Ok(Nop)
     }
 
     fn run_print(&self) -> Result<IO, String> {
