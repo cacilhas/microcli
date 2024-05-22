@@ -7,7 +7,7 @@ pub enum Icon {
 }
 
 pub fn notify(msg: impl Into<String>, icon: Icon) {
-    if let Err(err) = Notification::new()
+    if let Err(err) = Notification::default()
         .summary("Category:input")
         .body(&msg.into())
         .icon(icon.into())
