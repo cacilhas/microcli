@@ -12,12 +12,16 @@
 //! powersupplywatch --help
 //! ```
 
-use std::{fmt::Display, fs, path::Path, process::Command, thread::sleep, time::Duration};
+mod error;
+mod params;
+mod result;
 
+use crate::params::Params;
+use crate::result::Result;
 use inotify::{Inotify, WatchMask};
-use structopt::StructOpt;
+use std::{fs, process::Command, thread::sleep, time::Duration};
 
-fn main() -> anyhow::Result<()> {
+fn main() -> Result<()> {
     let params = Params::parse()?;
     let mut notif = Inotify::init()?;
     notif
@@ -47,7 +51,7 @@ fn main() -> anyhow::Result<()> {
     }
 }
 
-fn read_content(file: &str) -> anyhow::Result<i32> {
+fn read_content(file: &str) -> Result<i32> {
     let content: i32 = fs::read_to_string(file)?.trim().parse()?;
     Ok(content)
 }
@@ -55,68 +59,4 @@ fn read_content(file: &str) -> anyhow::Result<i32> {
 // TODO: find some decent crate that manages and play any audio file
 fn play(file: &str) {
     let _ = Command::new("play").arg(file).output();
-}
-
-#[derive(Debug, StructOpt)]
-#[structopt(name = "powersupplywatch")]
-struct Params {
-    #[structopt(
-        short,
-        long = "power-supply",
-        default_value = "/sys/class/power_supply/AC0"
-    )]
-    power_supply: String,
-    #[structopt(short, long, default_value = "/usr/share/sounds/freedesktop/stereo")]
-    sounds: String,
-    #[structopt(short = "i", long, default_value = "power-plug.oga")]
-    plugin: String,
-    #[structopt(short, long, default_value = "power-unplug.oga")]
-    unplug: String,
-}
-
-impl Params {
-    fn parse() -> anyhow::Result<Self> {
-        let mut params = Params::from_args();
-        let mut power_supply = Path::new(&params.power_supply).to_owned();
-        if !power_supply.ends_with("/online") {
-            power_supply = power_supply.join("online");
-        }
-        if !power_supply.exists() {
-            return Err(Error::NotFound(params.power_supply).into());
-        }
-        params.power_supply = power_supply.to_str().unwrap().to_owned();
-        let sounds = Path::new(&params.sounds);
-        let plugin = params.plugin.clone();
-        let unplug = params.unplug.clone();
-        let mut plugin = Path::new(&plugin).to_owned();
-        let mut unplug = Path::new(&unplug).to_owned();
-        if plugin.is_relative() {
-            plugin = sounds.clone().join(&plugin);
-        }
-        if unplug.is_relative() {
-            unplug = sounds.clone().join(&unplug);
-        }
-        params.plugin = plugin.to_str().unwrap().to_owned();
-        params.unplug = unplug.to_str().unwrap().to_owned();
-        if !plugin.exists() {
-            return Err(Error::NotFound(params.plugin).into());
-        }
-        if !unplug.exists() {
-            return Err(Error::NotFound(params.unplug).into());
-        }
-        Ok(params)
-    }
-}
-
-#[derive(Debug, thiserror::Error)]
-enum Error {
-    NotFound(String),
-}
-
-impl Display for Error {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::NotFound(msg) => write!(f, "{msg} not found"),
-        }
-    }
 }

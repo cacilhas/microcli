@@ -1,6 +1,6 @@
 [package]
 name        = "powersupplywatch"
-version     = "1.0.3"
+version     = "1.0.4"
 authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
@@ -11,7 +11,5 @@ description = "Util to watch power supply."
 edition     = "2021"
 
 [dependencies]
-anyhow = "1.0"
 inotify = "0.10"
-thiserror = "1.0"
 structopt = "0.3"
