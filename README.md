@@ -10,6 +10,7 @@ Bunch of random unrelated
 - [BrightCLI](https://crates.io/crates/brightcli)
 - [GitBranch](https://crates.io/crates/gitbranch)
 - [I3QuitDialog](https://crates.io/crates/i3quitdialog)
+- [Kodumaro Trim](https://crates.io/crates/kodumaro-trim)
 - [Kodumaro UUID CLI](https://crates.io/crates/kodumaro-uuid-cli)
 - [LidWatch](https://crates.io/crates/lidwatch)
 - [Stack-based Calculator](https://crates.io/crates/stcalc)

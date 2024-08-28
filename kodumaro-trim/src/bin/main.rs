@@ -1,31 +1,3 @@
-//! Kodumaro Trim intends to be a shell in-pipe tool.
-//!
-//! # Installation guide
-//!
-//! ```sh
-//! cargo install kodumaro-trim
-//! ```
-//!
-//! # Usage
-//!
-//! Usage: ktrim [OPTIONS] [FILE]
-//!
-//! Arguments:
-//!   [FILE]  input file, defaults to STDIN
-//!
-//! Options:
-//!   -l, --left         trim only leading
-//!   -r, --right        trim only trailing
-//!   -c, --char <CHAR>  character to remove, defaults to whitespaces
-//!   -h, --help         Print help
-//!
-//! ## Examples
-//!
-//! ```sh
-//! echo '   hello world   ' | ktrim
-//! ```
-
-
 use std::{fs::File, io::{self, BufRead, BufReader}};
 
 use clap::{ArgAction, Parser};
