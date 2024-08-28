@@ -7,6 +7,7 @@ members = [
     "brightcli",
     "gitbranch",
     "i3quitdialog",
+    "kodumaro-trim",
     "kodumaro-uuid-cli",
     "lidwatch",
     "powersupplywatch",
@@ -16,6 +17,7 @@ members = [
 [profile.release]
 opt-level     = "s"
 codegen-units = 1
+panic = "abort"
 debug = false
 lto   = true
 rpath = false

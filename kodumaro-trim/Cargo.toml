@@ -1,0 +1,23 @@
+[package]
+name        = "kodumaro-trim"
+version     = "1.0.0"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
+license     = "BSD-3-Clause"
+readme      = "README.md"
+homepage    = "https://crates.io/crates/kodumaro-trim"
+repository  = "https://github.com/cacilhas/microcli/tree/master/kodumaro-trim"
+keywords    = ["cli", "string", "trim"]
+description = "Command line tool to trim strings."
+edition     = "2021"
+
+[dependencies]
+color-eyre = "0.6"
+eyre = "0.6"
+
+[dependencies.clap]
+version = "4.2"
+features = ["color", "help", "std", "suggestions", "usage", "derive"]
+
+[[bin]]
+name = "trim"
+path = "src/bin/main.rs"
