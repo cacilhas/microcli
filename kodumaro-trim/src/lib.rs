@@ -8,7 +8,8 @@
 //!
 //! # Usage
 //!
-//! Usage: ktrim [OPTIONS] [FILE]
+//! ```sh
+//! Usage: trim [OPTIONS] [FILE]
 //!
 //! Arguments:
 //!   [FILE]  input file, defaults to STDIN
@@ -16,13 +17,14 @@
 //! Options:
 //!   -l, --left         trim only leading
 //!   -r, --right        trim only trailing
-//!   -c, --char &lt;CHAR&gt;  character to be removed, defaults to whitespaces
+//!   -c, --char <CHAR>  character to be removed, defaults to whitespaces
 //!   -h, --help         Print help
+//! ```
 //!
 //! ## Examples
 //!
 //! ```sh
-//! echo '   hello world   ' | ktrim
+//! echo '   hello world   ' | trim
 //! ```
 
 
