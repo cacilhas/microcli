@@ -2,7 +2,7 @@ mod cli_bool;
 mod param;
 mod util;
 
-use std::str::FromStr;
+use std::{env::consts, str::FromStr};
 
 use base64::{engine, Engine};
 use clap::{ArgAction, Parser, Subcommand};
@@ -261,12 +261,17 @@ impl TryFrom<&Cli> for Request {
         let method: Method = (&value.verb).into();
         let mut url = value.verb.url().clone();
         let mut headers: Vec<(String, String)> = vec![];
+        let mut user_agent_set = false;
+        let user_agent = reqwest::header::USER_AGENT.to_string();
 
         for param in value.verb.params().iter() {
             match param {
-                Param::Header(name,  value) => headers
-                    .push((name.to_owned(), value.to_owned()))
-                    .ignore(),
+                Param::Header(name, value) => {
+                    if user_agent == **name {
+                        user_agent_set = true;
+                    }
+                    headers.push((name.to_owned(), value.to_owned()));
+                }
 
                 Param::Query(key, value) => url.query_pairs_mut()
                     .append_pair(&key, &value)
@@ -275,6 +280,20 @@ impl TryFrom<&Cli> for Request {
                 _ => (),
             }
         }
+        if !user_agent_set {
+
+            headers.push((
+                user_agent.to_owned(),
+                format!(
+                    "Mozilla/5.0 ({} {}) AppleWebKit/537.36 (KHTML like Gecko) {}/{} Chrome/129.0.0.0 Safari/537.36",
+                    consts::OS,
+                    consts::ARCH,
+                    env!("CARGO_PKG_NAME"),
+                    env!("CARGO_PKG_VERSION"),
+                ),
+            ));
+        }
+
         let mut request = Request::new(method, url);
         for (name, value) in headers.iter() {
             let _ = request.headers_mut().insert(
