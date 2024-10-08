@@ -1,7 +1,7 @@
 [montegasppa@cacilhas.info]: mailto:montegasppa@cacilhas.info
 [https://opensource.org/licenses/BSD-3-Clause]: https://opensource.org/licenses/BSD-3-Clause
 
-Copyright 2021-2023 Rodrigo Cacilhας <[montegasppa@cacilhas.info][]>
+Copyright 2021-2024 Rodrigo Cacilhας <[montegasppa@cacilhas.info][]>
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:
