@@ -32,8 +32,6 @@ Commands:
   help     Print this message or the help of the given subcommand(s)
 
 Options:
-  -j, --json                           data items from the command line are serialized as a JSON object
-  -f, --form                           data items from the command line are serialized as form fields
       --raw <RAW>                      allows you to pass raw request data without extra processing
   -o, --output <OUTPUT>                save output to file instead of stdout
   -d, --download                       do not print the response body to stdout; rather, download it and store it in a file
@@ -50,6 +48,11 @@ Options:
 ## Known bugs
 
 Just like old BSD CLI tools, it requires options to be BEFORE commands.
+
+
+## TODO
+
+- Support `multipart/form-data`
 
 
 [HTTPie]:  https://httpie.io/

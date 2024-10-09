@@ -20,21 +20,13 @@ pub struct Cli {
     #[command(subcommand)]
     pub verb: Verb,
 
-    /// data items from the command line are serialized as a JSON object
-    #[arg(short, long, action = ArgAction::SetTrue, default_value_t = true)]
-    pub json: bool,
+    // /// data items from the command line are serialized as a JSON object
+    // #[arg(short, long, action = ArgAction::SetTrue, default_value_t = true)]
+    // pub json: bool,
 
-    /// data items from the command line are serialized as form fields
-    #[arg(short, long, action = ArgAction::SetTrue)]
-    pub form: bool,
-
-    // /// similar to --form, but always sends a multipart/form-data request (i.e., even without files)
-    // #[arg(long, action = ArgAction::SetTrue)]
-    // pub multipart: bool,
-
-    // /// specifies a custom boundary string for multipart/form-data requests
-    // #[arg(long)]
-    // pub boundary: Option<String>,
+    // /// data items from the command line are serialized as form fields
+    // #[arg(short, long, action = ArgAction::SetTrue)]
+    // pub form: bool,
 
     /// allows you to pass raw request data without extra processing
     #[arg(long)]
@@ -279,13 +271,9 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
-        if value.json && value.form {
-            return Err(eyre!("--json and --form are mutually exclusive"));
-        // if (value.json && value.form)
-        // || (value.json && value.multipart)
-        // || (value.form && value.multipart) {
-        //     return Err(eyre!("--json, --form, and --multipart are mutually exclusive"));
-        }
+        // if value.json && value.form {
+        //     return Err(eyre!("--json and --form are mutually exclusive"));
+        // }
 
         let method: Method = (&value.verb).into();
         let mut url = value.verb.url().clone();
