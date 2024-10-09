@@ -15,8 +15,8 @@ use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
 
 
-pub async fn perform(cli: Cli) -> Result<()> {
-    let request: Request = (&cli).try_into()?;
+pub async fn perform(cli: impl CLParameters) -> Result<()> {
+    let request: Request = cli.request()?;
     let payload = match cli.payload() {
         Ok(payload) => Some(payload),
         Err(None) => None,
@@ -35,7 +35,7 @@ pub async fn perform(cli: Cli) -> Result<()> {
         }
     };
 
-    let policy: Policy = (&cli).into();
+    let policy: Policy = cli.policy();
     let client = reqwest::Client::builder()
         .redirect(policy)
         .build()?;

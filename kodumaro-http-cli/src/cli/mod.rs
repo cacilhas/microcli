@@ -4,7 +4,7 @@ mod util;
 
 use std::{
     env::consts,
-    str::FromStr,
+    str::FromStr, sync::LazyLock,
 };
 
 use base64::{engine, Engine};
@@ -22,12 +22,38 @@ use reqwest::{
 use serde_json::Value;
 use util::parse_string;
 
+static DEFAULT_USER_AGENT: LazyLock<String> = LazyLock::new(||
+    format!(
+        "Mozilla/5.0 ({} {}) AppleWebKit/537.36 (KHTML like Gecko) {}/{} Chrome/129.0.0.0 Safari/537.36",
+        consts::OS,
+        consts::ARCH,
+        env!("CARGO_PKG_NAME"),
+        env!("CARGO_PKG_VERSION"),
+    )
+);
+
+
+pub trait CLParameters {
+
+    fn download(&self) -> bool;
+    fn output(&self) -> Option<String>;
+    fn payload(&self) -> Result<Value, Option<eyre::ErrReport>>;
+    fn policy(&self) -> Policy;
+    fn request(&self) -> eyre::Result<Request>;
+    fn url(&self) -> &Url;
+    fn verbose(&self) -> bool;
+}
+
+
 #[derive(Debug, Parser)]
 #[command(about, author, name = "http", version)]
 pub struct Cli {
 
     #[command(subcommand)]
     verb: Verb,
+
+    #[arg(skip = reqwest::Url::parse("http://localhost/").unwrap())]
+    built_url: Url,
 }
 
 #[derive(Args, Debug)]
@@ -107,17 +133,20 @@ enum Verb {
     Trace(VerbArgs),
 }
 
-impl Cli {
+impl CLParameters for Cli {
 
-    pub fn download(&self) -> bool {
+    #[inline]
+    #[must_use]
+    fn download(&self) -> bool {
         self.verb.args().download
     }
 
-    pub fn output(&self) -> Option<String> {
+    #[inline]
+    fn output(&self) -> Option<String> {
         self.verb.args().output.clone()
     }
 
-    pub fn payload(&self) -> Result<Value, Option<eyre::ErrReport>> {
+    fn payload(&self) -> Result<Value, Option<eyre::ErrReport>> {
         let args = self.verb.args();
 
         if let Some(raw) = &args.raw {
@@ -153,46 +182,111 @@ impl Cli {
         }
     }
 
-    pub fn url(&self) -> &Url {
-        &self.verb.args().url
+    #[inline]
+    #[must_use]
+    fn policy(&self) -> Policy {
+        self.into()
     }
 
-    pub fn verbose(&self) -> bool {
+    #[inline]
+    fn request(&self) -> eyre::Result<Request> {
+        self.try_into()
+    }
+
+    #[inline]
+    #[must_use]
+    fn url(&self) -> &Url {
+        &self.built_url
+    }
+
+    #[inline]
+    #[must_use]
+    fn verbose(&self) -> bool {
         self.verb.args().verbose
     }
 }
 
-impl Verb {
+impl Cli {
 
-    fn args(&self) -> &VerbArgs {
-        match self {
-            Verb::Connect(args) => args,
-            Verb::Delete (args) => args,
-            Verb::Get (args) => args,
-            Verb::Head (args) => args,
-            Verb::Option (args) => args,
-            Verb::Patch (args) => args,
-            Verb::Post (args) => args,
-            Verb::Put (args) => args,
-            Verb::Trace (args) => args,
+    fn headers(&self) -> eyre::Result<Vec<(String, String)>> {
+
+        let args = self.verb.args();
+        let mut headers: Vec<(String, String)> = vec![];
+        let mut close_connection_set = false;
+        let mut user_agent_set = false;
+        let connection = reqwest::header::CONNECTION.to_string();
+        let user_agent = reqwest::header::USER_AGENT.to_string();
+
+        for param in args.params.iter() {
+            if let Param::Header(name, value) = param {
+                if user_agent == **name {
+                    user_agent_set = true;
+                } else if connection == **name {
+                    close_connection_set = true;
+                }
+                headers.push((name.to_owned(), value.to_owned()));
+            }
         }
+        if !user_agent_set {
+            headers.push((user_agent.to_owned(), DEFAULT_USER_AGENT.to_owned()));
+        }
+        if !close_connection_set {
+            headers.push((connection.to_owned(), "close".to_string()));
+        }
+
+        Ok(headers)
     }
-}
 
-impl From<&Verb> for Method {
-
-    fn from(value: &Verb) -> Self {
-        match value {
-            Verb::Connect { .. } => Method::CONNECT,
-            Verb::Delete { .. }  => Method::DELETE,
-            Verb::Get { .. }     => Method::GET,
-            Verb::Head { .. }    => Method::HEAD,
-            Verb::Option { .. }  => Method::OPTIONS,
-            Verb::Patch { .. }   => Method::PATCH,
-            Verb::Post { .. }    => Method::POST,
-            Verb::Put { .. }     => Method::PUT,
-            Verb::Trace { .. }   => Method::TRACE,
+    fn build_request(&self) -> eyre::Result<Request> {
+        let method: Method = (&self.verb).into();
+        let headers = self.headers()?;
+        let mut request = Request::new(method, self.url().clone());
+        for (name, value) in headers.iter() {
+            let _ = request.headers_mut().insert(
+                HeaderName::from_str(name)?,
+                HeaderValue::from_str(value)?,
+            );
         }
+        Ok(request)
+    }
+
+    fn set_authorization(&self, mut request: Request) -> Request {
+        if let Some(auth) = &self.verb.args().auth {
+            if let Some((username, password)) = auth.split_once(':') {
+                let auth = format!("{}:{}", username, password);
+                let engine = engine::general_purpose::STANDARD;
+                let auth = engine.encode(auth.into_bytes());
+                let _ = request.headers_mut().insert(
+                    reqwest::header::AUTHORIZATION,
+                    HeaderValue::from_str(&format!("Basic {}", auth)).unwrap(),
+                );
+            } else {
+                let _ = request.headers_mut().insert(
+                    reqwest::header::AUTHORIZATION,
+                    HeaderValue::from_str(&format!("Bearer {}", auth)).unwrap(),
+                );
+            }
+        }
+        request
+    }
+
+    pub fn initialize(&mut self) -> eyre::Result<()> {
+        let args = self.verb.args();
+        let mut url = args.url.clone();
+
+        // if args.json && args.form {
+        //     return Err(eyre!("--json and --form are mutually exclusive"));
+        // }
+
+        for param in args.params.iter() {
+            if let Param::Query(key, value) = param { url.query_pairs_mut()
+            .append_pair(key, value)
+            .ignore() }
+        }
+
+        self.built_url = url;
+
+        Ok(())
     }
 }
 
@@ -201,80 +295,7 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
-        let args = value.verb.args();
-
-        // if value.json && value.form {
-        //     return Err(eyre!("--json and --form are mutually exclusive"));
-        // }
-
-        let method: Method = (&value.verb).into();
-        let mut url = args.url.clone();
-        let mut headers: Vec<(String, String)> = vec![];
-        let mut close_connection_set = false;
-        let mut user_agent_set = false;
-        let connection = reqwest::header::CONNECTION.to_string();
-        let user_agent = reqwest::header::USER_AGENT.to_string();
-
-        for param in args.params.iter() {
-            match param {
-                Param::Header(name, value) => {
-                    if user_agent == **name {
-                        user_agent_set = true;
-                    } else if connection == **name {
-                        close_connection_set = true;
-                    }
-                    headers.push((name.to_owned(), value.to_owned()));
-                }
-
-                Param::Query(key, value) => url.query_pairs_mut()
-                    .append_pair(key, value)
-                    .ignore(),
-
-                _ => (),
-            }
-        }
-        if !user_agent_set {
-            headers.push((
-                user_agent.to_owned(),
-                format!(
-                    "Mozilla/5.0 ({} {}) AppleWebKit/537.36 (KHTML like Gecko) {}/{} Chrome/129.0.0.0 Safari/537.36",
-                    consts::OS,
-                    consts::ARCH,
-                    env!("CARGO_PKG_NAME"),
-                    env!("CARGO_PKG_VERSION"),
-                ),
-            ));
-        }
-        if !close_connection_set {
-            headers.push((connection.to_owned(), "close".to_string()));
-        }
-
-        let mut request = Request::new(method, url);
-        for (name, value) in headers.iter() {
-            let _ = request.headers_mut().insert(
-                HeaderName::from_str(name)?,
-                HeaderValue::from_str(value)?,
-            );
-        }
-
-        if let Some(auth) = &args.auth {
-            if let Some((username, password)) = auth.split_once(':') {
-                let auth = format!("{}:{}", username, password);
-                let engine = engine::general_purpose::STANDARD;
-                let auth = engine.encode(auth.into_bytes());
-                let _ = request.headers_mut().insert(
-                    reqwest::header::AUTHORIZATION,
-                    HeaderValue::from_str(&format!("Basic {}", auth))?,
-                );
-            } else {
-                let _ = request.headers_mut().insert(
-                    reqwest::header::AUTHORIZATION,
-                    HeaderValue::from_str(&format!("Bearer {}", auth))?,
-                );
-            }
-        }
-
-        Ok(request)
+        Ok(value.set_authorization(value.build_request()?))
     }
 }
 
@@ -290,8 +311,47 @@ impl From<&Cli> for Policy {
     }
 }
 
+impl Verb {
+
+    #[inline]
+    #[must_use]
+    fn args(&self) -> &VerbArgs {
+        match self {
+            Verb::Connect(args) => args,
+            Verb::Delete(args)  => args,
+            Verb::Get(args)     => args,
+            Verb::Head(args)    => args,
+            Verb::Option(args)  => args,
+            Verb::Patch(args)   => args,
+            Verb::Post(args)    => args,
+            Verb::Put(args)     => args,
+            Verb::Trace(args)   => args,
+        }
+    }
+}
+
+impl From<&Verb> for Method {
+
+    #[inline]
+    fn from(value: &Verb) -> Self {
+        match value {
+            Verb::Connect(_) => Method::CONNECT,
+            Verb::Delete(_)  => Method::DELETE,
+            Verb::Get(_)     => Method::GET,
+            Verb::Head(_)    => Method::HEAD,
+            Verb::Option(_)  => Method::OPTIONS,
+            Verb::Patch(_)   => Method::PATCH,
+            Verb::Post(_)    => Method::POST,
+            Verb::Put(_)     => Method::PUT,
+            Verb::Trace(_)   => Method::TRACE,
+        }
+    }
+}
+
 
 trait Ignore {
+
+    #[inline]
     fn ignore(&self) {}
 }
 

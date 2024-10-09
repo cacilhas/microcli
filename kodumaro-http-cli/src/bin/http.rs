@@ -4,7 +4,7 @@ use kodumaro_http_cli::Cli;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let args = match Cli::try_parse() {
+    let mut cl_parameters = match Cli::try_parse() {
         Ok(args) => args,
         Err(err) if [ErrorKind::DisplayHelp, ErrorKind::DisplayVersion].contains(&err.kind()) => {
             eprintln!("{}", err);
@@ -12,6 +12,7 @@ async fn main() -> Result<()> {
         }
         Err(err) => return Err(err.into()),
     };
-    kodumaro_http_cli::perform(args).await?;
+    cl_parameters.initialize()?;
+    kodumaro_http_cli::perform(cl_parameters).await?;
     Ok(())
 }
