@@ -17,6 +17,9 @@ use util::parse_string;
 #[command(about, author, name = "http", version)]
 pub struct Cli {
 
+    #[command(subcommand)]
+    pub verb: Verb,
+
     /// data items from the command line are serialized as a JSON object
     #[arg(short, long, action = ArgAction::SetTrue, default_value_t = true)]
     pub json: bool,
@@ -25,13 +28,13 @@ pub struct Cli {
     #[arg(short, long, action = ArgAction::SetTrue)]
     pub form: bool,
 
-    /// similar to --form, but always sends a multipart/form-data request (i.e., even without files)
-    #[arg(long, action = ArgAction::SetTrue)]
-    pub multipart: bool,
+    // /// similar to --form, but always sends a multipart/form-data request (i.e., even without files)
+    // #[arg(long, action = ArgAction::SetTrue)]
+    // pub multipart: bool,
 
-    /// specifies a custom boundary string for multipart/form-data requests
-    #[arg(long)]
-    pub boundary: Option<String>,
+    // /// specifies a custom boundary string for multipart/form-data requests
+    // #[arg(long)]
+    // pub boundary: Option<String>,
 
     /// allows you to pass raw request data without extra processing
     #[arg(long)]
@@ -41,14 +44,14 @@ pub struct Cli {
     #[arg(short, long)]
     pub output: Option<String>,
 
-    /// do not print the response body to stdout; Rather, download it and store it in a file
+    /// do not print the response body to stdout; rather, download it and store it in a file
     #[arg(short, long)]
     pub download: bool,
 
     // TODO: support --continue (-c)
     // TODO: support --session
 
-    /// basic authentication (user[:password])
+    /// basic authentication (user[:password]) or bearer token
     #[arg(short, long)]
     pub auth: Option<String>,
 
@@ -56,20 +59,17 @@ pub struct Cli {
     #[arg(short = 'F', long, action = ArgAction::SetTrue)]
     pub follow: bool,
 
-    /// by default, requests have a limit of 30 redirects
+    /// when following redirects, max redirects
     #[arg(long, default_value_t = 30)]
     pub max_redirects: usize,
 
-    /// set to "no" (or "false") to skip checking the host's SSL certificate; defaults to "yes" ("true")
+    /// set to "no" (or "false") to skip checking the host's SSL certificate
     #[arg(long, default_value_t = CliBool::Yes)]
     pub verify: CliBool,
 
     /// Show headers
     #[arg(short, long, action = ArgAction::SetTrue)]
     pub verbose: bool,
-
-    #[command(subcommand)]
-    pub verb: Verb,
 }
 
 #[derive(Debug, Subcommand)]
@@ -252,10 +252,12 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
-        if (value.json && value.form)
-        || (value.json && value.multipart)
-        || (value.form && value.multipart) {
-            return Err(eyre!("--json, --form, and --multipart are mutually exclusive"));
+        if value.json && value.form {
+            return Err(eyre!("--json and --form are mutually exclusive"));
+        // if (value.json && value.form)
+        // || (value.json && value.multipart)
+        // || (value.form && value.multipart) {
+        //     return Err(eyre!("--json, --form, and --multipart are mutually exclusive"));
         }
 
         let method: Method = (&value.verb).into();
