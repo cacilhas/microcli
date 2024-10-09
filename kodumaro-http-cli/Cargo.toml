@@ -13,6 +13,7 @@ edition     = "2021"
 [dependencies]
 base64 = "0.22"
 color-eyre = "0.6"
+crossterm = "0.28"
 eyre = "0.6"
 json-color = "0.7"
 regex = "1.11"

@@ -9,6 +9,7 @@ use std::{
 };
 
 pub use cli::*;
+use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
 use eyre::Result;
 use json_color::Colorizer;
 use reqwest::{redirect::Policy, Request, RequestBuilder};
@@ -52,14 +53,38 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         None => builder,
     };
 
+    let mut stderr = io::stderr();
+
     if cli.verbose() {
         let request = builder.build()?;
 
-        eprintln!("\x1b[34;1m{:?} \x1b[33;1m{}\x1b[0m", request.method(), request.url());
+        crossterm::execute!(
+            stderr,
+            SetForegroundColor(Color::Blue),
+            SetAttribute(Attribute::Bold),
+            Print(format!("{:?} ", request.method())),
+            ResetColor,
+            SetForegroundColor(Color::Yellow),
+            Print(request.url().to_string()),
+            ResetColor,
+            Print("\n"),
+        )?;
         for (name, value) in request.headers().iter() {
-            eprintln!("\x1b[1m{}:\x1b[0m \x1b[33m{}\x1b[0m", name, value.to_str()?);
+            crossterm::execute!(
+                stderr,
+                SetAttribute(Attribute::Bold),
+                Print(name),
+                Print(": "),
+                ResetColor,
+                SetForegroundColor(Color::Yellow),
+                Print(format!("{:?}", value)),
+                ResetColor,
+                Print("\n"),
+            )?;
         }
-        if let Some(payload) = payload { eprintln!("{}", serde_json::to_string(&payload)?) }
+        if let Some(payload) = payload {
+            eprintln!("{}", serde_json::to_string(&payload)?);
+        }
         eprintln!();
 
         builder = RequestBuilder::from_parts(client, request);
@@ -70,12 +95,43 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     if cli.verbose() {
         let status = response.status();
         match status.as_u16() / 100 {
-            2 => eprintln!("\x1b[32;1m{}\x1b[0m", status),
-            1|3 => eprintln!("\x1b[33;1m{}\x1b[0m", status),
-            _ => eprintln!("\x1b[31;1m{}\x1b[0m", status),
+            2 => crossterm::execute!(
+                stderr,
+                SetForegroundColor(Color::Green),
+                SetAttribute(Attribute::Bold),
+                Print(status),
+                ResetColor,
+                Print("\n"),
+            )?,
+            1|3 => crossterm::execute!(
+                stderr,
+                SetForegroundColor(Color::Yellow),
+                SetAttribute(Attribute::Bold),
+                Print(status),
+                ResetColor,
+                Print("\n"),
+            )?,
+            _ => crossterm::execute!(
+                stderr,
+                SetForegroundColor(Color::Red),
+                SetAttribute(Attribute::Bold),
+                Print(status),
+                ResetColor,
+                Print("\n"),
+            )?,
         }
         for (name, value) in response.headers().iter() {
-            eprintln!("\x1b[1m{}:\x1b[0m \x1b[33m{}\x1b[0m", name, value.to_str()?);
+            crossterm::execute!(
+                stderr,
+                SetAttribute(Attribute::Bold),
+                Print(name),
+                Print(": "),
+                ResetColor,
+                SetForegroundColor(Color::Red),
+                Print(format!("{:?}", value)),
+                ResetColor,
+                Print("\n"),
+            )?;
         }
     }
 
