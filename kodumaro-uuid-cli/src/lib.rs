@@ -118,13 +118,11 @@
 extern crate uuid;
 mod errors;
 
-use std::error::Error;
-
+use eyre::Result;
 pub use errors::UUIDError;
 use mac_address::get_mac_address;
 use uuid::Uuid;
 
-type Result<T> = std::result::Result<T, Box<dyn Error>>;
 
 pub fn get_v1() -> Result<String> {
     let addr = get_mac_address()?.ok_or_else(|| UUIDError::Missing("mac address".to_owned()))?;

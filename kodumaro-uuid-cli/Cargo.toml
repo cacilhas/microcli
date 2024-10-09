@@ -1,7 +1,7 @@
 [package]
 name        = "kodumaro-uuid-cli"
-version     = "1.0.6"
-authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info"]
+version     = "1.0.7"
+authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info>"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://crates.io/crates/kodumaro-uuid-cli"
@@ -11,14 +11,16 @@ description = "Command line tool to generate UUID."
 edition     = "2021"
 
 [dependencies]
+color-eyre = "0.6"
+eyre = "0.6"
 mac_address = "1.1"
 
 [dependencies.clap]
-version = "4.2"
+version = "4.5"
 features = ["color", "help", "std", "suggestions", "usage", "derive"]
 
 [dependencies.uuid]
-version = "1.3"
+version = "1.10"
 features = ["std", "rng", "v1", "v3", "v4", "v5", "v6", "v7", "v8"]
 
 [[bin]]

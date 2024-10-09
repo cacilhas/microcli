@@ -1,16 +1,14 @@
-extern crate clap;
 extern crate kodumaro_uuid_cli as uuid_cli;
-extern crate uuid;
 
-use std::{env, error::Error};
+use std::env;
 
 use clap::{Parser, Subcommand};
+use eyre::Result;
 use uuid::Uuid;
 
 #[derive(Debug, Parser)]
 #[command(
-    author = "Montegasppα Cacilhας <montegasppa@cacilhas.info>",
-    about = "UUID generator",
+    author, about, version,
     name = "uuid",
     long_about = include_str!("long-help.txt"),
 )]
@@ -55,30 +53,28 @@ enum Version {
     },
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
+    let command = Cli::parse();
+    match command.version.unwrap_or(Version::V4) {
+        Version::NIL             => display(uuid::Uuid::nil()),
+        Version::V1              => display(uuid_cli::get_v1()?),
+        Version::V3 { ns, name } => display(uuid_cli::get_v3(ns, name)?),
+        Version::V4              => display(uuid_cli::get_v4()?),
+        Version::V5 { ns, name } => display(uuid_cli::get_v5(ns, name)?),
+        Version::V6 { node_id }  => display(uuid_cli::get_v6(node_id)?),
+        Version::V7              => display(uuid_cli::get_v7()?),
+        Version::V8 { metadata } => display(uuid_cli::get_v8(metadata)?),
+    }
+
+    Ok(())
+}
+
+
+fn display(msg: impl ToString) {
     let prefix = match env::var("UUID_MODE") {
         Ok(mode) if mode == "uuidgen" => "",
         _ => "urn:uuid:",
     };
 
-    let command = Cli::parse();
-    match command.version.unwrap_or(Version::V4) {
-        Version::NIL => println!("{}{}", prefix, uuid::Uuid::nil()),
-
-        Version::V1 => println!("{}{}", prefix, uuid_cli::get_v1()?),
-
-        Version::V3 { ns, name } => println!("{}{}", prefix, uuid_cli::get_v3(ns, name)?),
-
-        Version::V4 => println!("{}{}", prefix, uuid_cli::get_v4()?),
-
-        Version::V5 { ns, name } => println!("{}{}", prefix, uuid_cli::get_v5(ns, name)?),
-
-        Version::V6 { node_id } => println!("{}{}", prefix, uuid_cli::get_v6(node_id)?),
-
-        Version::V7 => println!("{}{}", prefix, uuid_cli::get_v7()?),
-
-        Version::V8 { metadata } => println!("{}{}", prefix, uuid_cli::get_v8(metadata)?),
-    }
-
-    Ok(())
+    println!("{}{}", prefix, msg.to_string());
 }
