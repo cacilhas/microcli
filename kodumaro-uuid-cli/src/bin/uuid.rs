@@ -20,7 +20,7 @@ struct Cli {
 #[derive(Debug, Subcommand)]
 enum Version {
     #[command(about = "generates nil UUID")]
-    NIL,
+    Nil,
     #[command(about = "generates UUIDv1, time-based UUID")]
     V1,
     #[command(about = "generates UUIDv3, name-based MD5 UUID")]
@@ -56,7 +56,7 @@ enum Version {
 fn main() -> Result<()> {
     let command = Cli::parse();
     match command.version.unwrap_or(Version::V4) {
-        Version::NIL             => display(uuid::Uuid::nil()),
+        Version::Nil             => display(uuid::Uuid::nil()),
         Version::V1              => display(uuid_cli::get_v1()?),
         Version::V3 { ns, name } => display(uuid_cli::get_v3(ns, name)?),
         Version::V4              => display(uuid_cli::get_v4()?),

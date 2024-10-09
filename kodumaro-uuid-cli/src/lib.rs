@@ -162,8 +162,6 @@ pub fn get_v8(metadata: String) -> Result<String> {
     let mut buf = [0_u8; 16];
     let length = metadata.len();
     let length = if length > 16 { 16 } else { length };
-    for i in 0..length {
-        buf[i] = metadata[i];
-    }
+    buf[..length].copy_from_slice(&metadata[..length]);
     Ok(format!("{}", Uuid::new_v8(buf)))
 }
