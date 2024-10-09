@@ -278,7 +278,9 @@ impl TryFrom<&Cli> for Request {
         let method: Method = (&value.verb).into();
         let mut url = value.verb.url().clone();
         let mut headers: Vec<(String, String)> = vec![];
+        let mut close_connection_set = false;
         let mut user_agent_set = false;
+        let connection = reqwest::header::CONNECTION.to_string();
         let user_agent = reqwest::header::USER_AGENT.to_string();
 
         for param in value.verb.params().iter() {
@@ -286,6 +288,8 @@ impl TryFrom<&Cli> for Request {
                 Param::Header(name, value) => {
                     if user_agent == **name {
                         user_agent_set = true;
+                    } else if connection == **name {
+                        close_connection_set = true;
                     }
                     headers.push((name.to_owned(), value.to_owned()));
                 }
@@ -298,7 +302,6 @@ impl TryFrom<&Cli> for Request {
             }
         }
         if !user_agent_set {
-
             headers.push((
                 user_agent.to_owned(),
                 format!(
@@ -309,6 +312,9 @@ impl TryFrom<&Cli> for Request {
                     env!("CARGO_PKG_VERSION"),
                 ),
             ));
+        }
+        if !close_connection_set {
+            headers.push((connection.to_owned(), "close".to_string()));
         }
 
         let mut request = Request::new(method, url);
