@@ -2,6 +2,10 @@
 
 Kodumaro HTTP CLI inspired by [HTTPie][].
 
+## Project status
+
+It’s still a kinda-usable work in progress.
+
 
 ## Installation
 
