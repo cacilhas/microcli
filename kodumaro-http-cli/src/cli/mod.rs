@@ -2,14 +2,23 @@ mod cli_bool;
 mod param;
 mod util;
 
-use std::{env::consts, str::FromStr};
+use std::{
+    env::consts,
+    str::FromStr,
+};
 
 use base64::{engine, Engine};
 use clap::{ArgAction, Args, Parser, Subcommand};
 use cli_bool::CliBool;
 use eyre::eyre;
 pub use param::Param;
-use reqwest::{header::{HeaderName, HeaderValue}, redirect::Policy, Method, Request, Url};
+use reqwest::{
+    header::{HeaderName, HeaderValue},
+    redirect::Policy,
+    Method,
+    Request,
+    Url,
+};
 use serde_json::Value;
 use util::parse_string;
 
@@ -67,7 +76,7 @@ struct VerbArgs {
     #[arg(long, default_value_t = 30)]
     max_redirects: usize,
 
-    /// set to "no" (or "false") to skip checking the host's SSL certificate
+    /// set to "no" to skip checking the host's SSL certificate
     #[arg(long, default_value_t = CliBool::Yes)]
     verify: CliBool,
 
@@ -123,10 +132,13 @@ impl Cli {
 
                     Some(Value::Object(ref mut payload)) =>
                         match param {
-                            Value::Object(param) => payload.extend(
-                                param.iter()
-                                    .map(|(k, v)| (k.to_owned(), v.clone()))
-                            ).ignore(),
+                            Value::Object(param) =>
+                                {
+                                    payload.extend(
+                                        param.iter()
+                                            .map(|(k, v)| (k.to_owned(), v.clone()))
+                                    );
+                                },
                             _ => return Err(Some(eyre!("invalid payload"))),
                         },
 
@@ -172,14 +184,14 @@ impl From<&Verb> for Method {
     fn from(value: &Verb) -> Self {
         match value {
             Verb::Connect { .. } => Method::CONNECT,
-            Verb::Delete { .. } => Method::DELETE,
-            Verb::Get { .. } => Method::GET,
-            Verb::Head { .. } => Method::HEAD,
-            Verb::Option { .. } => Method::OPTIONS,
-            Verb::Patch { .. } => Method::PATCH,
-            Verb::Post { .. } => Method::POST,
-            Verb::Put { .. } => Method::PUT,
-            Verb::Trace { .. } => Method::TRACE,
+            Verb::Delete { .. }  => Method::DELETE,
+            Verb::Get { .. }     => Method::GET,
+            Verb::Head { .. }    => Method::HEAD,
+            Verb::Option { .. }  => Method::OPTIONS,
+            Verb::Patch { .. }   => Method::PATCH,
+            Verb::Post { .. }    => Method::POST,
+            Verb::Put { .. }     => Method::PUT,
+            Verb::Trace { .. }   => Method::TRACE,
         }
     }
 }
@@ -215,7 +227,7 @@ impl TryFrom<&Cli> for Request {
                 }
 
                 Param::Query(key, value) => url.query_pairs_mut()
-                    .append_pair(&key, &value)
+                    .append_pair(key, value)
                     .ignore(),
 
                 _ => (),

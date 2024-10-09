@@ -1,4 +1,8 @@
-use std::{str::FromStr, sync::LazyLock};
+use std::{
+    fmt::{Display, Formatter},
+    str::FromStr,
+    sync::LazyLock,
+};
 
 use eyre::eyre;
 use regex::Regex;
@@ -7,6 +11,13 @@ use serde_json::{Map, Value};
 
 use super::util::parse_string;
 
+
+static FILE_PAYLOAD_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^@.+$"#).unwrap());
+static HEADER_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([\w-]+):(.*)$"#).unwrap());
+static QUERY_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([^=:]+)==(.*)$"#).unwrap());
+static PAYLOAD_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([^=:]+)=(.*)$"#).unwrap());
+
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum Param {
     Header(String, String),
@@ -14,16 +25,16 @@ pub enum Param {
     Query(String, String),
 }
 
-impl ToString for Param {
+impl Display for Param {
 
-    fn to_string(&self) -> String {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Header(name, value) => format!("{}:{}", name, value),
-            Self::Payload(value) => value.to_string(),
+            Self::Header(name, value) => write!(f, "{}:{}", name, value),
+            Self::Payload(value) => write!(f, "{}", value),
             Self::Query(key, value) => {
                 let mut buf = Url::parse("http://localhost/").unwrap();
                 buf.query_pairs_mut().append_pair(key, value);
-                buf.query().unwrap().to_string()
+                write!(f, "{}", buf.query().unwrap())
             }
         }
     }
@@ -35,18 +46,18 @@ impl FromStr for Param {
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
 
-        if Self::FILE_PAYLOAD_REGEX.is_match(value) {
+        if FILE_PAYLOAD_REGEX.is_match(value) {
             let payload: Value = serde_json::from_str(&parse_string(value)?)?;
             return Ok(Self::Payload(payload));
         }
 
-        if let Some(pair) = Self::QUERY_REGEX.captures(value) {
+        if let Some(pair) = QUERY_REGEX.captures(value) {
             let key = pair.get(1).ok_or(eyre!("invalid query {}", value))?.as_str();
             let value = pair.get(2).ok_or(eyre!("invalid query {}", value))?.as_str();
             return Ok(Self::Query(key.to_owned(), parse_string(value)?));
         }
 
-        if let Some(pair) = Self::PAYLOAD_REGEX.captures(value) {
+        if let Some(pair) = PAYLOAD_REGEX.captures(value) {
             let key = pair.get(1).ok_or(eyre!("invalid attribute {}", value))?.as_str();
             let value = pair.get(2).ok_or(eyre!("invalid attribute {}", value))?.as_str();
             let value = parse_string(value)?;
@@ -56,7 +67,7 @@ impl FromStr for Param {
             return Ok(Self::Payload(Value::Object(payload)))
         }
 
-        if let Some(pair) = Self::HEADER_REGEX.captures(value) {
+        if let Some(pair) = HEADER_REGEX.captures(value) {
             let key = pair.get(1)
                 .ok_or(eyre!("invalid header {}", value))?
                 .as_str()
@@ -70,14 +81,6 @@ impl FromStr for Param {
 
         Err(eyre!("could not parse {}", value))
     }
-}
-
-impl Param {
-
-    const FILE_PAYLOAD_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^@.+$"#).unwrap());
-    const HEADER_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([\w-]+):(.*)$"#).unwrap());
-    const QUERY_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([^=:]+)==(.*)$"#).unwrap());
-    const PAYLOAD_REGEX: LazyLock<Regex> = LazyLock::new(|| Regex::from_str(r#"^([^=:]+)=(.*)$"#).unwrap());
 }
 
 

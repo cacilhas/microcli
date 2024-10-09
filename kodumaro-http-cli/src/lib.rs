@@ -2,7 +2,11 @@
 
 mod cli;
 
-use std::{fs, io::{self, IsTerminal}, path::Path};
+use std::{
+    fs,
+    io::{self, IsTerminal},
+    path::Path,
+};
 
 pub use cli::*;
 use eyre::Result;
@@ -55,11 +59,8 @@ pub async fn perform(cli: Cli) -> Result<()> {
         for (name, value) in request.headers().iter() {
             eprintln!("\x1b[1m{}:\x1b[0m \x1b[33m{}\x1b[0m", name, value.to_str()?);
         }
-        match payload {
-            Some(payload) => eprintln!("{}", serde_json::to_string(&payload)?),
-            _ => (),
-        }
-        eprintln!("");
+        if let Some(payload) = payload { eprintln!("{}", serde_json::to_string(&payload)?) }
+        eprintln!();
 
         builder = RequestBuilder::from_parts(client, request);
     }
@@ -83,7 +84,7 @@ pub async fn perform(cli: Cli) -> Result<()> {
         .map(|value| value.to_str().unwrap_or_default())
         .unwrap_or("text/html");
 
-    eprintln!("");
+    eprintln!();
 
     match output {
         Some(file) => fs::write(file, response.text().await?)?,

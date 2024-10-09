@@ -1,4 +1,7 @@
-use std::str::FromStr;
+use std::{
+    fmt::{Display, Formatter},
+    str::FromStr,
+};
 
 use eyre::eyre;
 
@@ -37,9 +40,12 @@ impl FromStr for CliBool {
     }
 }
 
-impl ToString for CliBool {
+impl Display for CliBool {
 
-    fn to_string(&self) -> String {
-        format!("{:?}", self).to_lowercase()
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Yes => write!(f, "yes"),
+            Self::No => write!(f, "no"),
+        }
     }
 }
