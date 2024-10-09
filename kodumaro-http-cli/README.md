@@ -42,6 +42,7 @@ Try `http help <COMMAND>` for more information.
 ## TODO
 
 - Support `multipart/form-data`
+- Support configuration file
 
 
 [HTTPie]:  https://httpie.io/
