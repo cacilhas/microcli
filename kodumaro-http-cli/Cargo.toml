@@ -1,6 +1,6 @@
 [package]
 name        = "kodumaro-http-cli"
-version     = "0.4.0"
+version     = "0.4.1"
 authors     = ["Rodrigo Montegasppα Cacilhας <montegasppa@cacilhas.info>"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
