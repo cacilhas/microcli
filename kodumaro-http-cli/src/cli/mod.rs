@@ -5,7 +5,7 @@ mod util;
 use std::{env::consts, str::FromStr};
 
 use base64::{engine, Engine};
-use clap::{ArgAction, Parser, Subcommand};
+use clap::{ArgAction, Args, Parser, Subcommand};
 use cli_bool::CliBool;
 use eyre::eyre;
 pub use param::Param;
@@ -18,7 +18,19 @@ use util::parse_string;
 pub struct Cli {
 
     #[command(subcommand)]
-    pub verb: Verb,
+    verb: Verb,
+}
+
+#[derive(Args, Debug)]
+struct VerbArgs {
+
+    /// the URL to connect to
+    #[arg()]
+    url: Url,
+
+    /// header:value, querystring==value, and/or payload=value; @value means value from file content
+    #[arg()]
+    params: Vec<Param>,
 
     // /// data items from the command line are serialized as a JSON object
     // #[arg(short, long, action = ArgAction::SetTrue, default_value_t = true)]
@@ -30,169 +42,81 @@ pub struct Cli {
 
     /// allows you to pass raw request data without extra processing
     #[arg(long)]
-    pub raw: Option<String>,
+    raw: Option<String>,
 
     /// save output to file instead of stdout
     #[arg(short, long)]
-    pub output: Option<String>,
+    output: Option<String>,
 
     /// do not print the response body to stdout; rather, download it and store it in a file
     #[arg(short, long)]
-    pub download: bool,
+    download: bool,
 
     // TODO: support --continue (-c)
     // TODO: support --session
 
     /// basic authentication (user[:password]) or bearer token
     #[arg(short, long)]
-    pub auth: Option<String>,
+    auth: Option<String>,
 
     /// follows Location redirects
     #[arg(short = 'F', long, action = ArgAction::SetTrue)]
-    pub follow: bool,
+    follow: bool,
 
     /// when following redirects, max redirects
     #[arg(long, default_value_t = 30)]
-    pub max_redirects: usize,
+    max_redirects: usize,
 
     /// set to "no" (or "false") to skip checking the host's SSL certificate
     #[arg(long, default_value_t = CliBool::Yes)]
-    pub verify: CliBool,
+    verify: CliBool,
 
     /// Show headers
     #[arg(short, long, action = ArgAction::SetTrue)]
-    pub verbose: bool,
+    verbose: bool,
 }
 
 #[derive(Debug, Subcommand)]
-pub enum Verb {
-    /// performs a CONNECT request
-    #[command()]
-    Connect {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a DELETE request
-    #[command()]
-    Delete {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a GET request
-    #[command()]
-    Get {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a HEAD request
-    #[command()]
-    Head {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a OPTION request
-    #[command()]
-    Option {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a PATCH request
-    #[command()]
-    Patch {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value, querystring==value, and/or payload=value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a POST request
-    #[command()]
-    Post {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value, querystring==value, and/or payload=value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a PUT request
-    #[command()]
-    Put {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value, querystring==value, and/or payload=value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
-
-    /// performs a TRACE request
-    #[command()]
-    Trace {
-
-        /// the URL to connect to
-        #[arg()]
-        url: Url,
-
-        /// header:value and/or querystring==value; @value means value from file content
-        #[arg()]
-        params: Vec<Param>,
-    },
+enum Verb {
+    #[command(about = "performs a CONNECT request")]
+    Connect(VerbArgs),
+    #[command(about = "performs a DELETE request")]
+    Delete(VerbArgs),
+    #[command(about = "performs a GET request")]
+    Get(VerbArgs),
+    #[command(about = "performs a HEAD request")]
+    Head(VerbArgs),
+    #[command(about = "performs a OPTION request")]
+    Option(VerbArgs),
+    #[command(about = "performs a PATCH request")]
+    Patch(VerbArgs),
+    #[command(about = "performs a POST request")]
+    Post(VerbArgs),
+    #[command(about = "performs a PUT request")]
+    Put(VerbArgs),
+    #[command(about = "performs a TRACE request")]
+    Trace(VerbArgs),
 }
 
 impl Cli {
 
+    pub fn download(&self) -> bool {
+        self.verb.args().download
+    }
+
+    pub fn output(&self) -> Option<String> {
+        self.verb.args().output.clone()
+    }
+
     pub fn payload(&self) -> Result<Value, Option<eyre::ErrReport>> {
-        if let Some(raw) = &self.raw {
+        let args = self.verb.args();
+
+        if let Some(raw) = &args.raw {
             return Ok(Value::String(parse_string(raw.to_string())?));
         }
 
         let mut payload: Option<Value> = None;
-        for param in self.verb.params().iter() {
+        for param in args.params.iter() {
             if let Param::Payload(param) = param {
                 match payload {
                     None => payload.insert(param.clone()).ignore(),
@@ -216,35 +140,29 @@ impl Cli {
             None => Err(None),
         }
     }
+
+    pub fn url(&self) -> &Url {
+        &self.verb.args().url
+    }
+
+    pub fn verbose(&self) -> bool {
+        self.verb.args().verbose
+    }
 }
 
 impl Verb {
 
-    pub fn url(&self) -> &Url {
+    fn args(&self) -> &VerbArgs {
         match self {
-            Verb::Connect { url, .. } => url,
-            Verb::Delete { url, .. } => url,
-            Verb::Get { url, .. } => url,
-            Verb::Head { url, .. } => url,
-            Verb::Option { url, .. } => url,
-            Verb::Patch { url, .. } => url,
-            Verb::Post { url, .. } => url,
-            Verb::Put { url, .. } => url,
-            Verb::Trace { url, .. } => url,
-        }
-    }
-
-    pub fn params(&self) -> &Vec<Param> {
-        match self {
-            Verb::Connect { params, .. } => params,
-            Verb::Delete { params, .. } => params,
-            Verb::Get { params, .. } => params,
-            Verb::Head { params, .. } => params,
-            Verb::Option { params, .. } => params,
-            Verb::Patch { params, .. } => params,
-            Verb::Post { params, .. } => params,
-            Verb::Put { params, .. } => params,
-            Verb::Trace { params, .. } => params,
+            Verb::Connect(args) => args,
+            Verb::Delete (args) => args,
+            Verb::Get (args) => args,
+            Verb::Head (args) => args,
+            Verb::Option (args) => args,
+            Verb::Patch (args) => args,
+            Verb::Post (args) => args,
+            Verb::Put (args) => args,
+            Verb::Trace (args) => args,
         }
     }
 }
@@ -271,19 +189,21 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
+        let args = value.verb.args();
+
         // if value.json && value.form {
         //     return Err(eyre!("--json and --form are mutually exclusive"));
         // }
 
         let method: Method = (&value.verb).into();
-        let mut url = value.verb.url().clone();
+        let mut url = args.url.clone();
         let mut headers: Vec<(String, String)> = vec![];
         let mut close_connection_set = false;
         let mut user_agent_set = false;
         let connection = reqwest::header::CONNECTION.to_string();
         let user_agent = reqwest::header::USER_AGENT.to_string();
 
-        for param in value.verb.params().iter() {
+        for param in args.params.iter() {
             match param {
                 Param::Header(name, value) => {
                     if user_agent == **name {
@@ -325,7 +245,7 @@ impl TryFrom<&Cli> for Request {
             );
         }
 
-        if let Some(auth) = &value.auth {
+        if let Some(auth) = &args.auth {
             if let Some((username, password)) = auth.split_once(':') {
                 let auth = format!("{}:{}", username, password);
                 let engine = engine::general_purpose::STANDARD;
@@ -349,8 +269,9 @@ impl TryFrom<&Cli> for Request {
 impl From<&Cli> for Policy {
 
     fn from(value: &Cli) -> Self {
-        if value.follow {
-            Policy::limited(value.max_redirects)
+        let args = value.verb.args();
+        if args.follow {
+            Policy::limited(args.max_redirects)
         } else {
             Policy::none()
         }

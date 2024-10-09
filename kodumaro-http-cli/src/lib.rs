@@ -19,11 +19,11 @@ pub async fn perform(cli: Cli) -> Result<()> {
         Err(Some(err)) => return Err(err),
     };
 
-    let output = match cli.output.clone() {
+    let output = match cli.output() {
         Some(output) => Some(output),
         None => {
-            if cli.download {
-                let path = Path::new(cli.verb.url().path());
+            if cli.download() {
+                let path = Path::new(cli.url().path());
                 path.file_name().map(|path| path.to_string_lossy().to_string())
             } else {
                 None
@@ -48,7 +48,7 @@ pub async fn perform(cli: Cli) -> Result<()> {
         None => builder,
     };
 
-    if cli.verbose {
+    if cli.verbose() {
         let request = builder.build()?;
 
         eprintln!("\x1b[34;1m{:?} \x1b[33;1m{}\x1b[0m", request.method(), request.url());
@@ -66,7 +66,7 @@ pub async fn perform(cli: Cli) -> Result<()> {
 
     let response = builder.send().await?;
 
-    if cli.verbose {
+    if cli.verbose() {
         let status = response.status();
         match status.as_u16() / 100 {
             2 => eprintln!("\x1b[32;1m{}\x1b[0m", status),
