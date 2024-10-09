@@ -42,7 +42,7 @@ Options:
       --max-redirects <MAX_REDIRECTS>  when following redirects, max redirects [default: 30]
       --verify <VERIFY>                set to "no" (or "false") to skip checking the host's SSL certificate [default: yes]
   -v, --verbose                        Show headers
-  -h, --help                           Print help
+  -h, --help                           Print help (same as help command)
   -V, --version                        Print version
 ```
 
