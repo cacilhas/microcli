@@ -46,4 +46,10 @@ Options:
   -V, --version                        Print version
 ```
 
+
+## Known bugs
+
+Just like old BSD CLI tools, it requires options to be BEFORE commands.
+
+
 [HTTPie]:  https://httpie.io/

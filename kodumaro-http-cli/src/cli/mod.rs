@@ -77,9 +77,12 @@ pub enum Verb {
     /// performs a CONNECT request
     #[command()]
     Connect {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -87,9 +90,12 @@ pub enum Verb {
     /// performs a DELETE request
     #[command()]
     Delete {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -97,9 +103,12 @@ pub enum Verb {
     /// performs a GET request
     #[command()]
     Get {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -107,9 +116,12 @@ pub enum Verb {
     /// performs a HEAD request
     #[command()]
     Head {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -117,9 +129,12 @@ pub enum Verb {
     /// performs a OPTION request
     #[command()]
     Option {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -127,9 +142,12 @@ pub enum Verb {
     /// performs a PATCH request
     #[command()]
     Patch {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value, querystring==value, and/or payload=value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -137,9 +155,12 @@ pub enum Verb {
     /// performs a POST request
     #[command()]
     Post {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value, querystring==value, and/or payload=value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -147,9 +168,12 @@ pub enum Verb {
     /// performs a PUT request
     #[command()]
     Put {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value, querystring==value, and/or payload=value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
@@ -157,9 +181,12 @@ pub enum Verb {
     /// performs a TRACE request
     #[command()]
     Trace {
+
+        /// the URL to connect to
         #[arg()]
         url: Url,
 
+        /// header:value and/or querystring==value; @value means value from file content
         #[arg()]
         params: Vec<Param>,
     },
