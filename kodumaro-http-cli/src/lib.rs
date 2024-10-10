@@ -56,14 +56,16 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             stderr,
             SetForegroundColor(Color::Blue),
             SetAttribute(Attribute::Bold),
-            Print(format!("{:?} ", request.method())),
+            Print(request.method()),
             ResetColor,
+            Print(" "),
             SetForegroundColor(Color::Yellow),
             Print(request.url().to_string()),
             ResetColor,
             Print("\n"),
         )?;
         for (name, value) in request.headers().iter() {
+            let value = value.to_str()?;
             crossterm::execute!(
                 stderr,
                 SetAttribute(Attribute::Bold),
@@ -71,7 +73,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 Print(": "),
                 ResetColor,
                 SetForegroundColor(Color::Yellow),
-                Print(format!("{:?}", value)),
+                Print(value),
                 ResetColor,
                 Print("\n"),
             )?;
@@ -87,6 +89,18 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     let response = builder.send().await?;
 
     if cli.verbose() {
+        let width = match crossterm::terminal::size() {
+            Ok((width, _)) => width,
+            Err(_) => 80u16,
+        };
+        let line = "─".repeat(width as usize);
+        crossterm::execute!(
+            stderr,
+            SetForegroundColor(Color::Black),
+            Print(line),
+            ResetColor,
+        )?;
+
         let status = response.status();
         match status.as_u16() / 100 {
             2 => crossterm::execute!(
@@ -115,6 +129,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             )?,
         }
         for (name, value) in response.headers().iter() {
+            let value = value.to_str()?;
             crossterm::execute!(
                 stderr,
                 SetAttribute(Attribute::Bold),
@@ -122,7 +137,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 Print(": "),
                 ResetColor,
                 SetForegroundColor(Color::Red),
-                Print(format!("{:?}", value)),
+                Print(value),
                 ResetColor,
                 Print("\n"),
             )?;
