@@ -1,6 +1,7 @@
 #![feature(const_refs_to_static)]
 
 mod cli;
+mod output_format;
 
 use std::{
     fs,
@@ -16,16 +17,10 @@ use crossterm::style::{
     SetAttribute,
     SetForegroundColor,
 };
-use eyre::Result;
-use json_color::Colorizer;
+use eyre::{eyre, Result};
+use output_format::{format_html, format_json};
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
-use syntect::{
-    easy::HighlightLines,
-    highlighting::{Style, ThemeSet},
-    parsing::SyntaxSet,
-    util::{as_24_bit_terminal_escaped, LinesWithEndings},
-};
 
 
 pub async fn perform(cli: impl CLParameters) -> Result<()> {
@@ -93,6 +88,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     }
 
     let response = builder.send().await?;
+    let status = response.status();
 
     if cli.verbose() {
         let width = match crossterm::terminal::size() {
@@ -107,7 +103,6 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             ResetColor,
         )?;
 
-        let status = response.status();
         match status.as_u16() / 100 {
             2 => crossterm::execute!(
                 stderr,
@@ -149,13 +144,19 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             )?;
         }
     }
+    eprintln!();
+
+    if cli.fail() {
+        let code = status.as_u16();
+        if code >= 400 && code <= 599 {
+            return Err(eyre!("{}", status));
+        }
+    }
 
     let content_type = response.headers()
         .get(reqwest::header::CONTENT_TYPE)
         .map(|value| value.to_str().unwrap_or_default())
         .unwrap_or("text/html");
-
-    eprintln!();
 
     match cli.output() {
         Some(file) => fs::write(file, response.text().await?)?,
@@ -163,13 +164,8 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         None => {
             if content_type.contains("json") {
                 if let Ok(body) = response.json::<Value>().await {
-
                     if io::stdout().is_terminal() {
-                        let colorizer = Colorizer::arbitrary();
-                        match colorizer.colorize_json_str(&serde_json::to_string(&body)?) {
-                            Ok(body) => println!("{}", body),
-                            Err(_) => print!("{}", body),
-                        }
+                        format_json(&body).await?;
                     } else {
                         print!("{}", body);
                     }
@@ -178,23 +174,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             } else {
                 if let Ok(body) = response.text().await {
                     if io::stdout().is_terminal() {
-                        let ps = SyntaxSet::load_defaults_newlines();
-                        let ts = ThemeSet::load_defaults();
-                        let syntax = match ps.find_syntax_by_extension("html") {
-                            Some(syntax) => syntax,
-                            None => {
-                                eprintln!("failed to find HTML syntax");
-                                println!("{}", body);
-                                return Ok(());
-                            }
-                        };
-                        let mut h = HighlightLines::new(syntax, &ts.themes["Solarized (dark)"]);
-                        for line in LinesWithEndings::from(&body) {
-                            let ranges: Vec<(Style, &str)> =
-                                h.highlight_line(line, &ps).unwrap();
-                            let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
-                            print!("{}", escaped);
-                        }
+                        format_html(&body)?;
                     } else {
                         println!("{}", body);
                     }

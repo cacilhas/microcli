@@ -44,6 +44,7 @@ pub trait CLParameters {
     fn request(&self) -> eyre::Result<Request>;
     fn url(&self) -> &Url;
     fn verbose(&self) -> bool;
+    fn fail(&self) -> bool;
 }
 
 
@@ -107,6 +108,10 @@ struct VerbArgs {
     /// set to "no" to skip checking the host's SSL certificate
     #[arg(long, default_value_t = CliBool::Yes)]
     verify: CliBool,
+
+    /// fail on error status code
+    #[arg(long, action = ArgAction::SetTrue)]
+    fail: bool,
 
     /// Show headers
     #[arg(short, long, action = ArgAction::SetTrue)]
@@ -218,6 +223,12 @@ impl CLParameters for Cli {
     #[must_use]
     fn verbose(&self) -> bool {
         self.verb.args().verbose
+    }
+
+    #[inline]
+    #[must_use]
+    fn fail(&self) -> bool {
+        self.verb.args().fail
     }
 }
 

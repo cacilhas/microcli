@@ -32,11 +32,16 @@ Commands:
   help     Print this message or the help of the given subcommand(s)
 
 Options:
-  -h, --help     Print help
-  -V, --version  Print version
+      --raw <RAW>                      allows you to pass raw request data without extra processing
+  -o, --output <OUTPUT>                save output to file instead of stdout [default: URL path file name]
+  -d, --download                       do not print the response body to stdout; rather, download it and store it in a file
+  -a, --auth <AUTH>                    basic authentication (user[:password]) or bearer token
+  -F, --follow                         follows Location redirects
+      --max-redirects <MAX_REDIRECTS>  when following redirects, max redirects [default: 30]
+      --verify <VERIFY>                set to "no" to skip checking the host's SSL certificate [default: yes]
+      --fail                           fail on error status code
+  -v, --verbose                        Show headers
 ```
-
-Try `http help <COMMAND>` for more information.
 
 
 ## TODO
