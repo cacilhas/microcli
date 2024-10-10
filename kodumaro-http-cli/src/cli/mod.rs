@@ -234,7 +234,7 @@ impl Cli {
                 HeaderValue::from_str(value)?,
             );
         }
-        Ok(request)
+        Ok(self.set_authorization(request))
     }
 
     fn set_authorization(&self, mut request: Request) -> Request {
@@ -282,7 +282,7 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
-        Ok(value.set_authorization(value.build_request()?))
+        Ok(value.build_request()?)
     }
 }
 
