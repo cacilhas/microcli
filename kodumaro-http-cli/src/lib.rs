@@ -20,6 +20,12 @@ use eyre::Result;
 use json_color::Colorizer;
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
+use syntect::{
+    easy::HighlightLines,
+    highlighting::{Style, ThemeSet},
+    parsing::SyntaxSet,
+    util::{as_24_bit_terminal_escaped, LinesWithEndings},
+};
 
 
 pub async fn perform(cli: impl CLParameters) -> Result<()> {
@@ -171,7 +177,27 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
             } else {
                 if let Ok(body) = response.text().await {
-                    println!("{}", body);
+                    if io::stdout().is_terminal() {
+                        let ps = SyntaxSet::load_defaults_newlines();
+                        let ts = ThemeSet::load_defaults();
+                        let syntax = match ps.find_syntax_by_extension("html") {
+                            Some(syntax) => syntax,
+                            None => {
+                                eprintln!("failed to find HTML syntax");
+                                println!("{}", body);
+                                return Ok(());
+                            }
+                        };
+                        let mut h = HighlightLines::new(syntax, &ts.themes["Solarized (dark)"]);
+                        for line in LinesWithEndings::from(&body) {
+                            let ranges: Vec<(Style, &str)> =
+                                h.highlight_line(line, &ps).unwrap();
+                            let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
+                            print!("{}", escaped);
+                        }
+                    } else {
+                        println!("{}", body);
+                    }
                 }
             }
         }
