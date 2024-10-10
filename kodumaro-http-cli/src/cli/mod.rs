@@ -207,7 +207,7 @@ impl CLParameters for Cli {
 
 impl Cli {
 
-    fn headers(&self) -> eyre::Result<HashMap<String, String>> {
+    fn headers(&self) -> HashMap<String, String> {
 
         let args = self.verb.args();
         let mut headers: HashMap<String, String> = HashMap::new();
@@ -221,12 +221,12 @@ impl Cli {
             }
         }
 
-        Ok(headers)
+        headers
     }
 
     fn build_request(&self) -> eyre::Result<Request> {
         let method: Method = (&self.verb).into();
-        let headers = self.headers()?;
+        let headers = self.headers();
         let mut request = Request::new(method, self.url().clone());
         for (name, value) in headers.iter() {
             let _ = request.headers_mut().insert(
