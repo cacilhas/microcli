@@ -5,11 +5,17 @@ mod cli;
 use std::{
     fs,
     io::{self, IsTerminal},
-    path::Path,
 };
 
 pub use cli::*;
-use crossterm::style::{Attribute, Color, Print, ResetColor, SetAttribute, SetForegroundColor};
+use crossterm::style::{
+    Attribute,
+    Color,
+    Print,
+    ResetColor,
+    SetAttribute,
+    SetForegroundColor,
+};
 use eyre::Result;
 use json_color::Colorizer;
 use reqwest::{redirect::Policy, Request, RequestBuilder};
@@ -22,18 +28,6 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         Ok(payload) => Some(payload),
         Err(None) => None,
         Err(Some(err)) => return Err(err),
-    };
-
-    let output = match cli.output() {
-        Some(output) => Some(output),
-        None => {
-            if cli.download() {
-                let path = Path::new(cli.url().path());
-                path.file_name().map(|path| path.to_string_lossy().to_string())
-            } else {
-                None
-            }
-        }
     };
 
     let policy: Policy = cli.policy();
@@ -142,26 +136,28 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
     eprintln!();
 
-    match output {
+    match cli.output() {
         Some(file) => fs::write(file, response.text().await?)?,
 
         None => {
             if content_type.contains("json") {
-                let body: Value = response.json().await?;
+                if let Ok(body) = response.json::<Value>().await {
 
-                if io::stdout().is_terminal() {
-                    let colorizer = Colorizer::arbitrary();
-                    match colorizer.colorize_json_str(&serde_json::to_string(&body)?) {
-                        Ok(body) => println!("{}", body),
-                        Err(_) => print!("{}", body),
+                    if io::stdout().is_terminal() {
+                        let colorizer = Colorizer::arbitrary();
+                        match colorizer.colorize_json_str(&serde_json::to_string(&body)?) {
+                            Ok(body) => println!("{}", body),
+                            Err(_) => print!("{}", body),
+                        }
+                    } else {
+                        print!("{}", body);
                     }
-                } else {
-                    print!("{}", body);
                 }
 
             } else {
-                let body = response.text().await?;
-                println!("{}", body);
+                if let Ok(body) = response.text().await {
+                    println!("{}", body);
+                }
             }
         }
     }

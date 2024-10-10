@@ -3,7 +3,11 @@ mod param;
 mod util;
 
 use std::{
-    collections::HashMap, env::consts, str::FromStr, sync::LazyLock
+    collections::HashMap,
+    env::consts,
+    path::Path,
+    str::FromStr,
+    sync::LazyLock,
 };
 
 use base64::{engine, Engine};
@@ -34,7 +38,6 @@ static DEFAULT_USER_AGENT: LazyLock<String> = LazyLock::new(||
 
 pub trait CLParameters {
 
-    fn download(&self) -> bool;
     fn output(&self) -> Option<String>;
     fn payload(&self) -> Result<Value, Option<eyre::ErrReport>>;
     fn policy(&self) -> Policy;
@@ -78,7 +81,7 @@ struct VerbArgs {
     #[arg(long)]
     raw: Option<String>,
 
-    /// save output to file instead of stdout
+    /// save output to file instead of stdout [default: URL path file name]
     #[arg(short, long)]
     output: Option<String>,
 
@@ -143,15 +146,19 @@ enum Verb {
 
 impl CLParameters for Cli {
 
-    #[inline]
-    #[must_use]
-    fn download(&self) -> bool {
-        self.verb.args().download
-    }
-
-    #[inline]
     fn output(&self) -> Option<String> {
-        self.verb.args().output.clone()
+        let args = self.verb.args();
+        match args.output.clone() {
+            Some(output) => Some(output),
+            None => {
+                if args.download {
+                    let path = Path::new(self.url().path());
+                    path.file_name().map(|path| path.to_string_lossy().to_string())
+                } else {
+                    None
+                }
+            }
+        }
     }
 
     fn payload(&self) -> Result<Value, Option<eyre::ErrReport>> {
