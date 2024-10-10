@@ -57,6 +57,7 @@ Options:
 
 - Support `multipart/form-data`
 - Support configuration file
+- Support MD5 highlighting
 
 
 [HTTPie]:  https://httpie.io/
