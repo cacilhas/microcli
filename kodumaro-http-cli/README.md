@@ -2,6 +2,7 @@
 
 Kodumaro HTTP CLI inspired by [HTTPie][].
 
+
 ## Project status
 
 It’s still a kinda-usable work in progress.
@@ -42,6 +43,14 @@ Options:
       --fail                           fail on error status code
   -v, --verbose                        Show headers
 ```
+
+### Environment variables
+
+- `HTTP_DOWNLOAD=true`: enable `--download`
+- `HTTP_AUTH=<auth>`: use `<auth>` as authentication (`--auth=<auth>`)
+- `HTTP_FOLLOW=true`: enable `--follow`
+- `HTTP_MAX_REDIRECTS=<num>`: set max redirects to `<num>` (`--max-redirects=<num>`)
+- `HTTP_VERIFY=no`: disable SSL certificate verification (`--verify=no`)
 
 
 ## TODO
