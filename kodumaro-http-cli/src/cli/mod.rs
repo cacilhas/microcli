@@ -177,7 +177,7 @@ impl CLParameters for Cli {
         for param in args.params.iter() {
             if let Param::Payload(param) = param {
                 match payload {
-                    None => payload.insert(param.clone()).ignore(),
+                    None => drop(payload.insert(param.clone())),
 
                     Some(Value::Object(ref mut payload)) =>
                         match param {
@@ -293,9 +293,9 @@ impl Cli {
         // }
 
         for param in args.params.iter() {
-            if let Param::Query(key, value) = param { url.query_pairs_mut()
-            .append_pair(key, value)
-            .ignore() }
+            if let Param::Query(key, value) = param {
+                let _ = url.query_pairs_mut().append_pair(key, value);
+            }
         }
 
         self.url = url;
@@ -360,14 +360,4 @@ impl From<&Verb> for Method {
             Verb::Trace(_)   => Method::TRACE,
         }
     }
-}
-
-
-trait Ignore {
-
-    #[inline]
-    fn ignore(&self) {}
-}
-
-impl<T> Ignore for T {
 }
