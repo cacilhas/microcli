@@ -1,6 +1,4 @@
 use eyre::Result;
-use json_color::Colorizer;
-use serde_json::Value;
 use syntect::{
     easy::HighlightLines,
     highlighting::{Style, ThemeSet},
@@ -9,33 +7,41 @@ use syntect::{
 };
 
 
-pub(crate) async fn format_json(body: &Value) -> Result<()> {
-    let colorizer = Colorizer::arbitrary();
-    match colorizer.colorize_json_str(&serde_json::to_string(&body)?) {
-        Ok(body) => println!("{}", body),
-        Err(_) => print!("{}", body),
-    };
-    Ok(())
-}
-
-pub(crate) fn format_html(body: &str) -> Result<()> {
+pub(crate) fn format_by_ext(body: &str, filename: &str) -> Result<()> {
+    let ext = filename.split('.').last().unwrap_or("txt");
     let ps = SyntaxSet::load_defaults_newlines();
     let ts = ThemeSet::load_defaults();
-    let syntax = match ps.find_syntax_by_extension("html") {
-        Some(syntax) => syntax,
-        None => {
-            eprintln!("failed to find HTML syntax");
-            println!("{}", body);
-            return Ok(());
+    match ps.find_syntax_by_extension(ext) {
+        Some(syntax) => {
+            let mut h = HighlightLines::new(syntax, &ts.themes["Solarized (dark)"]);
+            for line in LinesWithEndings::from(body) {
+                let ranges: Vec<(Style, &str)> =
+                    h.highlight_line(line, &ps).unwrap();
+                let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
+                print!("{}", escaped);
+            }
         }
-    };
-    let mut h = HighlightLines::new(syntax, &ts.themes["Solarized (dark)"]);
-    for line in LinesWithEndings::from(body) {
-        let ranges: Vec<(Style, &str)> =
-            h.highlight_line(line, &ps).unwrap();
-        let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
-        print!("{}", escaped);
+
+        None => println!("{}", body),
     }
 
     Ok(())
+}
+
+pub(crate) fn add_ext(filename: &str, content_type: &str) -> String {
+    if content_type.contains("markdown") {
+        format!("{}.md", filename)
+    } else if content_type.contains("html") {
+        format!("{}.html", filename)
+    } else if content_type.contains("json") {
+        format!("{}.json", filename)
+    } else if content_type.contains("toml") {
+        format!("{}.toml", filename)
+    } else if content_type.contains("xml") {
+        format!("{}.xml", filename)
+    } else if content_type.contains("yaml") {
+        format!("{}.yaml", filename)
+    } else {
+        filename.to_string()
+    }
 }

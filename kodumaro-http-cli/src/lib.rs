@@ -18,7 +18,7 @@ use crossterm::style::{
     SetForegroundColor,
 };
 use eyre::{eyre, Result};
-use output_format::{format_html, format_json};
+use output_format::{add_ext, format_by_ext};
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
 
@@ -156,28 +156,22 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     let content_type = response.headers()
         .get(reqwest::header::CONTENT_TYPE)
         .map(|value| value.to_str().unwrap_or_default())
-        .unwrap_or("text/html");
+        .unwrap_or("text/plain")
+        .to_string();
 
     match cli.output() {
         Some(file) => fs::write(file, response.text().await?)?,
 
         None => {
-            if content_type.contains("json") {
-                if let Ok(body) = response.json::<Value>().await {
-                    if io::stdout().is_terminal() {
-                        format_json(&body).await?;
-                    } else {
-                        print!("{}", body);
-                    }
-                }
+            if let Ok(body) = response.text().await {
+                let filename = cli.url().path().to_lowercase();
 
-            } else {
-                if let Ok(body) = response.text().await {
-                    if io::stdout().is_terminal() {
-                        format_html(&body)?;
-                    } else {
-                        println!("{}", body);
-                    }
+                if io::stdout().is_terminal() {
+                    let filename = add_ext(&filename, &content_type);
+                    format_by_ext(&body, &filename)?;
+
+                } else {
+                    println!("{}", body);
                 }
             }
         }
