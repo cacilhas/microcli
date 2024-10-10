@@ -87,34 +87,34 @@ struct VerbArgs {
     output: Option<String>,
 
     /// do not print the response body to stdout; rather, download it and store it in a file
-    #[arg(short, long)]
+    #[arg(short, long, env = "HTTP_DOWNLOAD")]
     download: bool,
 
     // TODO: support --continue (-c)
     // TODO: support --session
 
     /// basic authentication (user[:password]) or bearer token
-    #[arg(short, long)]
+    #[arg(short, long, env = "HTTP_AUTH")]
     auth: Option<String>,
 
     /// follows Location redirects
-    #[arg(short = 'F', long, action = ArgAction::SetTrue)]
+    #[arg(short = 'F', long, action = ArgAction::SetTrue, env = "HTTP_FOLLOW")]
     follow: bool,
 
     /// when following redirects, max redirects
-    #[arg(long, default_value_t = 30)]
+    #[arg(long, default_value_t = 30, env = "HTTP_MAX_REDIRECTS")]
     max_redirects: usize,
 
     /// set to "no" to skip checking the host's SSL certificate
-    #[arg(long, default_value_t = CliBool::Yes)]
+    #[arg(long, default_value_t = CliBool::Yes, env = "HTTP_VERIFY")]
     verify: CliBool,
 
     /// fail on error status code
-    #[arg(long, action = ArgAction::SetTrue)]
+    #[arg(long, action = ArgAction::SetTrue, env = "HTTP_FAIL")]
     fail: bool,
 
     /// Show headers
-    #[arg(short, long, action = ArgAction::SetTrue)]
+    #[arg(short, long, action = ArgAction::SetTrue, env = "HTTP_VERBOSE")]
     verbose: bool,
 }
 
