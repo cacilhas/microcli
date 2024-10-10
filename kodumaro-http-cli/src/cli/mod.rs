@@ -52,7 +52,7 @@ pub struct Cli {
     verb: Verb,
 
     #[arg(skip = reqwest::Url::parse("http://localhost/").unwrap())]
-    built_url: Url,
+    url: Url,
 }
 
 #[derive(Args, Debug)]
@@ -112,23 +112,32 @@ struct VerbArgs {
 
 #[derive(Debug, Subcommand)]
 enum Verb {
-    #[command(about = "performs a CONNECT request")]
+    /// performs a CONNECT request
+    #[command(aliases = ["Connect", "CONNECT"])]
     Connect(VerbArgs),
-    #[command(about = "performs a DELETE request")]
+    /// performs a DELETE request
+    #[command(aliases = ["Delete", "DELETE"])]
     Delete(VerbArgs),
-    #[command(about = "performs a GET request")]
+    /// performs a GET request
+    #[command(aliases = ["Get", "GET"])]
     Get(VerbArgs),
-    #[command(about = "performs a HEAD request")]
+    /// performs a HEAD request
+    #[command(aliases = ["Head", "HEAD"])]
     Head(VerbArgs),
-    #[command(about = "performs a OPTION request")]
+    /// performs a OPTION request
+    #[command(aliases = ["Option", "OPTION"])]
     Option(VerbArgs),
-    #[command(about = "performs a PATCH request")]
+    /// performs a PATCH request
+    #[command(aliases = ["Patch", "PATCH"])]
     Patch(VerbArgs),
-    #[command(about = "performs a POST request")]
+    /// performs a POST request
+    #[command(aliases = ["Post", "POST"])]
     Post(VerbArgs),
-    #[command(about = "performs a PUT request")]
+    /// performs a PUT request
+    #[command(aliases = ["Put", "PUT"])]
     Put(VerbArgs),
-    #[command(about = "performs a TRACE request")]
+    /// performs a TRACE request
+    #[command(aliases = ["Trace", "TRACE"])]
     Trace(VerbArgs),
 }
 
@@ -195,7 +204,7 @@ impl CLParameters for Cli {
     #[inline]
     #[must_use]
     fn url(&self) -> &Url {
-        &self.built_url
+        &self.url
     }
 
     #[inline]
@@ -271,7 +280,7 @@ impl Cli {
             .ignore() }
         }
 
-        self.built_url = url;
+        self.url = url;
 
         Ok(())
     }
