@@ -3,8 +3,7 @@ mod param;
 mod util;
 
 use std::{
-    env::consts,
-    str::FromStr, sync::LazyLock,
+    collections::HashMap, env::consts, str::FromStr, sync::LazyLock
 };
 
 use base64::{engine, Engine};
@@ -208,30 +207,18 @@ impl CLParameters for Cli {
 
 impl Cli {
 
-    fn headers(&self) -> eyre::Result<Vec<(String, String)>> {
+    fn headers(&self) -> eyre::Result<HashMap<String, String>> {
 
         let args = self.verb.args();
-        let mut headers: Vec<(String, String)> = vec![];
-        let mut close_connection_set = false;
-        let mut user_agent_set = false;
-        let connection = reqwest::header::CONNECTION.to_string();
-        let user_agent = reqwest::header::USER_AGENT.to_string();
+        let mut headers: HashMap<String, String> = HashMap::new();
+        headers.insert(reqwest::header::CONNECTION.to_string(), "close".to_string());
+        headers.insert(reqwest::header::USER_AGENT.to_string(), DEFAULT_USER_AGENT.to_owned());
 
         for param in args.params.iter() {
             if let Param::Header(name, value) = param {
-                if user_agent == **name {
-                    user_agent_set = true;
-                } else if connection == **name {
-                    close_connection_set = true;
-                }
-                headers.push((name.to_owned(), value.to_owned()));
+                let entry = headers.entry(name.to_lowercase()).or_insert(String::new());
+                *entry = value.to_owned();
             }
-        }
-        if !user_agent_set {
-            headers.push((user_agent.to_owned(), DEFAULT_USER_AGENT.to_owned()));
-        }
-        if !close_connection_set {
-            headers.push((connection.to_owned(), "close".to_string()));
         }
 
         Ok(headers)
