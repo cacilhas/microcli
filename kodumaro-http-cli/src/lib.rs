@@ -37,8 +37,8 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         .redirect(policy)
         .build()?;
 
-    let mut builder = RequestBuilder::from_parts(client.clone(), request);
-    builder = match payload.clone() {
+    let builder = RequestBuilder::from_parts(client.clone(), request);
+    let builder = match payload.clone() {
         Some(Value::String(payload)) => builder
             .header(reqwest::header::CONTENT_LENGTH, payload.len())
             .body(payload),
@@ -53,41 +53,41 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     let mut stderr = io::stderr();
 
     if cli.verbose() {
-        let request = builder.build()?;
+        if let Some(builder) = builder.try_clone() {
+            let request = builder.build()?;
 
-        crossterm::execute!(
-            stderr,
-            SetStyle(*METHOD_STYLE),
-            Print(request.method()),
-            Print(" "),
-            SetStyle(*DEFAULT_STYLE),
-            SetStyle(*URL_STYLE),
-            Print(request.url().to_string()),
-            SetStyle(*DEFAULT_STYLE),
-            Print("\n"),
-        )?;
-        for (name, value) in request.headers().iter() {
-            let value = value.to_str()?;
             crossterm::execute!(
                 stderr,
-                SetStyle(*HEADER_NAME_STYLE),
-                Print(name),
-                Print(": "),
+                SetStyle(*METHOD_STYLE),
+                Print(request.method()),
+                Print(" "),
                 SetStyle(*DEFAULT_STYLE),
-                SetStyle(*HEADER_VALUE_STYLE),
-                Print(value),
+                SetStyle(*URL_STYLE),
+                Print(request.url().to_string()),
                 SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?;
-        }
-        if let Some(payload) = payload {
+            for (name, value) in request.headers().iter() {
+                let value = value.to_str()?;
+                crossterm::execute!(
+                    stderr,
+                    SetStyle(*HEADER_NAME_STYLE),
+                    Print(name),
+                    Print(": "),
+                    SetStyle(*DEFAULT_STYLE),
+                    SetStyle(*HEADER_VALUE_STYLE),
+                    Print(value),
+                    SetStyle(*DEFAULT_STYLE),
+                    Print("\n"),
+                )?;
+            }
+            if let Some(payload) = payload {
+                eprintln!();
+                format_by_ext(&serde_json::to_string(&payload)?, ".json", &mut stderr)?;
+                eprintln!();
+            }
             eprintln!();
-            format_by_ext(&serde_json::to_string(&payload)?, ".json", &mut stderr)?;
-            eprintln!();
         }
-        eprintln!();
-
-        builder = RequestBuilder::from_parts(client, request);
     }
 
     let response = builder.send().await?;
