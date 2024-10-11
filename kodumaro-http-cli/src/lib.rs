@@ -6,7 +6,7 @@ mod styles;
 
 use std::{
     fs,
-    io::{self, IsTerminal},
+    io::{self, IsTerminal, Write},
 };
 
 pub use cli::*;
@@ -94,17 +94,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     let status = response.status();
 
     if cli.verbose() {
-        let width = match crossterm::terminal::size() {
-            Ok((width, _)) => width,
-            Err(_) => 80u16,
-        };
-        let line = "─".repeat(width as usize);
-        crossterm::execute!(
-            stderr,
-            SetForegroundColor(Color::Black),
-            Print(line),
-            ResetColor,
-        )?;
+        draw_line(&mut stderr)?;
 
         match status.as_u16() / 100 {
             2 => crossterm::execute!(
@@ -177,5 +167,21 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         }
     }
 
+    Ok(())
+}
+
+
+fn draw_line(writer: &mut impl Write) -> Result<()> {
+    let width = match crossterm::terminal::size() {
+        Ok((width, _)) => width,
+        Err(_) => 80u16,
+    };
+    let line = "─".repeat(width as usize);
+    crossterm::execute!(
+        writer,
+        SetForegroundColor(Color::Black),
+        Print(line),
+        ResetColor,
+    )?;
     Ok(())
 }
