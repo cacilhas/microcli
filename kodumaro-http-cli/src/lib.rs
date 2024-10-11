@@ -48,6 +48,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         None => builder,
     };
 
+    let mut stdout = io::stdout();
     let mut stderr = io::stderr();
 
     if cli.verbose() {
@@ -80,7 +81,9 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             )?;
         }
         if let Some(payload) = payload {
-            eprintln!("{}", serde_json::to_string(&payload)?);
+            eprintln!();
+            format_by_ext(&serde_json::to_string(&payload)?, ".json", &mut stderr)?;
+            eprintln!();
         }
         eprintln!();
 
@@ -168,7 +171,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
                 if io::stdout().is_terminal() {
                     let filename = add_ext(&filename, &content_type);
-                    format_by_ext(&body, &filename)?;
+                    format_by_ext(&body, &filename, &mut stdout)?;
 
                 } else {
                     println!("{}", body);

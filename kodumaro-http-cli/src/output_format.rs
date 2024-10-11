@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use eyre::Result;
 use syntect::{
     easy::HighlightLines,
@@ -7,7 +9,7 @@ use syntect::{
 };
 
 
-pub(crate) fn format_by_ext(body: &str, filename: &str) -> Result<()> {
+pub(crate) fn format_by_ext(body: &str, filename: &str, writer: &mut impl Write) -> Result<()> {
     let ext = filename.split('.').last().unwrap_or("txt");
     let ps = SyntaxSet::load_defaults_newlines();
     let ts = ThemeSet::load_defaults();
@@ -18,11 +20,14 @@ pub(crate) fn format_by_ext(body: &str, filename: &str) -> Result<()> {
                 let ranges: Vec<(Style, &str)> =
                     h.highlight_line(line, &ps).unwrap();
                 let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
-                print!("{}", escaped);
+                writer.write(escaped.as_bytes())?;
             }
         }
 
-        None => println!("{}", body),
+        None => {
+            writer.write(body.as_bytes())?;
+            writer.write(b"\n")?;
+        }
     }
 
     Ok(())
