@@ -114,16 +114,16 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?,
-            1|3 => crossterm::execute!(
+            4|5 => crossterm::execute!(
                 stderr,
-                SetStyle(*STATUS_OTHER_STYLE),
+                SetStyle(*STATUS_FAILURE_STYLE),
                 Print(status),
                 SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?,
             _ => crossterm::execute!(
                 stderr,
-                SetStyle(*STATUS_FAILURE_STYLE),
+                SetStyle(*STATUS_OTHER_STYLE),
                 Print(status),
                 SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
