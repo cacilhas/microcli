@@ -56,8 +56,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
         crossterm::execute!(
             stderr,
-            SetForegroundColor(Color::Blue),
-            SetAttribute(Attribute::Bold),
+            SetForegroundColor(Color::Cyan),
             Print(request.method()),
             ResetColor,
             Print(" "),
@@ -74,7 +73,8 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 Print(name),
                 Print(": "),
                 ResetColor,
-                SetForegroundColor(Color::Yellow),
+                SetAttribute(Attribute::Reset),
+                SetForegroundColor(Color::Blue),
                 Print(value),
                 ResetColor,
                 Print("\n"),
@@ -113,6 +113,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 SetAttribute(Attribute::Bold),
                 Print(status),
                 ResetColor,
+                SetAttribute(Attribute::Reset),
                 Print("\n"),
             )?,
             1|3 => crossterm::execute!(
@@ -121,6 +122,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 SetAttribute(Attribute::Bold),
                 Print(status),
                 ResetColor,
+                SetAttribute(Attribute::Reset),
                 Print("\n"),
             )?,
             _ => crossterm::execute!(
@@ -129,6 +131,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 SetAttribute(Attribute::Bold),
                 Print(status),
                 ResetColor,
+                SetAttribute(Attribute::Reset),
                 Print("\n"),
             )?,
         }
@@ -140,7 +143,8 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
                 Print(name),
                 Print(": "),
                 ResetColor,
-                SetForegroundColor(Color::Red),
+                SetAttribute(Attribute::Reset),
+                SetForegroundColor(Color::Blue),
                 Print(value),
                 ResetColor,
                 Print("\n"),
