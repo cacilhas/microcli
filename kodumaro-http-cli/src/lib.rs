@@ -2,6 +2,7 @@
 
 mod cli;
 mod output_format;
+mod styles;
 
 use std::{
     fs,
@@ -10,17 +11,17 @@ use std::{
 
 pub use cli::*;
 use crossterm::style::{
-    Attribute,
     Color,
     Print,
     ResetColor,
-    SetAttribute,
     SetForegroundColor,
+    SetStyle,
 };
 use eyre::{eyre, Result};
 use output_format::{add_ext, format_by_ext};
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
+use styles::*;
 
 
 pub async fn perform(cli: impl CLParameters) -> Result<()> {
@@ -56,27 +57,26 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
         crossterm::execute!(
             stderr,
-            SetForegroundColor(Color::Cyan),
+            SetStyle(*METHOD_STYLE),
             Print(request.method()),
-            ResetColor,
             Print(" "),
-            SetForegroundColor(Color::Yellow),
+            SetStyle(*DEFAULT_STYLE),
+            SetStyle(*URL_STYLE),
             Print(request.url().to_string()),
-            ResetColor,
+            SetStyle(*DEFAULT_STYLE),
             Print("\n"),
         )?;
         for (name, value) in request.headers().iter() {
             let value = value.to_str()?;
             crossterm::execute!(
                 stderr,
-                SetAttribute(Attribute::Bold),
+                SetStyle(*HEADER_NAME_STYLE),
                 Print(name),
                 Print(": "),
-                ResetColor,
-                SetAttribute(Attribute::Reset),
-                SetForegroundColor(Color::Blue),
+                SetStyle(*DEFAULT_STYLE),
+                SetStyle(*HEADER_VALUE_STYLE),
                 Print(value),
-                ResetColor,
+                SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?;
         }
@@ -109,29 +109,23 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         match status.as_u16() / 100 {
             2 => crossterm::execute!(
                 stderr,
-                SetForegroundColor(Color::Green),
-                SetAttribute(Attribute::Bold),
+                SetStyle(*STATUS_SUCCESS_STYLE),
                 Print(status),
-                ResetColor,
-                SetAttribute(Attribute::Reset),
+                SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?,
             1|3 => crossterm::execute!(
                 stderr,
-                SetForegroundColor(Color::Yellow),
-                SetAttribute(Attribute::Bold),
+                SetStyle(*STATUS_OTHER_STYLE),
                 Print(status),
-                ResetColor,
-                SetAttribute(Attribute::Reset),
+                SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?,
             _ => crossterm::execute!(
                 stderr,
-                SetForegroundColor(Color::Red),
-                SetAttribute(Attribute::Bold),
+                SetStyle(*STATUS_FAILURE_STYLE),
                 Print(status),
-                ResetColor,
-                SetAttribute(Attribute::Reset),
+                SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?,
         }
@@ -139,14 +133,13 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             let value = value.to_str()?;
             crossterm::execute!(
                 stderr,
-                SetAttribute(Attribute::Bold),
+                SetStyle(*HEADER_NAME_STYLE),
                 Print(name),
                 Print(": "),
-                ResetColor,
-                SetAttribute(Attribute::Reset),
-                SetForegroundColor(Color::Blue),
+                SetStyle(*DEFAULT_STYLE),
+                SetStyle(*HEADER_VALUE_STYLE),
                 Print(value),
-                ResetColor,
+                SetStyle(*DEFAULT_STYLE),
                 Print("\n"),
             )?;
         }
