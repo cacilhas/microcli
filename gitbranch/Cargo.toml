@@ -7,6 +7,7 @@ readme      = "README.md"
 homepage    = "https://crates.io/crates/gitbranch"
 repository  = "https://github.com/cacilhas/microcli/tree/master/gitbranch"
 keywords    = ["cli", "git"]
+categories  = ["command-line-interface"]
 description = "It simply shows current branch name - or nothing if it isn’t a git repo."
 edition     = "2021"
 

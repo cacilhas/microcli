@@ -7,6 +7,7 @@ readme      = "README.md"
 homepage    = "https://crates.io/crates/kodumaro-uuid-cli"
 repository  = "https://github.com/cacilhas/microcli/tree/master/kodumaro-uuid-cli"
 keywords    = ["cli", "uuid"]
+categories  = ["command-line-interface"]
 description = "Command line tool to generate UUID."
 edition     = "2021"
 

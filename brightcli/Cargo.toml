@@ -7,6 +7,7 @@ readme      = "README.md"
 homepage    = "https://crates.io/crates/brightcli"
 repository  = "https://github.com/cacilhas/microcli/tree/master/brightcli"
 keywords    = ["cli", "brightness", "linux"]
+categories  = ["command-line-interface"]
 description = "Util to change monitor brightness."
 edition     = "2021"
 
