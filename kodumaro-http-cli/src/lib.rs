@@ -156,7 +156,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             if let Ok(body) = response.text().await {
                 let filename = cli.url().path().to_lowercase();
 
-                if io::stdout().is_terminal() {
+                if stdout.is_terminal() {
                     let filename = add_ext(&filename, &content_type);
                     format_by_ext(&body, &filename, &mut stdout)?;
 
