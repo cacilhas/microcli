@@ -16,7 +16,7 @@ use crossterm::style::{
 };
 use eyre::{eyre, Result};
 use futures::StreamExt;
-use indicatif::ProgressBar;
+use indicatif::{ProgressBar, ProgressState, ProgressStyle};
 use output_format::{add_ext, format_by_ext};
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
@@ -143,6 +143,15 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
     }
     let total_size: u64 = response.content_length().unwrap_or(0);
     let pb = ProgressBar::new(total_size);
+    pb.set_style(
+        ProgressStyle::with_template(
+            "{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})"
+        )?.with_key(
+            "eta",
+            |state: &ProgressState, w: &mut dyn ::std::fmt::Write|
+                write!(w, "{:.1}s", state.eta().as_secs_f64()).unwrap()
+        )
+    );
 
     let content_type = response.headers()
         .get(reqwest::header::CONTENT_TYPE)
@@ -151,7 +160,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         .to_string();
 
     let mut out: Box<dyn Write> = match cli.output() {
-        Some(file) => Box::new(File::open(file)?),
+        Some(file) => Box::new(File::create(file)?),
         None => Box::new(Buffer::new(
             &mut stdout,
             cli.url().path().to_lowercase(),
@@ -223,7 +232,12 @@ impl Write for Buffer<'_> {
 
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         let size = buf.len();
-        self.buf += &String::from_utf8_lossy(buf);
+        let chunk = String::from_utf8_lossy(buf);
+        if self.is_terminal {
+            self.buf += &chunk;
+        } else {
+            write!(self.stdout, "{}", chunk).unwrap();
+        }
         Ok(size)
     }
 }
@@ -233,9 +247,7 @@ impl Drop for Buffer<'_> {
     fn drop(&mut self) {
         if self.is_terminal {
             let filename = add_ext(&self.filename, &self.content_type);
-            let _ = format_by_ext(&self.buf, &filename, self.stdout);
-        } else {
-            let _ = write!(self.stdout, "{}", self.buf);
+            format_by_ext(&self.buf, &filename, self.stdout).unwrap();
         }
     }
 }
