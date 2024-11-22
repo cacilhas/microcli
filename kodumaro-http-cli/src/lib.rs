@@ -4,10 +4,7 @@ mod cli;
 mod output_format;
 mod styles;
 
-use std::{
-    fs,
-    io::{self, IsTerminal, Write},
-};
+use std::{fs::File, io::{self, IsTerminal, Stdout, Write}};
 
 pub use cli::*;
 use crossterm::style::{
@@ -18,6 +15,8 @@ use crossterm::style::{
     SetStyle,
 };
 use eyre::{eyre, Result};
+use futures::StreamExt;
+use indicatif::ProgressBar;
 use output_format::{add_ext, format_by_ext};
 use reqwest::{redirect::Policy, Request, RequestBuilder};
 use serde_json::Value;
@@ -142,6 +141,8 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
             return Err(eyre!("{}", status));
         }
     }
+    let total_size: u64 = response.content_length().unwrap_or(0);
+    let pb = ProgressBar::new(total_size);
 
     let content_type = response.headers()
         .get(reqwest::header::CONTENT_TYPE)
@@ -149,22 +150,24 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         .unwrap_or("text/plain")
         .to_string();
 
-    match cli.output() {
-        Some(file) => fs::write(file, response.text().await?)?,
+    let mut out: Box<dyn Write> = match cli.output() {
+        Some(file) => Box::new(File::open(file)?),
+        None => Box::new(Buffer::new(
+            &mut stdout,
+            cli.url().path().to_lowercase(),
+            content_type,
+        )),
+    };
 
-        None => {
-            if let Ok(body) = response.text().await {
-                let filename = cli.url().path().to_lowercase();
+    let mut downloaded: u64 = 0;
+    let mut stream = response.bytes_stream();
 
-                if stdout.is_terminal() {
-                    let filename = add_ext(&filename, &content_type);
-                    format_by_ext(&body, &filename, &mut stdout)?;
-
-                } else {
-                    println!("{}", body);
-                }
-            }
-        }
+    while let Some(item) = stream.next().await {
+        let chunk = item?;
+        let chunk = chunk.into_iter().collect::<Vec<u8>>();
+        write!(out, "{}", String::from_utf8_lossy(&chunk))?;
+        downloaded = total_size.min(downloaded + chunk.len() as u64);
+        pb.set_position(downloaded);
     }
 
     Ok(())
@@ -184,4 +187,55 @@ fn draw_line(writer: &mut impl Write) -> Result<()> {
         ResetColor,
     )?;
     Ok(())
+}
+
+#[derive(Debug)]
+struct Buffer<'a> {
+    buf: String,
+    stdout: &'a mut Stdout,
+    is_terminal: bool,
+    filename: String,
+    content_type: String,
+}
+
+impl<'a> Buffer<'a> {
+
+    fn new(
+        stdout: &'a mut Stdout,
+        filename: impl ToString,
+        content_type: impl ToString,
+    ) -> Self {
+        let is_terminal = stdout.is_terminal();
+        Self {
+            buf: String::new(),
+            stdout, is_terminal,
+            filename: filename.to_string(),
+            content_type: content_type.to_string(),
+        }
+    }
+}
+
+impl Write for Buffer<'_> {
+
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
+    }
+
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        let size = buf.len();
+        self.buf += &String::from_utf8_lossy(buf);
+        Ok(size)
+    }
+}
+
+impl Drop for Buffer<'_> {
+
+    fn drop(&mut self) {
+        if self.is_terminal {
+            let filename = add_ext(&self.filename, &self.content_type);
+            let _ = format_by_ext(&self.buf, &filename, self.stdout);
+        } else {
+            let _ = write!(self.stdout, "{}", self.buf);
+        }
+    }
 }
