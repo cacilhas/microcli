@@ -137,7 +137,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
 
     if cli.fail() {
         let code = status.as_u16();
-        if code >= 400 && code <= 599 {
+        if (400..=599).contains(&code) {
             return Err(eyre!("{}", status));
         }
     }

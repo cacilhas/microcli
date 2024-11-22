@@ -20,13 +20,13 @@ pub(crate) fn format_by_ext(body: &str, filename: &str, writer: &mut impl Write)
                 let ranges: Vec<(Style, &str)> =
                     h.highlight_line(line, &ps).unwrap();
                 let escaped = as_24_bit_terminal_escaped(&ranges[..], false);
-                writer.write(escaped.as_bytes())?;
+                write!(writer, "{}", escaped)?;
             }
         }
 
         None => {
-            writer.write(body.as_bytes())?;
-            writer.write(b"\n")?;
+            write!(writer, "{}", body)?;
+            write!(writer, "\n")?;
         }
     }
 

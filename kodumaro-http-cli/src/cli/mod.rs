@@ -243,7 +243,7 @@ impl Cli {
 
         for param in args.params.iter() {
             if let Param::Header(name, value) = param {
-                let entry = headers.entry(name.to_lowercase()).or_insert(String::new());
+                let entry = headers.entry(name.to_lowercase()).or_default();
                 *entry = value.to_owned();
             }
         }
@@ -309,7 +309,7 @@ impl TryFrom<&Cli> for Request {
     type Error = eyre::Error;
 
     fn try_from(value: &Cli) -> Result<Self, Self::Error> {
-        Ok(value.build_request()?)
+        value.build_request()
     }
 }
 
