@@ -1,5 +1,3 @@
-#![feature(const_refs_to_static)]
-
 mod cli;
 mod output_format;
 mod styles;
@@ -178,6 +176,7 @@ pub async fn perform(cli: impl CLParameters) -> Result<()> {
         downloaded = total_size.min(downloaded + chunk.len() as u64);
         pb.set_position(downloaded);
     }
+    pb.finish_and_clear();
 
     Ok(())
 }
