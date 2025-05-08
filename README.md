@@ -23,7 +23,7 @@ Note: I gave Nubrew up in favour of [Upt](https://crates.io/crates/upt).
 
 ## Copyright
 
-©2021-2023 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.info).
+©2021-2023 [Rodrigo Cacilhας](mailto:montegasppa@cacilhas.cc).
 
 All codes in this repository are licensed under the
 [BSD-3 Clause License](https://github.com/cacilhas/microcli/blob/master/COPYING.md),

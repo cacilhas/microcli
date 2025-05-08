@@ -1,7 +1,7 @@
 [package]
 name        = "i3quitdialog"
 version     = "1.0.0"
-authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.info"]
+authors     = ["Rodrigo Cacilhας <montegasppa@cacilhas.cc"]
 license     = "BSD-3-Clause"
 readme      = "README.md"
 homepage    = "https://crates.io/crates/i3quitdialog"
