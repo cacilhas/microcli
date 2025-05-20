@@ -10,15 +10,15 @@ It’s still a kinda-usable work in progress.
 
 ## Installation
 
-```sh
-cargo +nightly install kodumaro-http-cli
+```shell
+cargo install kodumaro-http-cli
 ```
 
 
 ## Usage
 
 ```
-Usage: http <COMMAND>
+Usage: http <COMMAND> [OPTIONS] <URL> [PARAMS]...
 
 Commands:
   connect  performs a CONNECT request
@@ -35,13 +35,17 @@ Commands:
 Options:
       --raw <RAW>                      allows you to pass raw request data without extra processing
   -o, --output <OUTPUT>                save output to file instead of stdout [default: URL path file name]
-  -d, --download                       do not print the response body to stdout; rather, download it and store it in a file
-  -a, --auth <AUTH>                    basic authentication (user[:password]) or bearer token
-  -F, --follow                         follows Location redirects
-      --max-redirects <MAX_REDIRECTS>  when following redirects, max redirects [default: 30]
-      --verify <VERIFY>                set to "no" to skip checking the host's SSL certificate [default: yes]
-      --fail                           fail on error status code
-  -v, --verbose                        Show headers
+  -d, --download                       do not print the response body to stdout; rather, download it and store it in a file [env: HTTP_DOWNLOAD=]
+  -a, --auth <AUTH>                    basic authentication (user[:password]) or bearer token [env: HTTP_AUTH=]
+  -F, --follow                         follows Location redirects [env: HTTP_FOLLOW=]
+      --max-redirects <MAX_REDIRECTS>  when following redirects, max redirects [env: HTTP_MAX_REDIRECTS=10] [default: 30]
+      --verify <VERIFY>                set to "no" to skip checking the host's SSL certificate [env: HTTP_VERIFY=no] [default: yes]
+      --fail                           fail on error status code [env: HTTP_FAIL=]
+  -v, --verbose                        Show headers [env: HTTP_VERBOSE=true]
+
+Arguments:
+  <URL>        the URL to connect to
+  [PARAMS]...  header:value, querystring==value, and/or payload=value; @value means value from file content, str!value force value to be string
 ```
 
 ### Environment variables
