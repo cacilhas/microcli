@@ -5,6 +5,8 @@ use std::{
 
 use eyre::eyre;
 
+const TRUE_ARRAY: [&str; 4] = ["y", "yes", "true", "1"];
+const FALSE_ARRAY: [&str; 5] = ["n", "no", "false", "0", ""];
 
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq)]
 pub enum CliBool {
@@ -29,10 +31,11 @@ impl FromStr for CliBool {
     type Err = eyre::Error;
 
     fn from_str(value: &str) -> Result<Self, Self::Err> {
-        if ["y", "yes", "true", "1"].contains(&value.to_lowercase().as_str()) {
+        let lowercase = value.to_lowercase();
+        if TRUE_ARRAY.contains(&lowercase.as_str()) {
             return Ok(Self::Yes);
         }
-        if ["n", "no", "false", "0", ""].contains(&value.to_lowercase().as_str()) {
+        if FALSE_ARRAY.contains(&lowercase.as_str()) {
             return Ok(Self::No);
         }
 

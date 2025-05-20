@@ -61,7 +61,7 @@ impl FromStr for Param {
             let key = pair.get(1).ok_or(eyre!("invalid attribute {}", value))?.as_str();
             let value = pair.get(2).ok_or(eyre!("invalid attribute {}", value))?.as_str();
             let value = parse_string(value)?;
-            let value: Value = serde_json::from_str(&value).unwrap_or(Value::String(value));
+            let value: Value = string_to_value(&value);
             let mut payload = Map::new();
             payload.insert(key.to_owned(), value);
             return Ok(Self::Payload(Value::Object(payload)))
@@ -118,4 +118,12 @@ mod tests {
         let param = Param::from_str("invalid param");
         assert!(param.is_err());
     }
+}
+
+fn string_to_value(value: &str) -> Value {
+    if value.starts_with("str!") {
+        return Value::String(value[4..].to_string());
+    }
+
+    serde_json::from_str(&value).unwrap_or(Value::String(value.to_string()))
 }

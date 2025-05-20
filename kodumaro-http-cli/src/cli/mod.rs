@@ -66,7 +66,7 @@ struct VerbArgs {
     #[arg()]
     url: Url,
 
-    /// header:value, querystring==value, and/or payload=value; @value means value from file content
+    /// header:value, querystring==value, and/or payload=value; @value means value from file content, str!value force value to be string
     #[arg()]
     params: Vec<Param>,
 
@@ -287,10 +287,6 @@ impl Cli {
     pub fn initialize(&mut self) -> eyre::Result<()> {
         let args = self.verb.args();
         let mut url = args.url.clone();
-
-        // if args.json && args.form {
-        //     return Err(eyre!("--json and --form are mutually exclusive"));
-        // }
 
         for param in args.params.iter() {
             if let Param::Query(key, value) = param {
