@@ -17,7 +17,7 @@ Bunch of random unrelated
 - [Stack-based Calculator](https://crates.io/crates/stcalc)
 - [Docker monitor](dockermon/README.md)
 
-Note: I gave Nubrew up in favour of [Upt](https://crates.io/crates/upt).
+Note: I gave Nubrew up in favour of [Please Installer](https://crates.io/crates/please-install).
 
 -----
 
